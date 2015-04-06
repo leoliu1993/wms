@@ -14,19 +14,19 @@ import com.ncut.wms.commodity.model.Commodity;
 @DynamicUpdate(true)
 public class Unit {
 
-	private String unit;
+	private String unitName;
 	private Commodity commodity;
 
 	@Id
-	public String getUnit() {
-		return unit;
+	public String getUnitName() {
+		return unitName;
 	}
 
-	public void setUnit(String unit) {
-		this.unit = unit;
+	public void setUnitName(String unit) {
+		this.unitName = unit;
 	}
 
-	@OneToOne(mappedBy="unit")
+	@OneToOne(mappedBy="commodityUnit")
 	public Commodity getCommodity() {
 		return commodity;
 	}

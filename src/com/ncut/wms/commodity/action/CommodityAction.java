@@ -46,7 +46,7 @@ public class CommodityAction extends ActionSupport {
 		int currentPage = Integer.parseInt(request.getParameter("page"));
 		// 获得一页显示的数据数量
 		int pageSize = Integer.parseInt(request.getParameter("rows"));
-		
+		//通过分页获得对应商品列表
 		List<Commodity> commodityList = commodityService.getCommodityListByPage(currentPage, pageSize);
 		// 获得response对象,响应页面:
 		HttpServletResponse response = ServletActionContext.getResponse();

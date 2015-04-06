@@ -20,7 +20,7 @@ public class Commodity {
 	private Integer commodityBar;
 	private String commodityType;
 	private CommodityCategory commodityCategory;
-	private Unit unit;
+	private Unit commodityUnit;
 	private String remark;
 
 	@Id
@@ -47,8 +47,9 @@ public class Commodity {
 	}
 
 	@OneToOne
-	public Unit getUnit() {
-		return unit;
+	@JoinColumn(name="commodityUnit")
+	public Unit getCommodityUnit() {
+		return commodityUnit;
 	}
 
 	public String getRemark() {
@@ -75,8 +76,8 @@ public class Commodity {
 		this.commodityCategory = commodityCategory;
 	}
 
-	public void setUnit(Unit unit) {
-		this.unit = unit;
+	public void setCommodityUnit(Unit unit) {
+		this.commodityUnit = unit;
 	}
 
 	public void setRemark(String remark) {

@@ -267,8 +267,8 @@ display: none;
 * @desc 上下DIV有间距时使用,尽量不使用margin/padding值,防止不同浏览器出现BUG,
 *	 使用下面属性可兼容大多浏览器.
 */
-div.Div10{width:100%;overflow:hidden;}
-div.Div10{padding:10px;}
+div .Div10{width:100%;overflow:hidden;}
+div .Div10{padding:10px;}
 
 /*
 * 定义间距,上下2个DIV间距
@@ -339,6 +339,22 @@ div.Div10{padding:10px;}
 
 /* @end */
 
+/**
+* 以下为自定义
+*
+*/
+.textbox {
+	height: 32px;
+	padding: 2px;
+	margin-bottom: 5px;
+	font: 12px;
+}
+
+.easyui-dialog TABLE {
+	font:12px/22px Verdana,Arial,sans-serif,"Times New Roman",宋体;
+}
+
+
 
 
 /* 备注 */
@@ -351,8 +367,8 @@ div.Div10{padding:10px;}
  *	在终极页面显示内容区域还原这些标签的默认属性.
  *
  */
-  
- /*
+
+/*
  ul,ol,li,p,h1,h2,h3,h4,h5,h6,form,fieldset,table,td,img,div,tr{ margin:auto; padding:inherit;}
  input,select{ font-size:inherit;}
  img{border: inherit;}

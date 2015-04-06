@@ -14,7 +14,7 @@ public class CommodityCategory {
 
 	private Integer commodityCategoryId;
 	private Integer pid;
-	private Integer commodityCategoryName;
+	private String commodityCategoryName;
 	private Commodity commodity;
 
 	@Id
@@ -26,7 +26,7 @@ public class CommodityCategory {
 		return pid;
 	}
 
-	public Integer getCommodityCategoryName() {
+	public String getCommodityCategoryName() {
 		return commodityCategoryName;
 	}
 
@@ -38,7 +38,7 @@ public class CommodityCategory {
 		this.pid = pid;
 	}
 
-	public void setCommodityCategoryName(Integer commodityCategoryName) {
+	public void setCommodityCategoryName(String commodityCategoryName) {
 		this.commodityCategoryName = commodityCategoryName;
 	}
 
