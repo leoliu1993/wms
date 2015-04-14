@@ -60,7 +60,7 @@ public class CommodityDAO4MySqlImpl implements CommodityDAO {
 	public int count() {
 		String hql = "select count(*) from Commodity";
 		Query query = getSession().createQuery(hql);
-		int count = (Integer) query.uniqueResult();
+		int count = ((Number) query.uniqueResult()).intValue();
 		return count;
 	}
 

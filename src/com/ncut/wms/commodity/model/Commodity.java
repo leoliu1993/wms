@@ -15,16 +15,16 @@ import com.ncut.wms.unit.model.Unit;
 @DynamicUpdate(true)
 public class Commodity {
 
-	private Integer commodityId;
+	private String commodityId;
 	private String commodityName;
-	private Integer commodityBar;
+	private String commodityBar;
 	private String commodityType;
 	private CommodityCategory commodityCategory;
 	private Unit commodityUnit;
 	private String remark;
 
 	@Id
-	public Integer getCommodityId() {
+	public String getCommodityId() {
 		return commodityId;
 	}
 
@@ -32,7 +32,7 @@ public class Commodity {
 		return commodityName;
 	}
 
-	public Integer getCommodityBar() {
+	public String getCommodityBar() {
 		return commodityBar;
 	}
 
@@ -56,7 +56,7 @@ public class Commodity {
 		return remark;
 	}
 
-	public void setCommodityId(Integer commodityId) {
+	public void setCommodityId(String commodityId) {
 		this.commodityId = commodityId;
 	}
 
@@ -64,7 +64,7 @@ public class Commodity {
 		this.commodityName = commodityName;
 	}
 
-	public void setCommodityBar(Integer commodityBar) {
+	public void setCommodityBar(String commodityBar) {
 		this.commodityBar = commodityBar;
 	}
 
@@ -82,5 +82,15 @@ public class Commodity {
 
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+
+	@Override
+	public String toString() {
+		return "Commodity [commodityId=" + commodityId + ", commodityName="
+				+ commodityName + ", commodityBar=" + commodityBar
+				+ ", commodityType=" + commodityType + ", commodityCategory="
+				+ commodityCategory.getCommodityCategoryName()
+				+ ", commodityUnit=" + commodityUnit.getUnitName()
+				+ ", remark=" + remark + "]";
 	}
 }

@@ -94,7 +94,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				    <div title="基础资料管理" style="overflow:auto;padding:10px;">   
 				        <p><a title="test.jsp">客户管理</a></p>
 				        <p><a title="test.jsp">供应商管理</a></p>
-				        <p><a title="commodity_managementPage">商品管理</a></p>
+				        <p><a title="commodityAction_managementPage">商品管理</a></p>
 				        <p><a title="test.jsp">仓库管理</a></p>
 				        <p><a title="test.jsp">职员管理</a></p>
 				        <p><a title="test.jsp">权限管理</a></p>

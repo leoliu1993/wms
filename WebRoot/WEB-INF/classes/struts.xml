@@ -16,7 +16,7 @@
 		</action>
 		
 		<!-- 配置商品管理模块 -->
-		<action name="commodity_*" class="com.ncut.wms.commodity.action.CommodityAction" method="{1}">
+		<action name="commodityAction_*" class="com.ncut.wms.commodity.action.CommodityAction" method="{1}">
 			<result name="managementPage">/WEB-INF/jsp/commodityManagement.jsp</result>
 			
 		</action>

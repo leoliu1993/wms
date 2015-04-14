@@ -16,13 +16,16 @@ import org.springframework.stereotype.Component;
 import com.ncut.wms.commodity.model.Commodity;
 import com.ncut.wms.commodity.service.CommodityService;
 import com.opensymphony.xwork2.ActionSupport;
+import com.opensymphony.xwork2.ModelDriven;
 
-@Component("commodity")
+@Component("commodityAction")
 @Scope("prototype")
-public class CommodityAction extends ActionSupport {
+public class CommodityAction extends ActionSupport implements ModelDriven<Commodity> {
 
 	@Resource
 	private CommodityService commodityService;
+	
+	private Commodity commodity = new Commodity();
 	
 	/**
 	 * 跳转商品信息管理页面
@@ -46,16 +49,49 @@ public class CommodityAction extends ActionSupport {
 		int currentPage = Integer.parseInt(request.getParameter("page"));
 		// 获得一页显示的数据数量
 		int pageSize = Integer.parseInt(request.getParameter("rows"));
-		//通过分页获得对应商品列表
-		List<Commodity> commodityList = commodityService.getCommodityListByPage(currentPage, pageSize);
+		//通过分页获得对应商品列表的json字符串
+		String commodityList = commodityService.getCommodityListJson(currentPage, pageSize);
 		// 获得response对象,响应页面:
 		HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("text/html;charset=UTF-8");
-		// 拼Jason字符串
-		int total = commodityService.total();
-		String commodityListStr =  "{\"total\":"+total+" , \"rows\":"+JSONArray.fromObject(commodityList).toString()+"}";
-		response.getWriter().write(commodityListStr);
+		response.getWriter().write(commodityList);
 		return NONE;
 	}
+	
+	/**
+	 * 添加商品信息
+	 * @return
+	 */
+	public String addCommodity() {
+		// 获得response对象,响应页面:
+		HttpServletResponse response = ServletActionContext.getResponse();
+		try {
+			commodityService.add(commodity);
+			response.setContentType("text/html;charset=UTF-8");
+			String str = "{\"status\":\"ok\" , \"message\":\"操作成功!\"}";
+
+			response.getWriter().write(str);
+		} catch (IOException e) {
+			response.setContentType("text/html;charset=utf-8");
+			String str = "{\"status\":\"fail\" , \"message\":\"操作失败!\"}";
+			try {
+				response.getWriter().write(str);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
+		}
+		return NONE;
+	}
+
+	public void setCommodity(Commodity commodity) {
+		this.commodity = commodity;
+	}
+
+	@Override
+	public Commodity getModel() {
+		return commodity;
+	}
+
 
 }

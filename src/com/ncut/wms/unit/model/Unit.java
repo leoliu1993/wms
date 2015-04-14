@@ -35,4 +35,9 @@ public class Unit {
 		this.commodity = commodity;
 	}
 
+	@Override
+	public String toString() {
+		return "Unit [unitName=" + unitName + ", commodity=" + commodity + "]";
+	}
+
 }

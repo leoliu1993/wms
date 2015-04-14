@@ -2,6 +2,8 @@ package com.ncut.wms.user.dao.impl;
 
 
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.hibernate.Session;
@@ -31,6 +33,21 @@ public class UserDAO4MySqlImpl implements UserDAO {
 	@Resource
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
+	}
+
+	@Override
+	public List<User> findAll() {
+		String hql = "from User";
+		List<User> userList = this.getSession().createQuery(hql).list();
+		return userList;
+	}
+	
+	/**
+	 * sessionFactoryªÒ»°session
+	 * @return
+	 */
+	public Session getSession() {
+		return sessionFactory.getCurrentSession();
 	}
 
 }
