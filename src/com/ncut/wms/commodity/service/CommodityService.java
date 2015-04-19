@@ -9,6 +9,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JsonConfig;
 
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.ncut.wms.commodity.dao.CommodityDAO;
 import com.ncut.wms.commodity.model.Commodity;
@@ -16,7 +17,7 @@ import com.ncut.wms.commodity.model.CommodityCategory;
 import com.ncut.wms.unit.model.Unit;
 import com.ncut.wms.util.json.ObjectJsonValueProcessor;
 
-@Component("commodityService")
+@Service("commodityService")
 public class CommodityService {
 
 	private CommodityDAO commodityDAO;
@@ -59,7 +60,7 @@ public class CommodityService {
 	}
 	
 	/**
-	 * 获得商品列表的json字符串
+	 * 查询商品列表的json字符串
 	 * @param currentPage 当前页
 	 * @param pageSize 页面显示数据数量
 	 * @param searchWords 搜索关键词

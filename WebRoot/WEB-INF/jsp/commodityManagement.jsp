@@ -169,7 +169,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 								title: '修改商品信息'
 							});
 							var arr = $('#commodityTable').datagrid('getSelections');
-							console.warn("arrlen" + arr.length);
 							if(arr.length != 1) {
 								$.messager.show({
 									title: '提示信息！',
@@ -276,6 +275,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				$('#commoditySearch').form('reset');
 			});
 			
+			/**
+			 * 计量单位下拉菜单
+			 */
+			$('#unitCombobox').combobox({
+				url:'commodityAction_getUnitList',
+				editable:false,
+			    valueField:'unitId',
+			    textField:'unitName',
+			    	
+			});
+			
+			
 		});
 		
 		//js方法：序列化表单 			
@@ -330,7 +341,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				商品类别：<input name="commodityCategoryId" class="textbox" />
 			</div>
 			<div class="fl" style="margin:10px">
-				计量单位：<input id="commodityUnit" name="commodityUnit" class="textbox" />
+				计量单位：<input id="unitCombobox" name="commodityUnit" style="width:140;height:32px" />
 			</div>
 			<div class="clear"></div>
 			<div style="margin:10px;">
