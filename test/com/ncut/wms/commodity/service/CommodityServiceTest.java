@@ -39,7 +39,7 @@ public class CommodityServiceTest {
 			CommodityService service = (CommodityService) ctx
 					.getBean("commodityService");
 			
-			String commodityListStr = service.getCommodityListJson(1, 10);
+			String commodityListStr = service.getCommodityListJsonByPage(1, 10);
 			System.out.println(commodityListStr);
 			ctx.destroy();
 		

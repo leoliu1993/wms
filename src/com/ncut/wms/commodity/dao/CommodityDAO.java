@@ -1,6 +1,7 @@
 package com.ncut.wms.commodity.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import com.ncut.wms.commodity.model.Commodity;
 
@@ -19,6 +20,16 @@ public interface CommodityDAO {
 	 * @return 该页商品列表
 	 */
 	public List<Commodity> findByPagination(int currentPage, int pageSize);
+	
+	/**
+	 * 
+	 * @param currentPage 当前页
+	 * @param pageSize 一页呈现数据数量
+	 * @param searchWords 搜索关键字
+	 * @return
+	 */
+	public List<Commodity> findByPagination(int currentPage, int pageSize, Map<String, Object> searchWords);
+	
 	
 	/**
 	 * 获取商品总数

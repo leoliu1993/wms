@@ -1,6 +1,7 @@
 package com.ncut.wms.commodity.service;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -43,13 +44,30 @@ public class CommodityService {
 	
 	/**
 	 * 获得商品列表的json字符串
-	 * @param currentPage
-	 * @param pageSize
+	 * @param currentPage 当前页
+	 * @param pageSize 页面显示数据数量
 	 * @return
 	 */
-	public String getCommodityListJson(int currentPage, int pageSize) {
+	public String getCommodityListJsonByPage(int currentPage, int pageSize) {
 		List<Commodity> commodityList = commodityDAO.findByPagination(
 				currentPage, pageSize);
+		// 拼Jason字符串 {"total":total , "rows":[{},{}]}
+		
+		String commodityListStr = "{\"total\":" + this.total() + " , \"rows\":"
+				+ JSONArray.fromObject(commodityList).toString() + "}";
+		return commodityListStr;
+	}
+	
+	/**
+	 * 获得商品列表的json字符串
+	 * @param currentPage 当前页
+	 * @param pageSize 页面显示数据数量
+	 * @param searchWords 搜索关键词
+	 * @return
+	 */
+	public String getCommodityListJsonByPage(int currentPage, int pageSize, Map<String, Object> searchWords) {
+		List<Commodity> commodityList = commodityDAO.findByPagination(
+				currentPage, pageSize, searchWords);
 		// 拼Jason字符串 {"total":total , "rows":[{},{}]}
 		
 		String commodityListStr = "{\"total\":" + this.total() + " , \"rows\":"

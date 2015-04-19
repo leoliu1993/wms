@@ -27,7 +27,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<script type="text/javascript">
 		$(function(){
 			
-			var flag = '';//添加修改标志
+			//添加修改标志
+			var flag = '';
+			//搜索框展开标志
+			var searchStatus = 0;
 			/**
 			 * 表格初始化
 			 */
@@ -58,11 +61,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				    },{
 						title:'商品编号',
 						field:'commodityNum',
-						width:100
+						width:100,
+						sortable: true
 					},{
 						title:'商品名称',
 						field:'commodityName',
-						width:100
+						width:100,
+						sortable: true
 					},{
 						title:'商品条码',
 						field:'commodityBar',
@@ -189,7 +194,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					},{
 						text:'查询商品信息',
 						iconCls:'icon-search',
-						handler:function(){}
+						handler:function(){
+							if(searchStatus == 0) {
+								searchStatus = 1;
+								$('#lay').layout('expand' , 'north');
+							} else {
+								searchStatus = 0;
+								$('#lay').layout('collapse' , 'north');
+							}
+							
+						}
 					}
 				]
 				
@@ -240,13 +254,42 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					});
 				}
 			});
+			
 			/**
 			 * 表单取消按钮
 			 */
 			$('#cancelButton').click(function(){
 				$('#addDialog').dialog('close');
 			});
+			
+			/**
+			 * 搜索按钮
+			 */
+			$('#searchButton').click(function() {
+				$('#commodityTable').datagrid('load', serializeForm($('#commoditySearch')));
+			});
+			
+			/**
+			 * 清空按钮
+			 */
+			$('#clearButton').click(function() {
+				$('#commoditySearch').form('reset');
+			});
+			
 		});
+		
+		//js方法：序列化表单 			
+		function serializeForm(form) {
+			var obj = {};
+			$.each(form.serializeArray(), function(index) {
+				if (obj[this['name']]) {
+					obj[this['name']] = obj[this['name']] + ',' + this['value'];
+				} else {
+					obj[this['name']] = this['value'];
+				}
+			});
+			return obj;
+		}
 		
 	
 	</script>
@@ -256,17 +299,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   
   <body>
   	<div id="lay" class="easyui-layout" fit=true >
-		<div region="north" title="商品信息查询" style="height:100px;padding:10px">
-			<form id="fmuser">
-				根据商品名（可支持模糊查询）：<input name="uname" class="textbox"/>&nbsp;
-				<a href="javascript:void(0)"
-					class="easyui-linkbutton"
-					data-options="iconCls:'icon-search'"
-					onclick="searchFun()">查询</a>
-				<a href="javascript:void(0)"
-					class="easyui-linkbutton"
-					data-options="iconCls:'icon-search'"
-					onclick="clearFun()">清空</a>
+		<div region="north" title="商品信息查询" collapsed=true style="height:100px;padding:10px">
+			<form id="commoditySearch">
+				根据商品名（可支持模糊查询）：<input name="commodityName" class="textbox"/>&nbsp;
+				<a id="searchButton" class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a>
+				<a id="clearButton" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">清空</a>
 			</form>
 		</div>
 		<div region="center" title="商品信息管理">

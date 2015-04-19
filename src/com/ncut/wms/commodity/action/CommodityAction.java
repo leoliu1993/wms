@@ -1,6 +1,8 @@
 package com.ncut.wms.commodity.action;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -50,8 +52,20 @@ public class CommodityAction extends ActionSupport implements ModelDriven<Commod
 		int currentPage = Integer.parseInt(request.getParameter("page"));
 		// 获得一页显示的数据数量
 		int pageSize = Integer.parseInt(request.getParameter("rows"));
-		//通过分页获得对应商品列表的json字符串
-		String commodityList = commodityService.getCommodityListJson(currentPage, pageSize);
+		// 获取排序的方式
+		String order = request.getParameter("order")== null?"":request.getParameter("order");
+		// 获取排序的字段
+		String sort = request.getParameter("sort")== null?"":request.getParameter("sort");
+		
+		// 查询数据存入map
+		Map<String, Object> m = new HashMap<String, Object>();
+		m.put("commodityName", commodity.getCommodityName());
+		m.put("sort", sort);
+		m.put("order", order);
+		
+		
+		// 通过分页获得对应商品列表的json字符串
+		String commodityList = commodityService.getCommodityListJsonByPage(currentPage, pageSize, m);
 		// 获得response对象,响应页面:
 		HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("text/html;charset=UTF-8");
@@ -146,6 +160,9 @@ public class CommodityAction extends ActionSupport implements ModelDriven<Commod
 
 	@Override
 	public Commodity getModel() {
+		if(commodity.getCommodityName() == null) {
+			commodity.setCommodityName("");
+		}
 		return commodity;
 	}
 

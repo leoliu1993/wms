@@ -1,6 +1,10 @@
 package com.ncut.wms.commodity.dao.impl;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -93,6 +97,35 @@ public class CommodityDAO4MySqlImpl implements CommodityDAO {
 		Query query = getSession().createQuery(hql);
 		Commodity commodity = (Commodity) query.setInteger("id", id).uniqueResult();
 		return commodity;
+	}
+
+	@Override
+	public List<Commodity> findByPagination(int currentPage, int pageSize,
+			Map<String, Object> searchWords) {
+		String hql = "from Commodity where 1=1 ";
+		Set<Entry<String, Object>> set = searchWords.entrySet();
+		Iterator io = set.iterator();
+		while (io.hasNext()) {
+			Map.Entry<String, Object> me = (Map.Entry<String, Object>) io.next();
+			if("commodityName".equals(me.getKey()) && !"".equals(me.getValue())){
+				hql += " and " + me.getKey() + " like '%"+ me.getValue()  +"%'" ;
+			}
+			if("sort".equals(me.getKey()) && !"".equals(me.getValue())){
+				hql += " order by " + me.getValue() ;
+			}
+			if("order".equals(me.getKey()) && !"".equals(me.getValue())){
+				hql += " " + me.getValue();
+			}
+		}
+		//计算分页后显示的第一个数据的索引号
+		int index = (currentPage-1)*pageSize;
+		Query query = getSession().createQuery(hql);
+		//设置查询开始的索引号
+		query.setFirstResult(index);
+		//查询所显示的数据数
+		query.setMaxResults(pageSize);
+		List<Commodity> commodityList = query.list();
+		return commodityList;
 	}
 
 }
