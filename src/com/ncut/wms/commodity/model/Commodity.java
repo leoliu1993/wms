@@ -1,12 +1,10 @@
 package com.ncut.wms.commodity.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.context.annotation.Lazy;
 
 import com.ncut.wms.unit.model.Unit;
 
@@ -15,69 +13,75 @@ import com.ncut.wms.unit.model.Unit;
 @DynamicUpdate(true)
 public class Commodity {
 
-	private String commodityId;
+	private Integer commodityId;
+	private String commodityNum;
 	private String commodityName;
 	private String commodityBar;
 	private String commodityType;
-	private CommodityCategory commodityCategory;
-	private Unit commodityUnit;
+	private Integer commodityCategoryId;
+	private Integer CommodityUnit;
 	private String remark;
 
 	@Id
-	public String getCommodityId() {
+	@GeneratedValue
+	public Integer getCommodityId() {
 		return commodityId;
+	}
+
+	public void setCommodityId(Integer commodityId) {
+		this.commodityId = commodityId;
+	}
+
+	public String getCommodityNum() {
+		return commodityNum;
+	}
+
+	public void setCommodityNum(String commodityNum) {
+		this.commodityNum = commodityNum;
 	}
 
 	public String getCommodityName() {
 		return commodityName;
 	}
 
-	public String getCommodityBar() {
-		return commodityBar;
-	}
-
-	public String getCommodityType() {
-		return commodityType;
-	}
-
-	@OneToOne
-	@JoinColumn(name="commodityCategoryId")
-	public CommodityCategory getCommodityCategory() {
-		return commodityCategory;
-	}
-
-	@OneToOne
-	@JoinColumn(name="commodityUnit")
-	public Unit getCommodityUnit() {
-		return commodityUnit;
-	}
-
-	public String getRemark() {
-		return remark;
-	}
-
-	public void setCommodityId(String commodityId) {
-		this.commodityId = commodityId;
-	}
-
 	public void setCommodityName(String commodityName) {
 		this.commodityName = commodityName;
+	}
+
+	public String getCommodityBar() {
+		return commodityBar;
 	}
 
 	public void setCommodityBar(String commodityBar) {
 		this.commodityBar = commodityBar;
 	}
 
+	public String getCommodityType() {
+		return commodityType;
+	}
+
 	public void setCommodityType(String commodityType) {
 		this.commodityType = commodityType;
 	}
 
-	public void setCommodityCategory(CommodityCategory commodityCategory) {
-		this.commodityCategory = commodityCategory;
+	public Integer getCommodityCategoryId() {
+		return commodityCategoryId;
 	}
 
-	public void setCommodityUnit(Unit unit) {
-		this.commodityUnit = unit;
+	public void setCommodityCategoryId(Integer commodityCategoryId) {
+		this.commodityCategoryId = commodityCategoryId;
+	}
+
+	public Integer getCommodityUnit() {
+		return CommodityUnit;
+	}
+
+	public void setCommodityUnit(Integer commodityUnit) {
+		CommodityUnit = commodityUnit;
+	}
+
+	public String getRemark() {
+		return remark;
 	}
 
 	public void setRemark(String remark) {
@@ -86,11 +90,12 @@ public class Commodity {
 
 	@Override
 	public String toString() {
-		return "Commodity [commodityId=" + commodityId + ", commodityName="
-				+ commodityName + ", commodityBar=" + commodityBar
-				+ ", commodityType=" + commodityType + ", commodityCategory="
-				+ commodityCategory.getCommodityCategoryName()
-				+ ", commodityUnit=" + commodityUnit.getUnitName()
+		return "Commodity [commodityId=" + commodityId + ", commodityNum="
+				+ commodityNum + ", commodityName=" + commodityName
+				+ ", commodityBar=" + commodityBar + ", commodityType="
+				+ commodityType + ", commodityCategoryId="
+				+ commodityCategoryId + ", CommodityUnit=" + CommodityUnit
 				+ ", remark=" + remark + "]";
 	}
+
 }

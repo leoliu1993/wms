@@ -35,7 +35,7 @@ public class CommodityDAO4MySqlImpl implements CommodityDAO {
 	}
 
 	/**
-	 * sessionFactory»ñÈ¡session
+	 * sessionFactoryè·å–session
 	 * @return
 	 */
 	public Session getSession() {
@@ -44,13 +44,13 @@ public class CommodityDAO4MySqlImpl implements CommodityDAO {
 
 	@Override
 	public List<Commodity> findByPagination(int currentPage, int pageSize) {
-		//¼ÆËã·ÖÒ³ºóÏÔÊ¾µÄµÚÒ»¸öÊı¾İµÄË÷ÒıºÅ
+		//è®¡ç®—åˆ†é¡µåæ˜¾ç¤ºçš„ç¬¬ä¸€ä¸ªæ•°æ®çš„ç´¢å¼•å·
 		int index = (currentPage-1)*pageSize;
 		String hql = "from Commodity";
 		Query query = getSession().createQuery(hql);
-		//ÉèÖÃ²éÑ¯¿ªÊ¼µÄË÷ÒıºÅ
+		//è®¾ç½®æŸ¥è¯¢å¼€å§‹çš„ç´¢å¼•å·
 		query.setFirstResult(index);
-		//²éÑ¯ËùÏÔÊ¾µÄÊı¾İÊı
+		//æŸ¥è¯¢æ‰€æ˜¾ç¤ºçš„æ•°æ®æ•°
 		query.setMaxResults(pageSize);
 		List<Commodity> commodityList = query.list();
 		return commodityList;
@@ -62,6 +62,37 @@ public class CommodityDAO4MySqlImpl implements CommodityDAO {
 		Query query = getSession().createQuery(hql);
 		int count = ((Number) query.uniqueResult()).intValue();
 		return count;
+	}
+
+	@Override
+	public void save(Commodity commodity) {
+		getSession().save(commodity);
+		
+	}
+
+	@Override
+	public void update(Commodity commodity) {
+		getSession().update(commodity);
+		
+	}
+
+	@Override
+	public void delete(Commodity commodity) {
+		getSession().delete(commodity);
+	}
+
+	@Override
+	public void delete(Integer id) {
+		Commodity commodity = findById(id);
+		getSession().delete(commodity);
+	}
+
+	@Override
+	public Commodity findById(Integer id) {
+		String hql = "from Commodity c where c.commodityId=:id";
+		Query query = getSession().createQuery(hql);
+		Commodity commodity = (Commodity) query.setInteger("id", id).uniqueResult();
+		return commodity;
 	}
 
 }

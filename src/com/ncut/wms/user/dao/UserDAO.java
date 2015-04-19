@@ -6,11 +6,11 @@ import com.ncut.wms.user.model.User;
 
 public interface UserDAO {
 	
-	//×¢²áÓÃ»§´æÈë
+	//æ³¨å†Œç”¨æˆ·å­˜å…¥
 	public void save(User user);
 	
 	/**
-	 * ²éÑ¯ËùÓĞÓÃ»§
+	 * æŸ¥è¯¢æ‰€æœ‰ç”¨æˆ·
 	 * @return
 	 */
 	public List<User> findAll();

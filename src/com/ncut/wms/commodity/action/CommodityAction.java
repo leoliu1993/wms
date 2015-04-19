@@ -1,24 +1,25 @@
 package com.ncut.wms.commodity.action;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 import org.apache.struts2.ServletActionContext;
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 
 import com.ncut.wms.commodity.model.Commodity;
 import com.ncut.wms.commodity.service.CommodityService;
+import com.ncut.wms.util.json.Json;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.ModelDriven;
 
-@Component("commodityAction")
+@Controller("commodityAction")
 @Scope("prototype")
 public class CommodityAction extends ActionSupport implements ModelDriven<Commodity> {
 
@@ -28,7 +29,7 @@ public class CommodityAction extends ActionSupport implements ModelDriven<Commod
 	private Commodity commodity = new Commodity();
 	
 	/**
-	 * Ìø×ªÉÌÆ·ÐÅÏ¢¹ÜÀíÒ³Ãæ
+	 * è·³è½¬å•†å“ä¿¡æ¯ç®¡ç†é¡µé¢
 	 * @return
 	 */
 	public String managementPage() {
@@ -37,21 +38,21 @@ public class CommodityAction extends ActionSupport implements ModelDriven<Commod
 	}
 	
 	/**
-	 * »ñÈ¡ÉÌÆ·ÐÅÏ¢ÁÐ±í
+	 * èŽ·å–å•†å“ä¿¡æ¯åˆ—è¡¨
 	 * @return
 	 * @throws IOException 
 	 */
 	public String getCommodityList() throws IOException {
 		
-		// »ñµÃrequest¶ÔÏó£¬»ñÈ¡Ò³ÃæÊý¾Ý
+		// èŽ·å¾—requestå¯¹è±¡ï¼ŒèŽ·å–é¡µé¢æ•°æ®
 		HttpServletRequest request = ServletActionContext.getRequest();
-		// »ñµÃµ±Ç°Ò³
+		// èŽ·å¾—å½“å‰é¡µ
 		int currentPage = Integer.parseInt(request.getParameter("page"));
-		// »ñµÃÒ»Ò³ÏÔÊ¾µÄÊý¾ÝÊýÁ¿
+		// èŽ·å¾—ä¸€é¡µæ˜¾ç¤ºçš„æ•°æ®æ•°é‡
 		int pageSize = Integer.parseInt(request.getParameter("rows"));
-		//Í¨¹ý·ÖÒ³»ñµÃ¶ÔÓ¦ÉÌÆ·ÁÐ±íµÄjson×Ö·û´®
+		//é€šè¿‡åˆ†é¡µèŽ·å¾—å¯¹åº”å•†å“åˆ—è¡¨çš„jsonå­—ç¬¦ä¸²
 		String commodityList = commodityService.getCommodityListJson(currentPage, pageSize);
-		// »ñµÃresponse¶ÔÏó,ÏìÓ¦Ò³Ãæ:
+		// èŽ·å¾—responseå¯¹è±¡,å“åº”é¡µé¢:
 		HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("text/html;charset=UTF-8");
 		response.getWriter().write(commodityList);
@@ -59,27 +60,82 @@ public class CommodityAction extends ActionSupport implements ModelDriven<Commod
 	}
 	
 	/**
-	 * Ìí¼ÓÉÌÆ·ÐÅÏ¢
+	 * æ·»åŠ å•†å“ä¿¡æ¯
 	 * @return
 	 */
 	public String addCommodity() {
-		// »ñµÃresponse¶ÔÏó,ÏìÓ¦Ò³Ãæ:
+		Json json = new Json();
+		// èŽ·å¾—responseå¯¹è±¡,å“åº”é¡µé¢:
 		HttpServletResponse response = ServletActionContext.getResponse();
 		try {
 			commodityService.add(commodity);
-			response.setContentType("text/html;charset=UTF-8");
-			String str = "{\"status\":\"ok\" , \"message\":\"²Ù×÷³É¹¦!\"}";
-
-			response.getWriter().write(str);
-		} catch (IOException e) {
-			response.setContentType("text/html;charset=utf-8");
-			String str = "{\"status\":\"fail\" , \"message\":\"²Ù×÷Ê§°Ü!\"}";
-			try {
-				response.getWriter().write(str);
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
+			json.setSuccess(true);
+			json.setMessage("æ·»åŠ å•†å“ä¿¡æ¯æˆåŠŸ");
+		} catch (Exception e) {
 			e.printStackTrace();
+			json.setSuccess(false);
+			json.setMessage("æ·»åŠ å•†å“ä¿¡æ¯å¤±è´¥");
+		}
+		try {
+			response.setContentType("text/html;charset=utf-8");
+			response.getWriter().write(JSONObject.fromObject(json).toString());
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		return NONE;
+	}
+	
+	/**
+	 * ä¿®æ”¹å•†å“ä¿¡æ¯
+	 * @return
+	 */
+	public String updateCommodity() {
+		Json json = new Json();
+		// èŽ·å¾—responseå¯¹è±¡,å“åº”é¡µé¢:
+		HttpServletResponse response = ServletActionContext.getResponse();
+		try {
+			commodityService.update(commodity);
+			json.setSuccess(true);
+			json.setMessage("ä¿®æ”¹å•†å“ä¿¡æ¯æˆåŠŸ");
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.setSuccess(false);
+			json.setMessage("ä¿®æ”¹å•†å“ä¿¡æ¯å¤±è´¥");
+		}
+		try {
+			response.setContentType("text/html;charset=utf-8");
+			response.getWriter().write(JSONObject.fromObject(json).toString());
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		return NONE;
+	}
+	
+	public String deleteCommodity() {
+		Json json = new Json();
+		// èŽ·å¾—responseå¯¹è±¡,å“åº”é¡µé¢:
+		HttpServletResponse response = ServletActionContext.getResponse();
+		HttpServletRequest request = ServletActionContext.getRequest();
+		try {
+			String ids[] = request.getParameter("ids").split(",");
+			System.out.println(ids.toString());
+			
+			for(int i=0; i<ids.length; i++) {
+				commodityService.delete(Integer.valueOf(ids[i]));
+			}
+			
+			json.setSuccess(true);
+			json.setMessage("åˆ é™¤å•†å“ä¿¡æ¯æˆåŠŸ");
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.setSuccess(false);
+			json.setMessage("åˆ é™¤å•†å“ä¿¡æ¯å¤±è´¥");
+		}
+		try {
+			response.setContentType("text/html;charset=utf-8");
+			response.getWriter().write(JSONObject.fromObject(json).toString());
+		} catch (IOException e1) {
+			e1.printStackTrace();
 		}
 		return NONE;
 	}

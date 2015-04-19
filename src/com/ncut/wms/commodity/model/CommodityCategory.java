@@ -1,11 +1,10 @@
 package com.ncut.wms.commodity.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @DynamicInsert(true)
@@ -15,7 +14,6 @@ public class CommodityCategory {
 	private Integer commodityCategoryId;
 	private Integer pid;
 	private String commodityCategoryName;
-	private Commodity commodity;
 
 	@Id
 	public Integer getCommodityCategoryId() {
@@ -41,13 +39,13 @@ public class CommodityCategory {
 	public void setCommodityCategoryName(String commodityCategoryName) {
 		this.commodityCategoryName = commodityCategoryName;
 	}
-
-	@OneToOne(mappedBy="commodityCategory")
-	public Commodity getCommodity() {
-		return commodity;
+	
+	@Override
+	public String toString() {
+		return "CommodityCategory [commodityCategoryId=" + commodityCategoryId
+				+ ", pid=" + pid + ", commodityCategoryName="
+				+ commodityCategoryName + "]";
 	}
 
-	public void setCommodity(Commodity commodity) {
-		this.commodity = commodity;
-	}
+	
 }

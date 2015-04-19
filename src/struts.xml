@@ -7,16 +7,17 @@
 
     <constant name="struts.enable.DynamicMethodInvocation" value="true" />
     <constant name="struts.devMode" value="true" />
-
+	<!-- 表示Action由Spring来管理，可以直接使用Spring的依赖注入进行注入 -->
+	<constant name="struts.objectFactory" value="spring"></constant>
     <package name="shop" extends="struts-default" namespace="/">
 
         <!-- 配置首页访问的Action -->
-		<action name="index" class="com.ncut.wms.index.action.IndexAction">
+		<action name="index" class="index">
 			<result name="index">/WEB-INF/jsp/index.jsp</result>
 		</action>
 		
 		<!-- 配置商品管理模块 -->
-		<action name="commodityAction_*" class="com.ncut.wms.commodity.action.CommodityAction" method="{1}">
+		<action name="commodityAction_*" class="commodityAction" method="{1}">
 			<result name="managementPage">/WEB-INF/jsp/commodityManagement.jsp</result>
 			
 		</action>

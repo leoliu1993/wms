@@ -1,6 +1,8 @@
 package com.ncut.wms.unit.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
@@ -14,10 +16,19 @@ import com.ncut.wms.commodity.model.Commodity;
 @DynamicUpdate(true)
 public class Unit {
 
+	private Integer unitId;
 	private String unitName;
-	private Commodity commodity;
 
 	@Id
+	@GeneratedValue
+	public Integer getUnitId() {
+		return unitId;
+	}
+
+	public void setUnitId(Integer unitId) {
+		this.unitId = unitId;
+	}
+
 	public String getUnitName() {
 		return unitName;
 	}
@@ -26,18 +37,9 @@ public class Unit {
 		this.unitName = unit;
 	}
 
-	@OneToOne(mappedBy="commodityUnit")
-	public Commodity getCommodity() {
-		return commodity;
-	}
-
-	public void setCommodity(Commodity commodity) {
-		this.commodity = commodity;
-	}
-
 	@Override
 	public String toString() {
-		return "Unit [unitName=" + unitName + ", commodity=" + commodity + "]";
+		return "Unit [unitId=" + unitId + ", unitName=" + unitName + "]";
 	}
 
 }

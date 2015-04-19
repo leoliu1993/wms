@@ -8,23 +8,23 @@ import net.sf.json.JsonConfig;
 import net.sf.json.processors.JsonValueProcessor;
 
 /**
- * ½â¾öjsonËÀÑ­»·µÄÎÊÌâ
- * @author ÁõË¼Ô¶
+ * è§£å†³jsonæ­»å¾ªç¯çš„é—®é¢˜
+ * @author åˆ˜æ€è¿œ
  *
  */
 public class ObjectJsonValueProcessor implements JsonValueProcessor {
 
 	/**
-	 * ĞèÒªÁôÏÂµÄ×Ö¶ÎÊı×é
+	 * éœ€è¦ç•™ä¸‹çš„å­—æ®µæ•°ç»„
 	 */
 	private String[] properties;
 	/** 
-     * ĞèÒª×ö´¦ÀíµÄ¸´ÔÓÊôĞÔÀàĞÍ 
+     * éœ€è¦åšå¤„ç†çš„å¤æ‚å±æ€§ç±»å‹ 
      */
 	private Class<?> clazz;
 	
 	/** 
-     * ¹¹Ôì·½·¨,²ÎÊı±ØĞë 
+     * æ„é€ æ–¹æ³•,å‚æ•°å¿…é¡» 
      * @param properties 
      * @param clazz 
      */  
@@ -47,7 +47,11 @@ public class ObjectJsonValueProcessor implements JsonValueProcessor {
 			for (int i = 0; i < properties.length; i++) {
 				pd = new PropertyDescriptor(properties[i], clazz);
 				method = pd.getReadMethod();
-				String v = String.valueOf(method.invoke(value));
+				String v = null;
+				if(method.invoke(value)!=null) {
+					v = String.valueOf(method.invoke(value));
+				}
+				
 				json.append("'" + properties[i] + "':'" + v + "'");
 				json.append(i != properties.length - 1 ? "," : "");
 			}

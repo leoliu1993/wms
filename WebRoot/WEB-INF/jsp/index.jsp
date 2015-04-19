@@ -22,6 +22,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<script type="text/javascript" src="js/jquery-easyui-1.4.1/locale/easyui-lang-zh_CN.js"></script>
 	
 	<link rel="stylesheet" type="text/css" href="css/common2.css" />
+	<style type="text/css">
+		.easyui-accordion p {list-style:none;margin:0px;padding:2px}
+		.easyui-accordion p a {line-height:24px;display:block;padding-left:10px}
+		.easyui-accordion p a:hover{border:1px dashed #99bbe8;background:#e0ecff;color:#416aa3;cursor:pointer;}
+		.icon{background:url(<%=path%>/images/tabicons.png) no-repeat;height:18px;width:18px}
+		.icon-client{background-position:-160px -480px}
+		.icon-supplier{background-position:-140px -480px}
+		.icon-staff{background-position:-100px -480px}
+		.icon-warehouse{background-position:-200px -220px}
+		.icon-right{background-position:-380px -220px}
+		.icon-goods{background-position:-140px -280px}
+	</style>
 	
 	<script type="text/javascript">
 		
@@ -69,14 +81,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   
   <body class="easyui-layout">   
   	<!-- 顶部标题 -->
-    <div border="true" data-options="region:'north'" style="height:100px"></div>
+    
     
     <!-- 下部主体内容 -->
     <div border="true" data-options="region:'center'">
         <div border="false" class="easyui-layout" data-options="fit:true">
         	<!-- 左侧导航 -->
-			<div border="true" data-options="region:'west',title:'导航'" split="true" style="width:180px">
-				<div id="aa" border="false" class="easyui-accordion" fit="true">   
+			<div border="true" data-options="region:'west',title:'功能导航'" split="true" style="width:200px">
+				<div id="aa" border="false" class="easyui-accordion" fit=true>   
 				    <div title="库存管理" class="Div10">   
 				        <p><a title="test.jsp">采购入库</a></p>
 				        <p><a title="test.jsp">其他入库</a></p>
@@ -92,12 +104,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				        content3    
 				    </div>
 				    <div title="基础资料管理" style="overflow:auto;padding:10px;">   
-				        <p><a title="test.jsp">客户管理</a></p>
-				        <p><a title="test.jsp">供应商管理</a></p>
-				        <p><a title="commodityAction_managementPage">商品管理</a></p>
-				        <p><a title="test.jsp">仓库管理</a></p>
-				        <p><a title="test.jsp">职员管理</a></p>
-				        <p><a title="test.jsp">权限管理</a></p>
+				        <p><a title="test.jsp"><span class="icon icon-client">&nbsp;&nbsp;&nbsp;&nbsp; </span>客户管理</a></p>
+				        <p><a title="test.jsp"><span class="icon icon-supplier">&nbsp;&nbsp;&nbsp;&nbsp; </span>供应商管理</a></p>
+				        <p><a title="commodityAction_managementPage"><span class="icon icon-goods">&nbsp;&nbsp;&nbsp;&nbsp; </span>商品管理</a></p>
+				        <p><a title="test.jsp"><span class="icon icon-warehouse">&nbsp;&nbsp;&nbsp;&nbsp; </span>仓库管理</a></p>
+				        <p><a title="test.jsp"><span class="icon icon-staff">&nbsp;&nbsp;&nbsp;&nbsp; </span>职员管理</a></p>
+				        <p><a title="test.jsp"><span class="icon icon-right">&nbsp;&nbsp;&nbsp;&nbsp; </span>权限管理</a></p>
 				    </div>
 				    <div title="辅助资料管理" style="overflow:auto;padding:10px;">   
 				        <p><a title="test.jsp">客户类别</a></p>
@@ -109,21 +121,44 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				        content3    
 				    </div>
 				</div>
+				
             </div>
             
             <!-- 中心主体内容 -->
-            <div border="false" data-options="region:'center'">
+            <div border="false" data-options="region:'center',title:'欢迎使用智慧仓库管理系统'">
             	<!-- 标签 -->
-            	<div id="tt" class="easyui-tabs" fit=true>   
-    				<div title="首页" style="padding:20px;display:true;">   
-        				tab1
-    				</div>
-				</div>  
-            </div>
+				<div id="tt" class="easyui-tabs" fit=true>
+					<div title="首页" style="padding:10px">
+						<div class="fl" style="width:29%;height:250px;margin-right:10px;margin:10px">
+							<div class="easyui-panel"
+								data-options="title:'库存信息',collapsible:true,iconCls:'icon-ok'"
+								fit=true></div>
+						</div>
+						<div class="fl" style="width:29%;height:250px;margin-left:10px;margin:10px">
+							<div class="easyui-panel"
+								data-options="title:'仓库信息',collapsible:true,iconCls:'icon-ok'"
+								fit=true></div>
+						</div>
+						<div class="fl" style="width:29%;height:250px;margin-right:10px;margin:10px">
+							<div class="easyui-panel"
+								data-options="title:'财务信息',collapsible:true,iconCls:'icon-ok'"
+								fit=true></div>
+						</div>
+						<div class="clear"></div>
+						<div class="fl" style="width:29%;height:250px;margin:10px">
+							<div class="easyui-panel"
+								data-options="title:'资料管理',collapsible:true,iconCls:'icon-ok'"
+								fit=true></div>
+						</div>
+					</div>
+				</div>
+			</div>
             
             <!-- 下部信息 -->
-            <div border="false" region="south" >Copyright &copy; 2015</div>
-        </div>
+			<div border="false" region="south"
+				style="text-align:center; background:#fafafa;font-weight:bold">Copyright
+				&copy; 2015 NCUT All Rights Reserved. 京ICP证1000001号</div>
+		</div>
     </div>   
   </body>  
 

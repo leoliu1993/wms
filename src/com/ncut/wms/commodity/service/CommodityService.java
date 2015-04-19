@@ -21,7 +21,7 @@ public class CommodityService {
 	private CommodityDAO commodityDAO;
 
 	/**
-	 * ¼ÆËãÉÌÆ·×ÜÊı
+	 * è®¡ç®—å•†å“æ€»æ•°
 	 * @return
 	 */
 	public int total() {
@@ -30,9 +30,9 @@ public class CommodityService {
 	}
 
 	/**
-	 * ¸ù¾İ·ÖÒ³»ñÈ¡ÉÌÆ·ÁĞ±í
-	 * @param currentPage µ±Ç°Ò³
-	 * @param pageSize Ò³ÃæÏÔÊ¾Êı¾İÊıÁ¿
+	 * æ ¹æ®åˆ†é¡µè·å–å•†å“åˆ—è¡¨
+	 * @param currentPage å½“å‰é¡µ
+	 * @param pageSize é¡µé¢æ˜¾ç¤ºæ•°æ®æ•°é‡
 	 * @return
 	 */
 	public List<Commodity> getCommodityListByPage(int currentPage, int pageSize) {
@@ -42,7 +42,7 @@ public class CommodityService {
 	}
 	
 	/**
-	 * »ñµÃÉÌÆ·ÁĞ±íµÄjson×Ö·û´®
+	 * è·å¾—å•†å“åˆ—è¡¨çš„jsonå­—ç¬¦ä¸²
 	 * @param currentPage
 	 * @param pageSize
 	 * @return
@@ -50,22 +50,15 @@ public class CommodityService {
 	public String getCommodityListJson(int currentPage, int pageSize) {
 		List<Commodity> commodityList = commodityDAO.findByPagination(
 				currentPage, pageSize);
-		// Æ´Jason×Ö·û´® {"total":total , "rows":[{},{}]}
-		JsonConfig config = new JsonConfig();
-		config.registerJsonValueProcessor(CommodityCategory.class,
-				new ObjectJsonValueProcessor(
-						new String[] { "commodityCategoryName" },
-						CommodityCategory.class));
-		config.registerJsonValueProcessor(Unit.class,
-				new ObjectJsonValueProcessor(new String[] { "unitName" },
-						Unit.class));
+		// æ‹¼Jasonå­—ç¬¦ä¸² {"total":total , "rows":[{},{}]}
+		
 		String commodityListStr = "{\"total\":" + this.total() + " , \"rows\":"
-				+ JSONArray.fromObject(commodityList, config).toString() + "}";
+				+ JSONArray.fromObject(commodityList).toString() + "}";
 		return commodityListStr;
 	}
 	
 	/**
-	 * »ñÈ¡ËùÓĞÉÌÆ·ÁĞ±í
+	 * è·å–æ‰€æœ‰å•†å“åˆ—è¡¨
 	 * @return
 	 */
 	public List<Commodity> getCommodityList() {
@@ -74,8 +67,8 @@ public class CommodityService {
 	}
 
 	public void add(Commodity commodity) {
-		//commodityDAO.add(commodity);
-		System.out.println(commodity.toString());
+		commodityDAO.save(commodity);
+		//System.out.println("cc" + commodity.getCommodityCategory().toString());
 	}
 
 	public CommodityDAO getCommodityDAO() {
@@ -85,6 +78,19 @@ public class CommodityService {
 	@Resource
 	public void setCommodityDAO(CommodityDAO commodityDAO) {
 		this.commodityDAO = commodityDAO;
+	}
+
+	public void update(Commodity commodity) {
+		commodityDAO.update(commodity);
+		
+	}
+	
+	public void delete(Commodity commodity) {
+		commodityDAO.delete(commodity);
+	}
+	
+	public void delete(Integer id) {
+		commodityDAO.delete(id);
 	}
 
 }

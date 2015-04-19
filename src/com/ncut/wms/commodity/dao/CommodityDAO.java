@@ -7,22 +7,48 @@ import com.ncut.wms.commodity.model.Commodity;
 public interface CommodityDAO {
 
 	/**
-	 * ²éÑ¯ËùÓĞÉÌÆ·ÁĞ±í
-	 * @return ÉÌÆ·ÁĞ±í
+	 * æŸ¥è¯¢æ‰€æœ‰å•†å“åˆ—è¡¨
+	 * @return å•†å“åˆ—è¡¨
 	 */
 	public List<Commodity> findAll();
 
 	/**
-	 * ·ÖÒ³²éÑ¯ÉÌÆ·ÁĞ±í
-	 * @param currentPage µ±Ç°Ò³
-	 * @param pageSize Ò»Ò³³ÊÏÖÊı¾İÊıÁ¿
-	 * @return ¸ÃÒ³ÉÌÆ·ÁĞ±í
+	 * åˆ†é¡µæŸ¥è¯¢å•†å“åˆ—è¡¨
+	 * @param currentPage å½“å‰é¡µ
+	 * @param pageSize ä¸€é¡µå‘ˆç°æ•°æ®æ•°é‡
+	 * @return è¯¥é¡µå•†å“åˆ—è¡¨
 	 */
 	public List<Commodity> findByPagination(int currentPage, int pageSize);
 	
 	/**
-	 * »ñÈ¡ÉÌÆ·×ÜÊı
-	 * @return ÉÌÆ·×ÜÊı
+	 * è·å–å•†å“æ€»æ•°
+	 * @return å•†å“æ€»æ•°
 	 */
 	public int count();
+
+	/**
+	 * å­˜å‚¨å•†å“ä¿¡æ¯
+	 * @param commodity
+	 */
+	public void save(Commodity commodity);
+
+	/**
+	 * ä¿®æ”¹å•†å“ä¿¡æ¯
+	 * @param commodity
+	 */
+	public void update(Commodity commodity);
+	
+	/**
+	 * åˆ é™¤å•†å“ä¿¡æ¯
+	 * @param commodity
+	 */
+	public void delete(Commodity commodity);
+
+	/**
+	 * æ ¹æ®idåˆ é™¤å•†å“ä¿¡æ¯
+	 * @param id
+	 */
+	public void delete(Integer id);
+	
+	public Commodity findById(Integer id);
 }

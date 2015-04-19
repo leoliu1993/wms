@@ -43,7 +43,7 @@ public class UserDAO4MySqlImpl implements UserDAO {
 	}
 	
 	/**
-	 * sessionFactory»ñÈ¡session
+	 * sessionFactoryè·å–session
 	 * @return
 	 */
 	public Session getSession() {
