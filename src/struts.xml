@@ -27,6 +27,12 @@
 			<result name="managementPage">/WEB-INF/jsp/unitManagement.jsp</result>
 			
 		</action>
+		
+		<!-- 配置商品分类管理模块 -->
+		<action name="commodityCategoryAction_*" class="commodityCategoryAction" method="{1}">
+			<result name="managementPage">/WEB-INF/jsp/commodityCategoryManagement.jsp</result>
+			
+		</action>
     </package>
 
 

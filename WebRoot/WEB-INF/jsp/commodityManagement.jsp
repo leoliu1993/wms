@@ -108,7 +108,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							$('#addDialog').dialog('open');
 							
 						}
-					},{
+					},'-',{
 						text:'删除商品信息',
 						iconCls:'icon-remove',
 						handler:function(){
@@ -157,7 +157,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							}
 							
 						}						
-					},{
+					},'-',{
 						text:'修改商品信息',
 						iconCls:'icon-edit',
 						handler:function(){
@@ -190,7 +190,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							}
 							
 						}						
-					},{
+					},'-',{
 						text:'查询商品信息',
 						iconCls:'icon-search',
 						handler:function(){
