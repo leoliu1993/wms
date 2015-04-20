@@ -82,7 +82,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						width:100,
 					},{
 						title:'计量单位',
-						field:'commodityUnit',
+						field:'commodityUnitName',
 						width:100,
 					},{
 						title:'备注',
@@ -283,7 +283,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				editable:false,
 			    valueField:'unitId',
 			    textField:'unitName',
-			    	
 			});
 			
 			

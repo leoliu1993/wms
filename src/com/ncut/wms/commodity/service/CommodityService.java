@@ -1,26 +1,27 @@
 package com.ncut.wms.commodity.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
 import net.sf.json.JSONArray;
-import net.sf.json.JsonConfig;
 
-import org.springframework.stereotype.Component;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import com.ncut.wms.commodity.dao.CommodityDAO;
+import com.ncut.wms.commodity.dto.CommodityDTO;
 import com.ncut.wms.commodity.model.Commodity;
-import com.ncut.wms.commodity.model.CommodityCategory;
+import com.ncut.wms.unit.dao.UnitDAO;
 import com.ncut.wms.unit.model.Unit;
-import com.ncut.wms.util.json.ObjectJsonValueProcessor;
 
 @Service("commodityService")
 public class CommodityService {
 
 	private CommodityDAO commodityDAO;
+	private UnitDAO unitDAO;
 
 	/**
 	 * 计算商品总数
@@ -69,11 +70,46 @@ public class CommodityService {
 	public String getCommodityListJsonByPage(int currentPage, int pageSize, Map<String, Object> searchWords) {
 		List<Commodity> commodityList = commodityDAO.findByPagination(
 				currentPage, pageSize, searchWords);
-		// 拼Jason字符串 {"total":total , "rows":[{},{}]}
+		//将每个商品信息中的商品类别和单位进行转义
+		List<CommodityDTO> cDTOList = new ArrayList<CommodityDTO>();
+		for(Commodity c : commodityList) {
+			
+			CommodityDTO cDTO = new CommodityDTO();
+			//CommodityDTO cDTO = Model2DTO(c);
+			BeanUtils.copyProperties(c, cDTO);
+			
+			Unit unit = unitDAO.findById(c.getCommodityUnit());
+			if(unit != null) {
+				cDTO.setCommodityUnitName(unit.getUnitName());
+			}
+			
+			cDTOList.add(cDTO);
+			
+		}
 		
+		// 拼Jason字符串 {"total":total , "rows":[{},{}]}
 		String commodityListStr = "{\"total\":" + this.total() + " , \"rows\":"
-				+ JSONArray.fromObject(commodityList).toString() + "}";
+				+ JSONArray.fromObject(cDTOList).toString() + "}";
 		return commodityListStr;
+	}
+	
+	/**
+	 * 将商品DAO转换为页面需要的转义DTO
+	 * @param dao
+	 * @param dto
+	 * @return 
+	 */
+	public CommodityDTO Model2DTO(Commodity commodity){
+		CommodityDTO commodityDTO = new CommodityDTO();
+		commodityDTO.setCommodityId(commodity.getCommodityId());
+		commodityDTO.setCommodityNum(commodity.getCommodityNum());
+		commodityDTO.setCommodityName(commodity.getCommodityName());
+		commodityDTO.setCommodityBar(commodity.getCommodityBar());
+		commodityDTO.setCommodityType(commodity.getCommodityType());
+		commodityDTO.setCommodityUnit(commodity.getCommodityUnit());
+		commodityDTO.setCommodityCategoryId(commodity.getCommodityCategoryId());
+		commodityDTO.setRemark(commodity.getRemark());
+		return commodityDTO;
 	}
 	
 	/**
@@ -90,15 +126,6 @@ public class CommodityService {
 		//System.out.println("cc" + commodity.getCommodityCategory().toString());
 	}
 
-	public CommodityDAO getCommodityDAO() {
-		return commodityDAO;
-	}
-
-	@Resource
-	public void setCommodityDAO(CommodityDAO commodityDAO) {
-		this.commodityDAO = commodityDAO;
-	}
-
 	public void update(Commodity commodity) {
 		commodityDAO.update(commodity);
 		
@@ -110,6 +137,20 @@ public class CommodityService {
 	
 	public void delete(Integer id) {
 		commodityDAO.delete(id);
+	}
+
+	public CommodityDAO getCommodityDAO() {
+		return commodityDAO;
+	}
+
+	@Resource
+	public void setCommodityDAO(CommodityDAO commodityDAO) {
+		this.commodityDAO = commodityDAO;
+	}
+	
+	@Resource
+	public void setUnitDAO(UnitDAO unitDAO) {
+		this.unitDAO = unitDAO;
 	}
 
 }

@@ -21,6 +21,12 @@
 			<result name="managementPage">/WEB-INF/jsp/commodityManagement.jsp</result>
 			
 		</action>
+		
+		<!-- 配置计量单位管理模块 -->
+		<action name="unitAction_*" class="unitAction" method="{1}">
+			<result name="managementPage">/WEB-INF/jsp/unitManagement.jsp</result>
+			
+		</action>
     </package>
 
 

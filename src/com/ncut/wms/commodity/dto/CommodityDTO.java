@@ -3,10 +3,13 @@ package com.ncut.wms.commodity.dto;
 public class CommodityDTO {
 
 	private Integer commodityId;
+	private String commodityNum;
 	private String commodityName;
-	private Integer commodityBar;
+	private String commodityBar;
 	private String commodityType;
+	private Integer commodityCategoryId;
 	private String commodityCategoryName;
+	private Integer CommodityUnit;
 	private String commodityUnitName;
 	private String remark;
 
@@ -26,11 +29,11 @@ public class CommodityDTO {
 		this.commodityName = commodityName;
 	}
 
-	public Integer getCommodityBar() {
+	public String getCommodityBar() {
 		return commodityBar;
 	}
 
-	public void setCommodityBar(Integer commodityBar) {
+	public void setCommodityBar(String commodityBar) {
 		this.commodityBar = commodityBar;
 	}
 
@@ -64,6 +67,30 @@ public class CommodityDTO {
 
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+
+	public String getCommodityNum() {
+		return commodityNum;
+	}
+
+	public void setCommodityNum(String commodityNum) {
+		this.commodityNum = commodityNum;
+	}
+
+	public Integer getCommodityCategoryId() {
+		return commodityCategoryId;
+	}
+
+	public void setCommodityCategoryId(Integer commodityCategoryId) {
+		this.commodityCategoryId = commodityCategoryId;
+	}
+
+	public Integer getCommodityUnit() {
+		return CommodityUnit;
+	}
+
+	public void setCommodityUnit(Integer commodityUnit) {
+		CommodityUnit = commodityUnit;
 	}
 
 }
