@@ -93,24 +93,6 @@ public class CommodityService {
 		return commodityListStr;
 	}
 	
-	/**
-	 * 将商品DAO转换为页面需要的转义DTO
-	 * @param dao
-	 * @param dto
-	 * @return 
-	 */
-	public CommodityDTO Model2DTO(Commodity commodity){
-		CommodityDTO commodityDTO = new CommodityDTO();
-		commodityDTO.setCommodityId(commodity.getCommodityId());
-		commodityDTO.setCommodityNum(commodity.getCommodityNum());
-		commodityDTO.setCommodityName(commodity.getCommodityName());
-		commodityDTO.setCommodityBar(commodity.getCommodityBar());
-		commodityDTO.setCommodityType(commodity.getCommodityType());
-		commodityDTO.setCommodityUnit(commodity.getCommodityUnit());
-		commodityDTO.setCommodityCategoryId(commodity.getCommodityCategoryId());
-		commodityDTO.setRemark(commodity.getRemark());
-		return commodityDTO;
-	}
 	
 	/**
 	 * 获取所有商品列表
