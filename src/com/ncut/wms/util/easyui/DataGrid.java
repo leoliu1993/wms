@@ -5,14 +5,14 @@ import java.util.List;
 
 public class DataGrid<T> {
 
-	private Long totals = 0L;
+	private int totals = 0;
 	private List<T> rows = new ArrayList<T>();
 
-	public Long getTotals() {
+	public int getTotals() {
 		return totals;
 	}
 
-	public void setTotals(Long totals) {
+	public void setTotals(int totals) {
 		this.totals = totals;
 	}
 

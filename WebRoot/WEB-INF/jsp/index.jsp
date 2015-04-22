@@ -144,7 +144,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							</span>客户管理</a>
 						</p>
 						<p>
-							<a title="test.jsp"><span class="icon icon-supplier">&nbsp;&nbsp;&nbsp;&nbsp;
+							<a title="supplierAction_managementPage"><span class="icon icon-supplier">&nbsp;&nbsp;&nbsp;&nbsp;
 							</span>供应商管理</a>
 						</p>
 						<p>
@@ -166,11 +166,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					</div>
 					<div title="辅助资料管理" style="overflow:auto;padding:10px;">
 						<p>
-							<a title="test.jsp"><span class="icon icon-clientcategory">&nbsp;&nbsp;&nbsp;&nbsp;
+							<a title="clientAction_managementPage"><span class="icon icon-clientcategory">&nbsp;&nbsp;&nbsp;&nbsp;
 							</span>客户类别</a>
 						</p>
 						<p>
-							<a title="test.jsp"><span class="icon icon-suppliercategory">&nbsp;&nbsp;&nbsp;&nbsp;
+							<a title="supplierAction_managementPage"><span class="icon icon-suppliercategory">&nbsp;&nbsp;&nbsp;&nbsp;
 							</span>供应商类别</a>
 						</p>
 						<p>

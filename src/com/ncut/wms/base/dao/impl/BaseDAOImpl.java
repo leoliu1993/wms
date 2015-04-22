@@ -58,19 +58,20 @@ public class BaseDAOImpl<T> implements BaseDAO<T> {
 	}
 
 	@Override
-	public Long count(String hql) {
-		 return (Long)this.getSession().createQuery(hql).uniqueResult();
+	public int count(String hql) {
+		Query query = this.getSession().createQuery(hql);
+		 return ((Number) query.uniqueResult()).intValue();
 	}
 
 	@Override
-	public Long count(String hql, Map<String, Object> args) {
+	public int count(String hql, Map<String, Object> args) {
 		Query query = this.getSession().createQuery(hql);
 		if(args!=null && !args.isEmpty()){
 			for(String key : args.keySet()){
 				query.setParameter(key, args.get(key));
 			}
 		}
-		return (Long)query.uniqueResult();
+		return ((Number)query.uniqueResult()).intValue();
 	}
 
 	@Override

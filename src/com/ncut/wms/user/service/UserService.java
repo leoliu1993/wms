@@ -17,7 +17,7 @@ public class UserService {
 	private UserDAO userDAO;
 	
 	public void add(User user) {
-		userDAO.save(user);
+		userDAO.add(user);
 	}
 	
 	public List<User> getUserList() {
@@ -38,6 +38,10 @@ public class UserService {
 	@Resource
 	public void setUserDAO(UserDAO userDAO) {
 		this.userDAO = userDAO;
+	}
+
+	public User login(String username) {
+		return userDAO.getUser(username);
 	}
 
 }

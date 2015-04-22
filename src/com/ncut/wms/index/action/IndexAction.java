@@ -19,6 +19,10 @@ public class IndexAction extends ActionSupport{
 	@Override
 	public String execute() {
 		
+		return "login";
+	}
+	
+	public String login() {
 		return "index";
 	}
 }

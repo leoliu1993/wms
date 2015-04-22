@@ -11,8 +11,8 @@ public interface BaseDAO<T> {
 	public void merge(T t);
 	public T load(int id);
 	
-	public Long count(String hql);
-	public Long count(String hql,Map<String,Object> args);
+	public int count(String hql);
+	public int count(String hql,Map<String,Object> args);
 	
 	public List<T> list(String hql);
 	public List<T> list(String hql,Object arg);

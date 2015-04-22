@@ -1,7 +1,14 @@
 package com.ncut.wms.unit.action;
 
-import javax.annotation.Resource;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.struts2.ServletActionContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
@@ -20,6 +27,38 @@ ModelDriven<Unit> {
 	private UnitService unitService;
 	private Unit unit = new Unit();
 	
+	/*======以下业务逻辑========*/
+	public String getUnitList() throws IOException {
+
+		// 获得request对象，获取页面数据
+		HttpServletRequest request = ServletActionContext.getRequest();
+		// 获得当前页
+		int currentPage = Integer.parseInt(request.getParameter("page"));
+		// 获得一页显示的数据数量
+		int pageSize = Integer.parseInt(request.getParameter("rows"));
+		// 获取排序的方式
+		String order = request.getParameter("order") == null ? "" : request
+				.getParameter("order");
+		// 获取排序的字段
+		String sort = request.getParameter("sort") == null ? "" : request
+				.getParameter("sort");
+
+		// 查询数据存入map
+		Map<String, Object> m = new HashMap<String, Object>();
+		m.put("unitName", unit.getUnitName());
+		m.put("sort", sort);
+		m.put("order", order);
+
+		// 通过分页获得对应商品列表的json字符串
+		String unitList = unitService.getUnitListJsonByPage(
+				currentPage, pageSize, m);
+		// 获得response对象,响应页面:
+		HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("text/html;charset=UTF-8");
+		response.getWriter().write(unitList);
+		return NONE;
+	}
+	
 	/**
 	 * 跳转计量单位管理页面
 	 * 
@@ -32,6 +71,9 @@ ModelDriven<Unit> {
 	
 	@Override
 	public Unit getModel() {
+		if (unit.getUnitName() == null) {
+			unit.setUnitName("");
+		}
 		return unit;
 	}
 
@@ -43,5 +85,7 @@ ModelDriven<Unit> {
 	public void setUnitService(UnitService unitService) {
 		this.unitService = unitService;
 	}
+	
+	
 
 }

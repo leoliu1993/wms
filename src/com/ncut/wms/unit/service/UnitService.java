@@ -7,9 +7,12 @@ import javax.annotation.Resource;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import com.ncut.wms.commodity.dto.CommodityDTO;
+import com.ncut.wms.commodity.model.Commodity;
 import com.ncut.wms.unit.dao.UnitDAO;
 import com.ncut.wms.unit.model.Unit;
 
@@ -36,8 +39,8 @@ public class UnitService {
 		return unitListStr;
 	}
 	
-	public Long total() {
-		return unitDAO.count("from Unit");
+	public int total() {
+		return unitDAO.count("select count(*) from Unit");
 	}
 
 	public UnitDAO getUnitDAO() {
@@ -47,5 +50,16 @@ public class UnitService {
 	@Resource
 	public void setUnitDAO(UnitDAO unitDAO) {
 		this.unitDAO = unitDAO;
+	}
+
+	public String getUnitListJsonByPage(int currentPage, int pageSize,
+			Map<String, Object> m) {
+		List<Unit> unitList = unitDAO.findByPagination(
+				currentPage, pageSize, m);
+
+		// 拼Jason字符串 {"total":total , "rows":[{},{}]}
+		String unitListStr = "{\"total\":" + this.total() + " , \"rows\":"
+				+ JSONArray.fromObject(unitList).toString() + "}";
+		return unitListStr;
 	}
 }

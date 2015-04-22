@@ -14,6 +14,17 @@
         <!-- 配置首页访问的Action -->
 		<action name="index" class="index">
 			<result name="index">/WEB-INF/jsp/index.jsp</result>
+			<result name="login">/WEB-INF/jsp/login.jsp</result>
+		</action>
+		
+		<action name="index_login" class="index"  method="login">
+			<result name="index">/WEB-INF/jsp/index.jsp</result>
+		</action>
+		
+		<!-- 配置用户模块 -->
+		<action name="userAction_*" class="userAction" method="{1}">
+			<result name="index">/WEB-INF/jsp/index.jsp</result>
+			<result name="logout">/WEB-INF/jsp/login.jsp</result>
 		</action>
 		
 		<!-- 配置商品管理模块 -->
@@ -25,6 +36,18 @@
 		<!-- 配置计量单位管理模块 -->
 		<action name="unitAction_*" class="unitAction" method="{1}">
 			<result name="managementPage">/WEB-INF/jsp/unitManagement.jsp</result>
+			
+		</action>
+		
+		<!-- 配置供应商管理模块 -->
+		<action name="supplierAction_*" class="supplierAction" method="{1}">
+			<result name="managementPage">/WEB-INF/jsp/supplierManagement.jsp</result>
+			
+		</action>
+		
+		<!-- 配置客户管理模块 -->
+		<action name="clientAction_*" class="clientAction" method="{1}">
+			<result name="managementPage">/WEB-INF/jsp/clientManagement.jsp</result>
 			
 		</action>
 		

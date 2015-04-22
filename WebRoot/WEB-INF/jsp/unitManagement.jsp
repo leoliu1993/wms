@@ -34,14 +34,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			/**
 			 * 表格初始化
 			 */
-			$('#commodityTable').datagrid({
+			$('#unitTable').datagrid({
 				
 				idField:'commodityId',
 				//ajax异步后台请求
-				url: 'commodityAction_getCommodityList',
+				url: 'unitAction_getUnitList',
 				fit: true,
 				//自动列间距
-				fitColumns: true,
+				fitColumns: false,
 				border: false,
 				//分页查询
 				pagination: true,
@@ -54,40 +54,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				    	width:50,
 				    	checkbox:true
 				    },{
-				    	title:'商品编号',
-						field:'commodityId',
+				    	title:'计量单位编号',
+						field:'unitId',
 						width:100,
 						hidden: true
 				    },{
-						title:'商品编号',
-						field:'commodityNum',
+						title:'计量单位名称',
+						field:'unitName',
 						width:100,
 						sortable: true
-					},{
-						title:'商品名称',
-						field:'commodityName',
-						width:100,
-						sortable: true
-					},{
-						title:'商品条码',
-						field:'commodityBar',
-						width:100
-					},{
-						title:'规格型号',
-						field:'commodityType',
-						width:100
-					},{
-						title:'商品分类',
-						field:'commodityCategoryId',
-						width:100,
-					},{
-						title:'计量单位',
-						field:'commodityUnitName',
-						width:100,
-					},{
-						title:'备注',
-						field:'remark',
-						width:100
 					}
 				]],
 				
@@ -108,12 +83,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							$('#addDialog').dialog('open');
 							
 						}
-					},{
+					},'-',{
 						text:'删除计量单位',
 						iconCls:'icon-remove',
 						handler:function(){
 							
-							var arr = $('#commodityTable').datagrid('getSelections');
+							var arr = $('#unitTable').datagrid('getSelections');
 							if(arr.length < 1) {
 								$.messager.show({
 									title: '提示信息！',
@@ -132,14 +107,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 										$.post('commodityAction_deleteCommodity', {ids:ids}, function(result){
 											if(result){
 												//1.刷新数据表格
-												$('#commodityTable').datagrid('reload');
+												$('#unitTable').datagrid('reload');
 												//2.给出提示信息
 												$.messager.show ({
 													title: 'ok!',
 													msg: '计量单位删除成功！'
 												});
 												//3.清楚数据表格勾选
-												$('#commodityTable').datagrid('clearSelections');
+												$('#unitTable').datagrid('clearSelections');
 												
 											} else {
 												$.messager.show ({
@@ -168,7 +143,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							$('#addDialog').dialog({
 								title: '修改计量单位'
 							});
-							var arr = $('#commodityTable').datagrid('getSelections');
+							var arr = $('#unitTable').datagrid('getSelections');
 							if(arr.length != 1) {
 								$.messager.show({
 									title: '提示信息！',
@@ -209,13 +184,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			});
 			
 			/**
-			 * 商品编号输入框初始化
+			 * 计量单位输入框初始化
 			 */
 			$('#commodityNum').validatebox({
 				required : true ,
-				validType : 'midLength[2,5]' , 
-				invalidMessage : '商品编号必须在2到5个长度之间' ,
-				missingMessage : '请填写商品编号'
+				missingMessage : '请填写计量单位名称'
 			});
 			
 			/**
@@ -225,7 +198,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				if($('#addForm').form('validate')){
 					$.ajax({
 						type: 'post',
-						url: flag=='add'? 'commodityAction_addCommodity' : 'commodityAction_updateCommodity',
+						url: flag=='add'? 'unitAction_addUnit' : 'unitAction_updateUnit',
 						cache: false,
 						data: $('#addForm').serialize(),
 						dataType: 'json',
@@ -237,7 +210,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 									msg: result.message
 								});
 								$('#addForm').form('reset');
-								$('#commodityTable').datagrid('reload');
+								$('#unitTable').datagrid('reload');
 							} else {
 								$.messager.show ({
 									title: "fail!",
@@ -265,7 +238,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			 * 搜索按钮
 			 */
 			$('#searchButton').click(function() {
-				$('#commodityTable').datagrid('load', serializeForm($('#commoditySearch')));
+				$('#unitTable').datagrid('load', serializeForm($('#commoditySearch')));
 			});
 			
 			/**
@@ -311,43 +284,24 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   	<div id="lay" class="easyui-layout" fit=true >
 		<div region="north" title="计量单位查询" collapsed=true style="height:100px;padding:10px">
 			<form id="commoditySearch">
-				根据商品名（可支持模糊查询）：<input name="commodityName" class="textbox"/>&nbsp;
+				根据单位名（可支持模糊查询）：<input name="unitName" class="textbox"/>&nbsp;
 				<a id="searchButton" class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a>
 				<a id="clearButton" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">清空</a>
 			</form>
 		</div>
 		<div region="center" title="计量单位管理">
-			<table id="commodityTable"></table>
+			<table id="unitTable"></table>
 		</div>
 	</div>
 	<div id="addDialog" title="添加商品信息" modal=true class="easyui-dialog"
 		closed=true style="width:550px;padding:30px;">
 		<form id="addForm" method="post">
-			<input type="hidden" name="commodityId" class="textbox" />
-			<div class="fl" style="margin:10px">
-				商品编号：<input type="text" id="commodityNum" name="commodityNum" class="textbox" />
+			<input type="hidden" name="unitId" class="textbox" />
+			<div style="margin:10px">
+				计量单位名称：<input type="text" id="unitName" name="unitName" class="textbox" />
 			</div>
-			<div class="fl" style="margin:10px">
-				商品名称：<input name="commodityName" class="easyui-validatebox textbox" required=true missingMessage="请填写商品名称" />
-			</div>
-			<div class="fl" style="margin:10px">
-				商品条码：<input name="commodityBar" class="textbox" />
-			</div>
-			<div class="fl" style="margin:10px">
-				规格型号：<input name="commodityType" class="textbox" />
-			</div>
-			<div class="fl" style="margin:10px">
-				商品类别：<input name="commodityCategoryId" class="textbox" />
-			</div>
-			<div class="fl" style="margin:10px">
-				计量单位：<input id="unitCombobox" name="commodityUnit" style="width:140;height:32px" />
-			</div>
-			<div class="clear"></div>
-			<div style="margin:10px;">
-				<p style="margin:5px">备注：</p>
-				<p><input name="remark" class="easyui-textbox" multiline="true"
-					style="width:100%;height:100px;" /></p>
-			</div>
+			
+			
 			<div style="margin:10px;text-align:center">
 				<a id="saveButton" class="easyui-linkbutton" iconCls="icon-save" style="margin-right:10px">保存</a>
 				<a id="cancelButton" class="easyui-linkbutton" iconCls="icon-cancel" style="margin-left:10px">取消</a>

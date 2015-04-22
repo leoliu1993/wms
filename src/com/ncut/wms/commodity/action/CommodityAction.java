@@ -157,7 +157,6 @@ public class CommodityAction extends ActionSupport implements
 		HttpServletRequest request = ServletActionContext.getRequest();
 		try {
 			String ids[] = request.getParameter("ids").split(",");
-			System.out.println(ids.toString());
 
 			for (int i = 0; i < ids.length; i++) {
 				commodityService.delete(Integer.valueOf(ids[i]));
