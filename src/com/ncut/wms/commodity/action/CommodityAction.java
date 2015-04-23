@@ -11,12 +11,16 @@ import javax.servlet.http.HttpServletResponse;
 import net.sf.json.JSONObject;
 
 import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.BeanUtils;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
+import com.ncut.wms.commodity.dto.CommodityDTO;
 import com.ncut.wms.commodity.model.Commodity;
 import com.ncut.wms.commodity.service.CommodityService;
+import com.ncut.wms.supplier.dto.SupplierDTO;
 import com.ncut.wms.unit.service.UnitService;
+import com.ncut.wms.util.easyui.DataGrid;
 import com.ncut.wms.util.json.Json;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.ModelDriven;
@@ -24,12 +28,11 @@ import com.opensymphony.xwork2.ModelDriven;
 @Controller("commodityAction")
 @Scope("prototype")
 public class CommodityAction extends ActionSupport implements
-		ModelDriven<Commodity> {
+		ModelDriven<CommodityDTO> {
 
-	private CommodityService commodityService;
-	private UnitService unitService;
-	private Commodity commodity = new Commodity();
+	
 
+	/* ======以下业务逻辑======== */
 	/**
 	 * 跳转商品信息管理页面
 	 * 
@@ -46,34 +49,15 @@ public class CommodityAction extends ActionSupport implements
 	 * @return
 	 * @throws IOException
 	 */
-	public String getCommodityList() throws IOException {
+	public String getDatagrid() throws IOException {
 
-		// 获得request对象，获取页面数据
-		HttpServletRequest request = ServletActionContext.getRequest();
-		// 获得当前页
-		int currentPage = Integer.parseInt(request.getParameter("page"));
-		// 获得一页显示的数据数量
-		int pageSize = Integer.parseInt(request.getParameter("rows"));
-		// 获取排序的方式
-		String order = request.getParameter("order") == null ? "" : request
-				.getParameter("order");
-		// 获取排序的字段
-		String sort = request.getParameter("sort") == null ? "" : request
-				.getParameter("sort");
-
-		// 查询数据存入map
-		Map<String, Object> m = new HashMap<String, Object>();
-		m.put("commodityName", commodity.getCommodityName());
-		m.put("sort", sort);
-		m.put("order", order);
-
-		// 通过分页获得对应商品列表的json字符串
-		String commodityList = commodityService.getCommodityListJsonByPage(
-				currentPage, pageSize, m);
-		// 获得response对象,响应页面:
-		HttpServletResponse response = ServletActionContext.getResponse();
-		response.setContentType("text/html;charset=UTF-8");
-		response.getWriter().write(commodityList);
+		DataGrid<CommodityDTO> dg = commodityService.datagrid(commodityDTO);
+		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
+		try {
+			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(dg).toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return NONE;
 	}
 
@@ -96,87 +80,73 @@ public class CommodityAction extends ActionSupport implements
 		return NONE;
 	}
 
-	/**
-	 * 添加商品信息
-	 * 
-	 * @return
-	 */
-	public String addCommodity() {
+	public String add(){
 		Json json = new Json();
-		// 获得response对象,响应页面:
-		HttpServletResponse response = ServletActionContext.getResponse();
+		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
 		try {
+			BeanUtils.copyProperties(commodityDTO, commodity);
 			commodityService.add(commodity);
 			json.setSuccess(true);
-			json.setMessage("添加商品信息成功");
+			json.setMessage("添加供应商成功");
 		} catch (Exception e) {
 			e.printStackTrace();
 			json.setSuccess(false);
-			json.setMessage("添加商品信息失败");
+			json.setMessage("添加供应商失败");
 		}
 		try {
-			response.setContentType("text/html;charset=utf-8");
-			response.getWriter().write(JSONObject.fromObject(json).toString());
-		} catch (IOException e1) {
-			e1.printStackTrace();
+			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(json).toString());
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		return NONE;
 	}
-
-	/**
-	 * 修改商品信息
-	 * 
-	 * @return
-	 */
-	public String updateCommodity() {
+	
+	public String update(){
 		Json json = new Json();
-		// 获得response对象,响应页面:
-		HttpServletResponse response = ServletActionContext.getResponse();
+		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
 		try {
+			BeanUtils.copyProperties(commodityDTO, commodity);
 			commodityService.update(commodity);
 			json.setSuccess(true);
-			json.setMessage("修改商品信息成功");
+			json.setMessage("修改供应商成功");
 		} catch (Exception e) {
 			e.printStackTrace();
 			json.setSuccess(false);
-			json.setMessage("修改商品信息失败");
+			json.setMessage("修改供应商失败");
 		}
 		try {
-			response.setContentType("text/html;charset=utf-8");
-			response.getWriter().write(JSONObject.fromObject(json).toString());
-		} catch (IOException e1) {
-			e1.printStackTrace();
+			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(json).toString());
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		return NONE;
 	}
 
-	public String deleteCommodity() {
+	public String delete(){
 		Json json = new Json();
-		// 获得response对象,响应页面:
-		HttpServletResponse response = ServletActionContext.getResponse();
-		HttpServletRequest request = ServletActionContext.getRequest();
+		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
 		try {
-			String ids[] = request.getParameter("ids").split(",");
-
-			for (int i = 0; i < ids.length; i++) {
-				commodityService.delete(Integer.valueOf(ids[i]));
-			}
-
+			commodityService.delete(commodityDTO);
 			json.setSuccess(true);
-			json.setMessage("删除商品信息成功");
+			json.setMessage("删除供应商成功");
 		} catch (Exception e) {
 			e.printStackTrace();
 			json.setSuccess(false);
-			json.setMessage("删除商品信息失败");
+			json.setMessage("删除供应商失败");
 		}
 		try {
-			response.setContentType("text/html;charset=utf-8");
-			response.getWriter().write(JSONObject.fromObject(json).toString());
-		} catch (IOException e1) {
-			e1.printStackTrace();
+			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(json).toString());
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		return NONE;
 	}
+	
+	/* ======以下声明======== */
+	private CommodityService commodityService;
+	private UnitService unitService;
+	private Commodity commodity = new Commodity();
+	private CommodityDTO commodityDTO = new CommodityDTO();
 
 	@Resource
 	public void setCommodityService(CommodityService commodityService) {
@@ -192,12 +162,14 @@ public class CommodityAction extends ActionSupport implements
 		this.commodity = commodity;
 	}
 
+	public void setCommodityDTO(CommodityDTO commodityDTO) {
+		this.commodityDTO = commodityDTO;
+	}
+
 	@Override
-	public Commodity getModel() {
-		if (commodity.getCommodityName() == null) {
-			commodity.setCommodityName("");
-		}
-		return commodity;
+	public CommodityDTO getModel() {
+
+		return commodityDTO;
 	}
 
 }

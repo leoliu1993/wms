@@ -111,7 +111,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<div id="aa" border="false" class="easyui-accordion" fit=true>
 					<div title="库存管理" class="Div10">
 						<p>
-							<a title="test.jsp"><span class="icon icon-instorage1">&nbsp;&nbsp;&nbsp;&nbsp;
+							<a title="purchaseAction_addPage"><span class="icon icon-instorage1">&nbsp;&nbsp;&nbsp;&nbsp;
 							</span>采购入库</a>
 						</p>
 						<p>
@@ -174,7 +174,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							</span>供应商类别</a>
 						</p>
 						<p>
-							<a title="commodityCategoryAction_managementPage"><span class="icon icon-goodscategory">&nbsp;&nbsp;&nbsp;&nbsp;
+							<a title="cmdtCtgrAction_managementPage"><span class="icon icon-goodscategory">&nbsp;&nbsp;&nbsp;&nbsp;
 							</span>商品类别</a>
 						</p>
 						<p>

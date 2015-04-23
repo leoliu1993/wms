@@ -38,7 +38,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				
 				idField:'commodityId',
 				//ajax异步后台请求
-				url: 'commodityAction_getCommodityList',
+				url: 'commodityAction_getDatagrid',
 				fit: true,
 				//自动列间距
 				fitColumns: true,
@@ -59,30 +59,25 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						width:100,
 						hidden: true
 				    },{
-						title:'商品编号',
-						field:'commodityNum',
-						width:100,
-						sortable: true
-					},{
 						title:'商品名称',
 						field:'commodityName',
 						width:100,
 						sortable: true
-					},{
-						title:'商品条码',
-						field:'commodityBar',
-						width:100
 					},{
 						title:'规格型号',
 						field:'commodityType',
 						width:100
 					},{
 						title:'商品分类',
-						field:'commodityCategoryId',
+						field:'categoryName',
 						width:100,
 					},{
 						title:'计量单位',
-						field:'commodityUnitName',
+						field:'unitName',
+						width:100,
+					},{
+						title:'库存',
+						field:'stockAmount',
 						width:100,
 					},{
 						title:'备注',
@@ -129,7 +124,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 											ids += arr[i].commodityId + ',';
 										}
 										ids = ids.substring(0, ids.length-1);
-										$.post('commodityAction_deleteCommodity', {ids:ids}, function(result){
+										$.post('commodityAction_delete', {ids:ids}, function(result){
 											if(result){
 												//1.刷新数据表格
 												$('#commodityTable').datagrid('reload');
@@ -179,12 +174,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 								$('#addForm').form('reset');
 								$('#addForm').form('load',{
 									commodityId: arr[0].commodityId,
-									commodityNum: arr[0].commodityNum,
 									commodityName: arr[0].commodityName,
-									commodityBar: arr[0].commodityBar,
 									commodityType: arr[0].commodityType,
-									commodityCategoryId: arr[0].commodityCategoryId,
-									commodityUnit: arr[0].commodityUnit,
+									categoryId: arr[0].categoryId,
+									unitId: arr[0].unitId,
 									remark: arr[0].remark
 								});
 							}
@@ -225,7 +218,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				if($('#addForm').form('validate')){
 					$.ajax({
 						type: 'post',
-						url: flag=='add'? 'commodityAction_addCommodity' : 'commodityAction_updateCommodity',
+						url: flag=='add'? 'commodityAction_add' : 'commodityAction_update',
 						cache: false,
 						data: $('#addForm').serialize(),
 						dataType: 'json',
@@ -285,6 +278,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			    textField:'unitName',
 			});
 			
+			/**
+			 * 商品类别下拉菜单
+			 */
+			$('#cotegoryCombobox').combobox({
+				url:'cmdtCtgrAction_getCategoryList',
+				editable:false,
+			    valueField:'cid',
+			    textField:'cname',
+			});
 			
 		});
 		
@@ -324,23 +326,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		closed=true style="width:550px;padding:30px;">
 		<form id="addForm" method="post">
 			<input type="hidden" name="commodityId" class="textbox" />
-			<div class="fl" style="margin:10px">
-				商品编号：<input type="text" id="commodityNum" name="commodityNum" class="textbox" />
-			</div>
+			
 			<div class="fl" style="margin:10px">
 				商品名称：<input name="commodityName" class="easyui-validatebox textbox" required=true missingMessage="请填写商品名称" />
 			</div>
-			<div class="fl" style="margin:10px">
-				商品条码：<input name="commodityBar" class="textbox" />
-			</div>
+			
 			<div class="fl" style="margin:10px">
 				规格型号：<input name="commodityType" class="textbox" />
 			</div>
 			<div class="fl" style="margin:10px">
-				商品类别：<input name="commodityCategoryId" class="textbox" />
+				商品类别：<input id="cotegoryCombobox" name="categoryId" style="width:140;height:32px" />
 			</div>
 			<div class="fl" style="margin:10px">
-				计量单位：<input id="unitCombobox" name="commodityUnit" style="width:140;height:32px" />
+				计量单位：<input id="unitCombobox" name="unitId" style="width:140;height:32px" />
 			</div>
 			<div class="clear"></div>
 			<div style="margin:10px;">

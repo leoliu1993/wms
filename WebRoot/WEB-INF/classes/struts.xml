@@ -33,6 +33,12 @@
 			
 		</action>
 		
+		<!-- 配置商品类别模块 -->
+		<action name="cmdtCtgrAction_*" class="cmdtCtgrAction" method="{1}">
+			<result name="managementPage">/WEB-INF/jsp/commodityCategoryManagement.jsp</result>
+			
+		</action>
+		
 		<!-- 配置计量单位管理模块 -->
 		<action name="unitAction_*" class="unitAction" method="{1}">
 			<result name="managementPage">/WEB-INF/jsp/unitManagement.jsp</result>
@@ -51,11 +57,13 @@
 			
 		</action>
 		
-		<!-- 配置商品分类管理模块 -->
-		<action name="commodityCategoryAction_*" class="commodityCategoryAction" method="{1}">
-			<result name="managementPage">/WEB-INF/jsp/commodityCategoryManagement.jsp</result>
+		<!-- 进货管理模块 -->
+		<action name="purchaseAction_*" class="purchaseAction" method="{1}">
+			<result name="addPage">/WEB-INF/jsp/purchaseAdd.jsp</result>
 			
 		</action>
+		
+		
     </package>
 
 

@@ -1,17 +1,32 @@
 package com.ncut.wms.commodity.dto;
 
+import com.ncut.wms.commodity.model.CommodityCategory;
+import com.ncut.wms.unit.model.Unit;
+
 public class CommodityDTO {
 
 	private Integer commodityId;
-	private String commodityNum;
 	private String commodityName;
-	private String commodityBar;
 	private String commodityType;
-	private Integer commodityCategoryId;
-	private String commodityCategoryName;
-	private Integer CommodityUnit;
-	private String commodityUnitName;
+	private Integer categoryId;
+	private String categoryName;
+	private Integer unitId;
+	private String unitName;
+	private Double purchasePrice;
+	private Double salePrice;
+	private Double lastPrice;
+	private Integer stockAmount;
+	private Integer minimum;
+	private Integer state;
 	private String remark;
+	private String coordinate;
+
+	/* =====datagrid属性====== */
+	private int page;
+	private int rows;
+	private String order;
+	private String sort;
+	private String ids;
 
 	public Integer getCommodityId() {
 		return commodityId;
@@ -29,14 +44,6 @@ public class CommodityDTO {
 		this.commodityName = commodityName;
 	}
 
-	public String getCommodityBar() {
-		return commodityBar;
-	}
-
-	public void setCommodityBar(String commodityBar) {
-		this.commodityBar = commodityBar;
-	}
-
 	public String getCommodityType() {
 		return commodityType;
 	}
@@ -45,20 +52,53 @@ public class CommodityDTO {
 		this.commodityType = commodityType;
 	}
 
-	public String getCommodityCategoryName() {
-		return commodityCategoryName;
+
+	public Double getPurchasePrice() {
+		return purchasePrice;
 	}
 
-	public void setCommodityCategoryName(String commodityCategoryName) {
-		this.commodityCategoryName = commodityCategoryName;
+	public void setPurchasePrice(Double purchasePrice) {
+		this.purchasePrice = purchasePrice;
 	}
 
-	public String getCommodityUnitName() {
-		return commodityUnitName;
+	public Double getSalePrice() {
+		return salePrice;
 	}
 
-	public void setCommodityUnitName(String commodityUnitName) {
-		this.commodityUnitName = commodityUnitName;
+	public void setSalePrice(Double salePrice) {
+		this.salePrice = salePrice;
+	}
+
+	public Double getLastPrice() {
+		return lastPrice;
+	}
+
+	public void setLastPrice(Double lastPrice) {
+		this.lastPrice = lastPrice;
+	}
+
+	public Integer getStockAmount() {
+		return stockAmount;
+	}
+
+	public void setStockAmount(Integer stockAmount) {
+		this.stockAmount = stockAmount;
+	}
+
+	public Integer getMinimum() {
+		return minimum;
+	}
+
+	public void setMinimum(Integer minimum) {
+		this.minimum = minimum;
+	}
+
+	public Integer getState() {
+		return state;
+	}
+
+	public void setState(Integer state) {
+		this.state = state;
 	}
 
 	public String getRemark() {
@@ -69,28 +109,84 @@ public class CommodityDTO {
 		this.remark = remark;
 	}
 
-	public String getCommodityNum() {
-		return commodityNum;
+	public String getCoordinate() {
+		return coordinate;
 	}
 
-	public void setCommodityNum(String commodityNum) {
-		this.commodityNum = commodityNum;
+	public void setCoordinate(String coordinate) {
+		this.coordinate = coordinate;
 	}
 
-	public Integer getCommodityCategoryId() {
-		return commodityCategoryId;
+	public int getPage() {
+		return page;
 	}
 
-	public void setCommodityCategoryId(Integer commodityCategoryId) {
-		this.commodityCategoryId = commodityCategoryId;
+	public void setPage(int page) {
+		this.page = page;
 	}
 
-	public Integer getCommodityUnit() {
-		return CommodityUnit;
+	public int getRows() {
+		return rows;
 	}
 
-	public void setCommodityUnit(Integer commodityUnit) {
-		CommodityUnit = commodityUnit;
+	public void setRows(int rows) {
+		this.rows = rows;
+	}
+
+	public String getOrder() {
+		return order;
+	}
+
+	public void setOrder(String order) {
+		this.order = order;
+	}
+
+	public String getSort() {
+		return sort;
+	}
+
+	public void setSort(String sort) {
+		this.sort = sort;
+	}
+
+	public String getIds() {
+		return ids;
+	}
+
+	public void setIds(String ids) {
+		this.ids = ids;
+	}
+
+	public String getCategoryName() {
+		return categoryName;
+	}
+
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
+	}
+
+	public String getUnitName() {
+		return unitName;
+	}
+
+	public void setUnitName(String unitName) {
+		this.unitName = unitName;
+	}
+
+	public Integer getCategoryId() {
+		return categoryId;
+	}
+
+	public void setCategoryId(Integer categoryId) {
+		this.categoryId = categoryId;
+	}
+
+	public Integer getUnitId() {
+		return unitId;
+	}
+
+	public void setUnitId(Integer unitId) {
+		this.unitId = unitId;
 	}
 
 }

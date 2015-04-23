@@ -3,9 +3,10 @@ package com.ncut.wms.commodity.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.ncut.wms.base.dao.BaseDAO;
 import com.ncut.wms.commodity.model.Commodity;
 
-public interface CommodityDAO {
+public interface CommodityDAO extends BaseDAO<Commodity>{
 
 	/**
 	 * 查询所有商品列表

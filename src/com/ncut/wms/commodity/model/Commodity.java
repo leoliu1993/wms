@@ -4,23 +4,29 @@ import javax.persistence.*;
 
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.ForeignKey;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.springframework.context.annotation.Lazy;
 
 import com.ncut.wms.unit.model.Unit;
 
 @Entity
-@DynamicInsert(true)
-@DynamicUpdate(true)
 public class Commodity {
 
 	private Integer commodityId;
-	private String commodityNum;
 	private String commodityName;
-	private String commodityBar;
 	private String commodityType;
-	private Integer commodityCategoryId;
-	private Integer CommodityUnit;
+	private Integer categoryId;
+	private Integer unitId;
+	private Double purchasePrice;
+	private Double salePrice;
+	private Double lastPrice;
+	private Integer stockAmount;
+	private Integer minimum;
+	private Integer state;
 	private String remark;
+	private String coordinate;
 
 	@Id
 	@GeneratedValue
@@ -32,28 +38,12 @@ public class Commodity {
 		this.commodityId = commodityId;
 	}
 
-	public String getCommodityNum() {
-		return commodityNum;
-	}
-
-	public void setCommodityNum(String commodityNum) {
-		this.commodityNum = commodityNum;
-	}
-
 	public String getCommodityName() {
 		return commodityName;
 	}
 
 	public void setCommodityName(String commodityName) {
 		this.commodityName = commodityName;
-	}
-
-	public String getCommodityBar() {
-		return commodityBar;
-	}
-
-	public void setCommodityBar(String commodityBar) {
-		this.commodityBar = commodityBar;
 	}
 
 	public String getCommodityType() {
@@ -64,20 +54,54 @@ public class Commodity {
 		this.commodityType = commodityType;
 	}
 
-	public Integer getCommodityCategoryId() {
-		return commodityCategoryId;
+	
+
+	public Double getPurchasePrice() {
+		return purchasePrice;
 	}
 
-	public void setCommodityCategoryId(Integer commodityCategoryId) {
-		this.commodityCategoryId = commodityCategoryId;
+	public void setPurchasePrice(Double purchasePrice) {
+		this.purchasePrice = purchasePrice;
 	}
 
-	public Integer getCommodityUnit() {
-		return CommodityUnit;
+	public Double getSalePrice() {
+		return salePrice;
 	}
 
-	public void setCommodityUnit(Integer commodityUnit) {
-		CommodityUnit = commodityUnit;
+	public void setSalePrice(Double salePrice) {
+		this.salePrice = salePrice;
+	}
+
+	public Double getLastPrice() {
+		return lastPrice;
+	}
+
+	public void setLastPrice(Double lastPrice) {
+		this.lastPrice = lastPrice;
+	}
+
+	public Integer getStockAmount() {
+		return stockAmount;
+	}
+
+	public void setStockAmount(Integer stockAmount) {
+		this.stockAmount = stockAmount;
+	}
+
+	public Integer getMinimum() {
+		return minimum;
+	}
+
+	public void setMinimum(Integer minimum) {
+		this.minimum = minimum;
+	}
+
+	public Integer getState() {
+		return state;
+	}
+
+	public void setState(Integer state) {
+		this.state = state;
 	}
 
 	public String getRemark() {
@@ -88,14 +112,28 @@ public class Commodity {
 		this.remark = remark;
 	}
 
-	@Override
-	public String toString() {
-		return "Commodity [commodityId=" + commodityId + ", commodityNum="
-				+ commodityNum + ", commodityName=" + commodityName
-				+ ", commodityBar=" + commodityBar + ", commodityType="
-				+ commodityType + ", commodityCategoryId="
-				+ commodityCategoryId + ", CommodityUnit=" + CommodityUnit
-				+ ", remark=" + remark + "]";
+	public String getCoordinate() {
+		return coordinate;
+	}
+
+	public void setCoordinate(String coordinate) {
+		this.coordinate = coordinate;
+	}
+
+	public Integer getCategoryId() {
+		return categoryId;
+	}
+
+	public void setCategoryId(Integer categoryId) {
+		this.categoryId = categoryId;
+	}
+
+	public Integer getUnitId() {
+		return unitId;
+	}
+
+	public void setUnitId(Integer unitId) {
+		this.unitId = unitId;
 	}
 
 }

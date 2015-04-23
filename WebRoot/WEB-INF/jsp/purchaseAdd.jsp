@@ -38,10 +38,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				
 				idField:'supplierId',
 				//ajax异步后台请求
-				url: 'supplierAction_getDatagrid',
 				fit: true,
 				//自动列间距
-				fitColumns: true,
+				fitColumns: false,
 				border: false,
 				//分页查询
 				pagination: true,
@@ -54,30 +53,34 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				    	width:50,
 				    	checkbox:true
 				    },{
-				    	title:'供应商ID',
-						field:'supplierId',
+				    	title:'商品ID',
+						field:'commodityId',
 						width:100,
-						hidden: true
+						sortable: true
 				    },{
-						title:'供应商名称',
-						field:'supplierName',
+						title:'商品名称',
+						field:'commodityName',
 						width:100,
 						sortable: true
 					},{
-						title:'联系人',
-						field:'contactPeople',
+						title:'商品型号',
+						field:'commodityType',
 						width:100
 					},{
-						title:'联系电话',
-						field:'contactTel',
+						title:'计量单位',
+						field:'unitName',
 						width:100
 					},{
-						title:'地址',
-						field:'address',
+						title:'采购价',
+						field:'price',
 						width:100,
 					},{
-						title:'备注',
-						field:'remark',
+						title:'数量',
+						field:'amount',
+						width:100
+					},{
+						title:'总金额',
+						field:'totalPrice',
 						width:100
 					}
 				]],
@@ -86,7 +89,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				//增加工具栏，添加增删改查按钮
 				toolbar:[
 					{
-						text:'添加供应商信息',
+						text:'添加商品',
 						iconCls:'icon-add',
 						handler:function(){
 							
@@ -100,7 +103,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							
 						}
 					},'-',{
-						text:'删除供应商信息',
+						text:'删除商品',
 						iconCls:'icon-remove',
 						handler:function(){
 							
@@ -149,7 +152,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							
 						}						
 					},'-',{
-						text:'修改供应商信息',
+						text:'修改数量',
 						iconCls:'icon-edit',
 						handler:function(){
 							
@@ -179,19 +182,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							}
 							
 						}						
-					},'-',{
-						text:'查询供应商信息',
-						iconCls:'icon-search',
-						handler:function(){
-							if(searchStatus == 0) {
-								searchStatus = 1;
-								$('#lay').layout('expand' , 'north');
-							} else {
-								searchStatus = 0;
-								$('#lay').layout('collapse' , 'north');
-							}
-							
-						}
 					}
 				]
 				
@@ -289,26 +279,34 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   
   <body>
   	<div id="lay" class="easyui-layout" fit=true >
-		<div region="north" title="供应商信息查询" collapsed=true style="height:100px;padding:10px">
+		<div region="north" title="订单编号" style="height:120px;padding:10px">
 			<form id="commoditySearch">
-				根据商品名（可支持模糊查询）：<input name="supplierName" class="textbox"/>&nbsp;
-				<a id="searchButton" class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a>
-				<a id="clearButton" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">清空</a>
+				<div class="fl" style="margin:5px">供应商：<input name="supplierName" class="easyui-combobox"/>&nbsp;</div>
+				<div class="fl" style="margin:5px">应付金额：<input name="payablePrice" class="easyui-textbox"/>&nbsp;</div>
+				<div class="fl" style="margin:5px">实付金额：<input name="realPrice" class="easyui-textbox"/>&nbsp;</div>
+				<div class="fl" style="margin:5px">收货日期：<input name="createDate" class="easyui-datebox"/>&nbsp;</div>
+				<div class="clear"></div>
+				<div class="fl" style="margin:5px">备&nbsp;&nbsp;&nbsp;注：<input name="remark" class="easyui-textbox" style="width:330px"/>&nbsp;</div>
+				<div class="fl" style="margin:5px">是否已付款：<input name="state" class="easyui-combobox"/>&nbsp;</div>
+				<div class="fl" style="margin:5px">
+					<a id="searchButton" class="easyui-linkbutton" data-options="iconCls:'icon-save'">保存订单</a>
+					<a id="clearButton" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">清空订单</a>
+				</div>
 			</form>
 		</div>
-		<div region="center" title="供应商信息管理">
+		<div region="center" title="商品详单">
 			<table id="supplierTable"></table>
 		</div>
 	</div>
 	<div id="addDialog" title="添加商品信息" modal=true class="easyui-dialog"
 		closed=true style="width:550px;padding:30px;">
 		<form id="addForm" method="post">
-			<input type="hidden" name="supplierId" class="textbox" />
+			<input type="hidden" name="purchaseId" class="textbox" />
 			<div class="fl" style="margin:10px">
-				供应商名称：<input type="text" name="supplierName" class="textbox" required=true missingMessage="请填写供应商名称"  />
+				商品名称：<input type="text" name="commodityId" class="easyui-combobox" required=true missingMessage="请填写商品名称"  />
 			</div>
 			<div class="fl" style="margin:10px">
-				联系人：<input name="contactPeople" class="easyui-validatebox textbox" />
+				采购价：<input name="price" class="easyui-textbox" />
 			</div>
 			<div class="fl" style="margin:10px">
 				联系电话：&nbsp;&nbsp;&nbsp;<input name="contactTel" class="textbox" />

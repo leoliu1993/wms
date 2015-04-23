@@ -13,11 +13,12 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Component;
 
+import com.ncut.wms.base.dao.impl.BaseDAOImpl;
 import com.ncut.wms.commodity.dao.CommodityDAO;
 import com.ncut.wms.commodity.model.Commodity;
 
 @Component("commodityDAO")
-public class CommodityDAO4MySqlImpl implements CommodityDAO {
+public class CommodityDAO4MySqlImpl extends BaseDAOImpl<Commodity> implements CommodityDAO {
 
 	private SessionFactory sessionFactory;
 

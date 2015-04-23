@@ -343,12 +343,12 @@ div .Div10{padding:10px;}
 * 以下为自定义
 *
 */
-.textbox {
+/* .textbox {
 	height: 32px;
 	padding: 2px;
 	margin-bottom: 5px;
 	font: 12px;
-}
+} */
 
 .easyui-dialog TABLE {
 	font:12px/22px Verdana,Arial,sans-serif,"Times New Roman",宋体;
