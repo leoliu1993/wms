@@ -36,7 +36,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			 */
 			$('#supplierTable').datagrid({
 				
-				idField:'supplierId',
+				idField:'id',
 				//ajax异步后台请求
 				fit: true,
 				//自动列间距
@@ -97,7 +97,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							flag = 'add';
 							//动态设定对话框标题
 							$('#addDialog').dialog({
-								title: '添加供应商信息'
+								title: '添加商品详单'
 							});
 							$('#addDialog').dialog('open');
 							
@@ -117,32 +117,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 								
 								$.messager.confirm('提示信息' , '删除后商品信息无法回复，是否确认删除？' , function(result){
 									if(result) {
-										
-										var ids = '';
-										for(var i=0; i<arr.length; i++) {
-											ids += arr[i].supplierId + ',';
-										}
-										ids = ids.substring(0, ids.length-1);
-										$.post('supplierAction_delete', {ids:ids}, function(result){
-											if(result){
-												//1.刷新数据表格
-												$('#supplierTable').datagrid('reload');
-												//2.给出提示信息
-												$.messager.show ({
-													title: 'ok!',
-													msg: '商品信息删除成功！'
-												});
-												//3.清楚数据表格勾选
-												$('#supplierTable').datagrid('clearSelections');
-												
-											} else {
-												$.messager.show ({
-													title: 'fail!',
-													msg: '商品信息删除失败！'
-												});
-											}
-										});
-										
+										var rowIndex=$('#supplierTable').datagrid('getRowIndex',$('#supplierTable').datagrid('getSelected')) 
+										$('#supplierTable').datagrid('deleteRow',rowIndex);
+										$('#supplierTable').datagrid('clearSelections');
 									} else {
 										return;
 									}
@@ -166,18 +143,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							if(arr.length != 1) {
 								$.messager.show({
 									title: '提示信息！',
-									msg: '只能选择一行记录进行修改！'
+									msg: '请选择一行记录进行修改！'
 								});
 							} else {
 								$('#addDialog').dialog('open');
 								$('#addForm').form('reset');
 								$('#addForm').form('load',{
-									supplierId: arr[0].supplierId,
-									supplierName: arr[0].supplierName,
-									contactPeople: arr[0].contactPeople,
-									contactTel: arr[0].contactTel,
-									address: arr[0].address,
-									remark: arr[0].remark
+									commodityId: arr[0].commodityId,
+									commodityName: arr[0].commodityName,
+									commodityType: arr[0].commodityType,
+									unitName: arr[0].unitName,
+									price: arr[0].price,
+									amount: arr[0].amount
 								});
 							}
 							
@@ -193,29 +170,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			 */
 			$('#saveButton').click(function(){
 				if($('#addForm').form('validate')){
-					$.ajax({
-						type: 'post',
-						url: flag=='add'? 'supplierAction_add' : 'supplierAction_update',
-						cache: false,
-						data: $('#addForm').serialize(),
-						dataType: 'json',
-						success: function(result) {
-							$('#addDialog').dialog('close');
-							if(result.success){
-								$.messager.show ({
-									title: "ok!",
-									msg: result.message
-								});
-								$('#addForm').form('reset');
-								$('#supplierTable').datagrid('reload');
-							} else {
-								$.messager.show ({
-									title: "fail!",
-									msg: result.message
-								});
-							}
-						},
+					$('#supplierTable').datagrid('appendRow',{
+						commodityId: $('#commodityCombobox').combobox("getValue"),
+						commodityName: $('#commodityCombobox').combobox("getText"),
+						commodityType: $('#commodityType').textbox("getValue"),
+						unitName: $('#unitName').textbox("getValue"),
+						price: $('#price').textbox("getValue"),
+						amount: $('#amount').textbox("getValue"),
+						totalPrice: $('#price').val() * $('#amount').val()
 					});
+					$('#addForm').form('reset');
+					$('#addDialog').dialog('close');
 				} else {
 					$.messager.show({
 						title: '提示信息' ,
@@ -232,7 +197,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			});
 			
 			/**
-			 * 搜索按钮
+			 * 订单保存按钮
 			 */
 			$('#searchButton').click(function() {
 				$('#supplierTable').datagrid('load', serializeForm($('#commoditySearch')));
@@ -243,20 +208,105 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			 */
 			$('#clearButton').click(function() {
 				$('#commoditySearch').form('reset');
+				$('#createDate').datebox('setValue', myformatter(new Date()));
 			});
 			
 			/**
-			 * 计量单位下拉菜单
+			 * 供应商下拉菜单
 			 */
-			$('#unitCombobox').combobox({
-				url:'commodityAction_getUnitList',
+			$('#supplierCombobox').combobox({
+				url:'supplierAction_getSupplierList',
 				editable:false,
-			    valueField:'unitId',
-			    textField:'unitName',
+				required:false,
+			    missingMessage:'必须选择供应商！',
+			    valueField:'supplierId',
+			    textField:'supplierName',
+			});
+			
+			/**
+			 * 商品列表下拉菜单
+			 */
+			$('#commodityCombobox').combobox({
+				url:'commodityAction_getCommodityList',
+				editable:false,
+			    valueField:'commodityId',
+			    textField:'commodityName',
+			    onSelect: function() {
+					$.ajax({
+						type: 'post',
+						url: 'commodityAction_getCommodity',
+						cache: false,
+						data: $('#addForm').serialize(),
+						dataType: 'json',
+						success: function(c) {
+							//载入商品的表单信息
+							$('#addForm').form('load',{
+								commodityId: c.commodityId,
+								commodityName: c.commodityName,
+								commodityType: c.commodityType,
+								unitName: c.unitName,
+								price: c.price,
+								amount: c.amount
+							});
+								
+						}
+					});
+				}
+			});
+			
+			
+			/**
+			 * 付款标志下拉菜单
+			 */
+			$('#payState').combobox({
+				valueField:'value',
+				textField:'text',
+				editable:false,
+				data:[{
+					text:'是',
+					value:'1'
+				},{
+					text:'否',
+					value:'2'
+				}]
 			});
 			
 			
 		});
+		
+		/**
+		 * 设置datebox默认时间
+		 */
+		$('#createDate').datebox({
+			formatter:myformatter,
+			parser:myparser,
+			editable:false,
+		    required:true,
+		    missingMessage:'必须填写日期！'
+		});
+		
+		window.onload = function () { 
+			$('#createDate').datebox('setValue', myformatter(new Date()));
+		}
+		
+		function myformatter(date){
+			var y = date.getFullYear();
+			var m = date.getMonth()+1;
+			var d = date.getDate();
+			return y+'-'+(m<10?('0'+m):m)+'-'+(d<10?('0'+d):d);
+		}
+		function myparser(s){
+			if (!s) return new Date();
+			var ss = (s.split('-'));
+			var y = parseInt(ss[0],10);
+			var m = parseInt(ss[1],10);
+			var d = parseInt(ss[2],10);
+			if (!isNaN(y) && !isNaN(m) && !isNaN(d)){
+				return new Date(y,m-1,d);
+			} else {
+				return new Date();
+			}
+		}
 		
 		//js方法：序列化表单 			
 		function serializeForm(form) {
@@ -281,13 +331,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   	<div id="lay" class="easyui-layout" fit=true >
 		<div region="north" title="订单编号" style="height:120px;padding:10px">
 			<form id="commoditySearch">
-				<div class="fl" style="margin:5px">供应商：<input name="supplierName" class="easyui-combobox"/>&nbsp;</div>
+				<div class="fl" style="margin:5px">供应商：<input id="supplierCombobox" name="supplierName" class="easyui-combobox"/>&nbsp;</div>
 				<div class="fl" style="margin:5px">应付金额：<input name="payablePrice" class="easyui-textbox"/>&nbsp;</div>
 				<div class="fl" style="margin:5px">实付金额：<input name="realPrice" class="easyui-textbox"/>&nbsp;</div>
-				<div class="fl" style="margin:5px">收货日期：<input name="createDate" class="easyui-datebox"/>&nbsp;</div>
+				<div class="fl" style="margin:5px">收货日期：<input id="createDate" name="createDate" class="easyui-datebox"/>&nbsp;</div>
 				<div class="clear"></div>
 				<div class="fl" style="margin:5px">备&nbsp;&nbsp;&nbsp;注：<input name="remark" class="easyui-textbox" style="width:330px"/>&nbsp;</div>
-				<div class="fl" style="margin:5px">是否已付款：<input name="state" class="easyui-combobox"/>&nbsp;</div>
+				<div class="fl" style="margin:5px">是否已付款：<input id="payState" name="state" class="easyui-combobox" value="1"/>&nbsp;</div>
 				<div class="fl" style="margin:5px">
 					<a id="searchButton" class="easyui-linkbutton" data-options="iconCls:'icon-save'">保存订单</a>
 					<a id="clearButton" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">清空订单</a>
@@ -298,28 +348,31 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<table id="supplierTable"></table>
 		</div>
 	</div>
-	<div id="addDialog" title="添加商品信息" modal=true class="easyui-dialog"
+	<div id="addDialog" title="添加商品详单" modal=true class="easyui-dialog"
 		closed=true style="width:550px;padding:30px;">
 		<form id="addForm" method="post">
 			<input type="hidden" name="purchaseId" class="textbox" />
 			<div class="fl" style="margin:10px">
-				商品名称：<input type="text" name="commodityId" class="easyui-combobox" required=true missingMessage="请填写商品名称"  />
-			</div>
-			<div class="fl" style="margin:10px">
-				采购价：<input name="price" class="easyui-textbox" />
-			</div>
-			<div class="fl" style="margin:10px">
-				联系电话：&nbsp;&nbsp;&nbsp;<input name="contactTel" class="textbox" />
-			</div>
-			<div class="fl" style="margin:10px">
-				地址：&nbsp;&nbsp;&nbsp;<input name="address" class="textbox" />
+				商品名称：<input type="text" id="commodityCombobox" name="commodityId" class="easyui-combobox" required=true missingMessage="请选择商品！"  />
 			</div>
 			<div class="clear"></div>
-			<div style="margin:10px;">
-				<p style="margin:5px">备注：</p>
-				<p><input name="remark" class="easyui-textbox" multiline="true"
-					style="width:100%;height:100px;" /></p>
+			<div style="width:450px;height:50px;margin:2px;border:2px dashed #99bbe8;">
+				<div class="fl" style="margin:10px">
+					商品型号：<input id="commodityType" name="commodityType" class="easyui-textbox" data-options="readonly:true" />
+				</div>
+				<div class="fl" style="margin:10px">
+					计量单位：<input id="unitName" name="unitName" class="easyui-textbox" data-options="readonly:true" />
+				</div>
 			</div>
+			<div class="clear"></div>
+			<div class="fl" style="margin:10px">
+				采购价：<input id="price" name="price" class="easyui-textbox" />
+			</div>
+			<div class="fl" style="margin:10px">
+				数量：<input id="amount" name=amount class="easyui-textbox" />
+			</div>
+			<div class="clear"></div>
+			<br>
 			<div style="margin:10px;text-align:center">
 				<a id="saveButton" class="easyui-linkbutton" iconCls="icon-save" style="margin-right:10px">保存</a>
 				<a id="cancelButton" class="easyui-linkbutton" iconCls="icon-cancel" style="margin-left:10px">取消</a>

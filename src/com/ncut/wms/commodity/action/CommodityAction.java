@@ -2,12 +2,14 @@ package com.ncut.wms.commodity.action;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.struts2.ServletActionContext;
@@ -55,6 +57,34 @@ public class CommodityAction extends ActionSupport implements
 		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
 		try {
 			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(dg).toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return NONE;
+	}
+	
+	public String getCommodityList() {
+		
+		List<Commodity> commodityList = commodityService.getCommodityList();
+		String csJson = JSONArray.fromObject(commodityList).toString();
+		HttpServletResponse response = ServletActionContext.getResponse();
+		try {
+			response.setContentType("text/html;charset=UTF-8");
+			response.getWriter().write(csJson);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return NONE;
+	}
+	
+	public String getCommodity() {
+		
+		CommodityDTO cDTO = commodityService.findById(commodityDTO.getCommodityId());
+		String cJson = JSONObject.fromObject(cDTO).toString();
+		HttpServletResponse response = ServletActionContext.getResponse();
+		try {
+			response.setContentType("text/html;charset=UTF-8");
+			response.getWriter().write(cJson);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import com.ncut.wms.commodity.model.Commodity;
 import com.ncut.wms.supplier.dao.SupplierDAO;
 import com.ncut.wms.supplier.dto.SupplierDTO;
 import com.ncut.wms.supplier.model.Supplier;
@@ -67,6 +68,11 @@ public class SupplierService {
 			supplierDAO.delete(Integer.valueOf(ids[i]));
 		}
 
+	}
+
+	public List<Supplier> getSupplierList() {
+		List<Supplier> supplierList = supplierDAO.list("from Supplier");
+		return supplierList;
 	}
 
 }

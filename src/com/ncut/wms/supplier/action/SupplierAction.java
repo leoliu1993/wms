@@ -1,9 +1,12 @@
 package com.ncut.wms.supplier.action;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.struts2.ServletActionContext;
@@ -11,6 +14,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
+import com.ncut.wms.commodity.model.Commodity;
 import com.ncut.wms.supplier.dto.SupplierDTO;
 import com.ncut.wms.supplier.model.Supplier;
 import com.ncut.wms.supplier.service.SupplierService;
@@ -41,6 +45,21 @@ public class SupplierAction extends ActionSupport implements
 		}
 		return NONE;
 	}
+	
+	public String getSupplierList() {
+		
+		List<Supplier> supplierList = supplierService.getSupplierList();
+		String suppliersJson = JSONArray.fromObject(supplierList).toString();
+		HttpServletResponse response = ServletActionContext.getResponse();
+		try {
+			response.setContentType("text/html;charset=UTF-8");
+			response.getWriter().write(suppliersJson);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return NONE;
+	}
+	
 	
 	public String add(){
 		Json json = new Json();

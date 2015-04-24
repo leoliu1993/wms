@@ -100,6 +100,20 @@ public class CommodityService {
 		commodityDAO.update(commodity);
 
 	}
+	
+	public CommodityDTO findById(Integer id) {
+		
+		CommodityDTO cDTO = new CommodityDTO();
+		Commodity commodity = commodityDAO.findById(id);
+		if(commodity.getUnitId()!=null) {
+			String unitName = unitDAO.findById(commodity.getUnitId()).getUnitName();
+			cDTO.setUnitName(unitName);
+		}
+		
+		BeanUtils.copyProperties(commodity, cDTO);
+		
+		return cDTO;
+	}
 
 	public void delete(CommodityDTO commodityDTO) {
 
@@ -113,6 +127,11 @@ public class CommodityService {
 
 	public void delete(Integer id) {
 		commodityDAO.delete(id);
+	}
+
+	public List<Commodity> getCommodityList() {
+		List<Commodity> commodityList = commodityDAO.list("from Commodity");
+		return commodityList;
 	}
 
 }
