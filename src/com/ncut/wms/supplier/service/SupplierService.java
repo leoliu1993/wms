@@ -19,6 +19,7 @@ import com.ncut.wms.util.easyui.DataGrid;
 @Service("supplierService")
 public class SupplierService {
 	
+	/* ======以下声明======== */
 	private SupplierDAO supplierDAO;
 
 	@Resource
@@ -26,6 +27,7 @@ public class SupplierService {
 		this.supplierDAO = supplierDAO;
 	}
 
+	/* ======以下业务逻辑======== */
 	public DataGrid<SupplierDTO> datagrid(SupplierDTO supplierDTO) {
 		DataGrid<SupplierDTO> dg = new DataGrid<SupplierDTO>();
 		Map<String,Object> map = new HashMap<String,Object>();

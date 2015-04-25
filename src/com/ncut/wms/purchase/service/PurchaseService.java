@@ -15,11 +15,29 @@ import com.ncut.wms.purchase.dao.PurchasegoodsDAO;
 import com.ncut.wms.purchase.dto.PurchaseDTO;
 import com.ncut.wms.purchase.model.Purchase;
 import com.ncut.wms.util.easyui.DataGrid;
+import com.ncut.wms.util.system.Tools;
 
 @Service("PurchaseService")
 public class PurchaseService {
 
 	/* ======以下业务逻辑======== */
+	
+	/**
+	 * 生成订单
+	 * @param tab 订单类别
+	 * @param date 订单创建日期
+	 * @return
+	 */
+	public String getOrderCode(String date) {
+		String head = "JHCK";
+		String code = date.replaceAll("-", "");
+		String hql = "select max(t.purchaseId) from Purchase as t where t.createDate between '"+date+" 00:00:00' and '"+date+" 23:59:59'";
+		List list = pDAO.list(hql);
+		Object obj = list.get(0);
+		if(obj!=null)
+			return head+code+Tools.formatCode(obj.toString());
+		return head+code+"0001";
+	}
 	
 	public DataGrid<PurchaseDTO> datagrid(PurchaseDTO pDTO) {
 		DataGrid<PurchaseDTO> dg = new DataGrid<PurchaseDTO>();

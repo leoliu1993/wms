@@ -10,7 +10,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <head>
     <base href="<%=basePath%>">
     
-    <title>客户信息管理</title>
+    <title>供应商信息管理</title>
 	<meta http-equiv="pragma" content="no-cache">
 	<meta http-equiv="cache-control" content="no-cache">
 	<meta http-equiv="expires" content="0">    
@@ -34,11 +34,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			/**
 			 * 表格初始化
 			 */
-			$('#clientTable').datagrid({
+			$('#supplierTable').datagrid({
 				
 				idField:'clientId',
 				//ajax异步后台请求
-				url: 'commodityAction_getCommodityList',
+				url: 'clientAction_getDatagrid',
 				fit: true,
 				//自动列间距
 				fitColumns: true,
@@ -69,7 +69,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						width:100
 					},{
 						title:'联系电话',
-						field:'contactNum',
+						field:'contactTel',
 						width:100
 					},{
 						title:'地址',
@@ -93,8 +93,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							//标志为添加
 							flag = 'add';
 							//动态设定对话框标题
-							$('#addDialog').dialog({
-								title: '添加商品信息'
+							$('#addDialog').panel({
+								title: '添加客户信息'
 							});
 							$('#addDialog').dialog('open');
 							
@@ -104,7 +104,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						iconCls:'icon-remove',
 						handler:function(){
 							
-							var arr = $('#commodityTable').datagrid('getSelections');
+							var arr = $('#supplierTable').datagrid('getSelections');
 							if(arr.length < 1) {
 								$.messager.show({
 									title: '提示信息！',
@@ -117,25 +117,25 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 										
 										var ids = '';
 										for(var i=0; i<arr.length; i++) {
-											ids += arr[i].commodityId + ',';
+											ids += arr[i].supplierId + ',';
 										}
 										ids = ids.substring(0, ids.length-1);
-										$.post('commodityAction_deleteCommodity', {ids:ids}, function(result){
+										$.post('clientAction_delete', {ids:ids}, function(result){
 											if(result){
 												//1.刷新数据表格
-												$('#commodityTable').datagrid('reload');
+												$('#supplierTable').datagrid('reload');
 												//2.给出提示信息
 												$.messager.show ({
 													title: 'ok!',
-													msg: '商品信息删除成功！'
+													msg: '客户信息删除成功！'
 												});
 												//3.清楚数据表格勾选
-												$('#commodityTable').datagrid('clearSelections');
+												$('#supplierTable').datagrid('clearSelections');
 												
 											} else {
 												$.messager.show ({
 													title: 'fail!',
-													msg: '商品信息删除失败！'
+													msg: '客户信息删除失败！'
 												});
 											}
 										});
@@ -156,10 +156,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							//标志位修改
 							flag = 'edit';
 							//动态设定对话框标题
-							$('#addDialog').dialog({
-								title: '修改商品信息'
+							$('#addDialog').panel({
+								title: '修改客户信息'
 							});
-							var arr = $('#commodityTable').datagrid('getSelections');
+							var arr = $('#supplierTable').datagrid('getSelections');
 							if(arr.length != 1) {
 								$.messager.show({
 									title: '提示信息！',
@@ -169,13 +169,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 								$('#addDialog').dialog('open');
 								$('#addForm').form('reset');
 								$('#addForm').form('load',{
-									commodityId: arr[0].commodityId,
-									commodityNum: arr[0].commodityNum,
-									commodityName: arr[0].commodityName,
-									commodityBar: arr[0].commodityBar,
-									commodityType: arr[0].commodityType,
-									commodityCategoryId: arr[0].commodityCategoryId,
-									commodityUnit: arr[0].commodityUnit,
+									clientId: arr[0].clientId,
+									clientName: arr[0].clientName,
+									contactPeople: arr[0].contactPeople,
+									contactTel: arr[0].contactTel,
+									address: arr[0].address,
 									remark: arr[0].remark
 								});
 							}
@@ -199,15 +197,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				
 			});
 			
-			/**
-			 * 商品编号输入框初始化
-			 */
-			$('#commodityNum').validatebox({
-				required : true ,
-				validType : 'midLength[2,5]' , 
-				invalidMessage : '商品编号必须在2到5个长度之间' ,
-				missingMessage : '请填写商品编号'
-			});
 			
 			/**
 			 * 表单提交按钮
@@ -216,7 +205,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				if($('#addForm').form('validate')){
 					$.ajax({
 						type: 'post',
-						url: flag=='add'? 'commodityAction_addCommodity' : 'commodityAction_updateCommodity',
+						url: flag=='add'? 'clientAction_add' : 'clientAction_update',
 						cache: false,
 						data: $('#addForm').serialize(),
 						dataType: 'json',
@@ -228,7 +217,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 									msg: result.message
 								});
 								$('#addForm').form('reset');
-								$('#commodityTable').datagrid('reload');
+								$('#supplierTable').datagrid('reload');
 							} else {
 								$.messager.show ({
 									title: "fail!",
@@ -256,7 +245,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			 * 搜索按钮
 			 */
 			$('#searchButton').click(function() {
-				$('#commodityTable').datagrid('load', serializeForm($('#commoditySearch')));
+				$('#supplierTable').datagrid('load', serializeForm($('#commoditySearch')));
 			});
 			
 			/**
@@ -266,15 +255,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				$('#commoditySearch').form('reset');
 			});
 			
-			/**
-			 * 计量单位下拉菜单
-			 */
-			$('#unitCombobox').combobox({
-				url:'commodityAction_getUnitList',
-				editable:false,
-			    valueField:'unitId',
-			    textField:'unitName',
-			});
+			
 			
 			
 		});
@@ -300,38 +281,32 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   
   <body>
   	<div id="lay" class="easyui-layout" fit=true >
-		<div region="north" title="商品信息查询" collapsed=true style="height:100px;padding:10px">
+		<div region="north" title="客户信息查询" collapsed=true style="height:100px;padding:10px">
 			<form id="commoditySearch">
-				根据商品名（可支持模糊查询）：<input name="commodityName" class="textbox"/>&nbsp;
+				根据客户名（可支持模糊查询）：<input name="clientName" class="textbox"/>&nbsp;
 				<a id="searchButton" class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a>
 				<a id="clearButton" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">清空</a>
 			</form>
 		</div>
-		<div region="center" title="商品信息管理">
-			<table id="clientTable"></table>
+		<div region="center" title="客户信息管理">
+			<table id="supplierTable"></table>
 		</div>
 	</div>
-	<div id="addDialog" title="添加商品信息" modal=true class="easyui-dialog"
+	<div id="addDialog" title="添加客户信息" modal=true class="easyui-dialog"
 		closed=true style="width:550px;padding:30px;">
 		<form id="addForm" method="post">
-			<input type="hidden" name="commodityId" class="textbox" />
+			<input type="hidden" name="clientId" class="textbox" />
 			<div class="fl" style="margin:10px">
-				商品编号：<input type="text" id="commodityNum" name="commodityNum" class="textbox" />
+				客户名称：<input name="clientName" class="easyui-textbox" required=true missingMessage="请填写客户名称"  />
 			</div>
 			<div class="fl" style="margin:10px">
-				商品名称：<input name="commodityName" class="easyui-validatebox textbox" required=true missingMessage="请填写商品名称" />
+				联系人：<input name="contactPeople" class="easyui-textbox" />
 			</div>
 			<div class="fl" style="margin:10px">
-				商品条码：<input name="commodityBar" class="textbox" />
+				联系电话：&nbsp;&nbsp;&nbsp;<input name="contactTel" class="easyui-textbox" />
 			</div>
 			<div class="fl" style="margin:10px">
-				规格型号：<input name="commodityType" class="textbox" />
-			</div>
-			<div class="fl" style="margin:10px">
-				商品类别：<input name="commodityCategoryId" class="textbox" />
-			</div>
-			<div class="fl" style="margin:10px">
-				计量单位：<input id="unitCombobox" name="commodityUnit" style="width:140;height:32px" />
+				地址：&nbsp;&nbsp;&nbsp;<input name="address" class="easyui-textbox" />
 			</div>
 			<div class="clear"></div>
 			<div style="margin:10px;">

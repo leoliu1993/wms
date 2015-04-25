@@ -63,6 +63,12 @@
 			
 		</action>
 		
+		<!-- 销售管理模块 -->
+		<action name="saleAction_*" class="saleAction" method="{1}">
+			<result name="addPage">/WEB-INF/jsp/saleAdd.jsp</result>
+			
+		</action>
+		
 		
     </package>
 

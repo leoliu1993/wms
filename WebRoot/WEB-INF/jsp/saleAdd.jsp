@@ -10,7 +10,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <head>
     <base href="<%=basePath%>">
     
-    <title>供应商信息管理</title>
+    <title>销售管理</title>
 	<meta http-equiv="pragma" content="no-cache">
 	<meta http-equiv="cache-control" content="no-cache">
 	<meta http-equiv="expires" content="0">    
@@ -377,12 +377,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   	<div id="lay" class="easyui-layout" fit=true >
 		<div id="north" region="north" title="订单编号" style="height:120px;padding:10px">
 			<form id="commoditySearch">
-				<div class="fl" style="margin:5px">供应商：<input id="supplierCombobox" name="supplierName" class="easyui-combobox"/>&nbsp;</div>
+				<div class="fl" style="margin:5px">客户：<input id="supplierCombobox" name="supplierName" class="easyui-combobox"/>&nbsp;</div>
 				<div class="fl" style="margin:5px">应付金额：<input id="payablePrice" name="payablePrice" class="easyui-textbox" data-options="editable:false"/>&nbsp;</div>
 				<div class="fl" style="margin:5px">实付金额：<input name="realPrice" class="easyui-textbox"/>&nbsp;</div>
 				<div class="fl" style="margin:5px">收货日期：<input id="createDate" name="createDate" class="easyui-datebox"/>&nbsp;</div>
 				<div class="clear"></div>
-				<div class="fl" style="margin:5px">备&nbsp;&nbsp;&nbsp;注：<input name="remark" class="easyui-textbox" style="width:330px"/>&nbsp;</div>
+				<div class="fl" style="margin:5px">备注：<input name="remark" class="easyui-textbox" style="width:330px"/>&nbsp;</div>
 				<div class="fl" style="margin:5px">是否已付款：<input id="payState" name="state" class="easyui-combobox" value="1"/>&nbsp;</div>
 				<div class="fl" style="margin:5px">
 					<a id="searchButton" class="easyui-linkbutton" data-options="iconCls:'icon-save'">保存订单</a>
