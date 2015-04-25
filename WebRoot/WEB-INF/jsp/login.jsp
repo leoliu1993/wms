@@ -39,33 +39,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<script type="text/javascript">
 		$(function(){
 			
-			
-			$('#loginButton').click(function(){
-				$.ajax({
-					type: 'post',
-					url: 'userAction_login',
-					cache: false,
-					data: $('#loginForm').serialize(),
-					dataType: 'json',
-					success: function(result) {
-						
-						if(result.success){
-							$.messager.show ({
-								title: "ok!",
-								msg: result.message
-							});
-							$('#addForm').form('reset');
-							$('#commodityTable').datagrid('reload');
-						} else {
-							$.messager.show ({
-								title: "fail!",
-								msg: result.message
-							});
-						}
-						
-					}
-				});
-			});
 		
 		
 		});
@@ -75,24 +48,24 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <body>
 	<div class="div">
 		<div class="easyui-panel" title="登陆系统" style="width:400px;padding:30px 70px 20px 70px">
-		<form id="loginForm" name="loginForm" action="userAction_login" method="post">
-			<div style="margin-bottom:10px">
-				<input name="loginname" class="easyui-textbox" style="width:100%;height:40px;padding:12px" data-options="prompt:'请输入用户名',iconCls:'icon-man',iconWidth:38">
-			</div>
-			<div style="margin-bottom:20px">
-				<input name="password" class="easyui-textbox" type="password" style="width:100%;height:40px;padding:12px" data-options="prompt:'请输入密码',iconCls:'icon-lock',iconWidth:38">
-			</div>
-			<div style="margin-bottom:20px">
-				<input type="checkbox" checked="checked">
-				<span>记住密码</span>
-			</div>
-		
-			<div>
-				<a id="loginButton" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" style="padding:5px 0px;width:100%;">
-					<span style="font-size:14px;">登陆</span>
-				</a>
-			</div>
-		</form>
+			<form id="loginForm" name="loginForm" action="userAction_login" method="post">
+				<div style="margin-bottom:10px">
+					<input name="loginname" class="easyui-textbox" style="width:100%;height:40px;padding:12px" data-options="prompt:'请输入用户名',iconCls:'icon-man',iconWidth:38">
+				</div>
+				<div style="margin-bottom:20px">
+					<input name="password" class="easyui-textbox" type="password" style="width:100%;height:40px;padding:12px" data-options="prompt:'请输入密码',iconCls:'icon-lock',iconWidth:38">
+				</div>
+				<div style="margin-bottom:20px">
+					<input type="checkbox" checked="checked">
+					<span>记住密码</span>
+				</div>
+			
+				<div>
+					<a id="loginButton" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" style="padding:5px 0px;width:100%;">
+						<span style="font-size:14px;">登陆</span>
+					</a>
+				</div>
+			</form>
 		</div>
 	</div>
 </body>

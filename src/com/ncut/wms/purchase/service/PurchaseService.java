@@ -23,9 +23,8 @@ public class PurchaseService {
 	/* ======以下业务逻辑======== */
 	
 	/**
-	 * 生成订单
-	 * @param tab 订单类别
-	 * @param date 订单创建日期
+	 * 生成订单编号
+	 * @param date 当前时间
 	 * @return
 	 */
 	public String getOrderCode(String date) {

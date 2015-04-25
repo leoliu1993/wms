@@ -1,4 +1,5 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
@@ -88,7 +89,72 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				
 			})
 			
+			/**
+			 * 验证是否登陆用户
+			 */
+			$('#loginDialog').dialog({
+				closed:true,
+				closable:false,
+				draggable:false,
+			    modal:true
+			});
+			$.post('index_isLogin', function(result) {
+				if(result.success) {
+					$('#loginDialog').dialog('close');
+				} else {
+					$('#loginDialog').dialog('open');
+				}
+			},'json');
+			
+			/**
+			 * 登陆表单提交按钮
+			 */
+			$('#loginButton').click(function(){
+				login();
+			});
+			
+			/**
+			 * 添加回车事件
+			 */
+			$('#password').textbox('textbox').keydown(function (e) {
+                if (e.keyCode == 13) {
+                   login();
+                }
+            });
+			
+			
+			
 		});
+		
+		/**
+		 * 登陆验证
+		 */
+		function login() {
+			$.ajax({
+				type: 'post',
+				url: 'userAction_login',
+				cache: false,
+				data: $('#loginForm').serialize(),
+				dataType: 'json',
+				success: function(result) {
+					
+					if(result.success){
+						$.messager.show ({
+							title: "ok!",
+							msg: result.message
+						});
+						$('#loginDialog').dialog('close');
+					} else {
+						$.messager.show ({
+							title: "fail!",
+							msg: result.message
+						});
+					}
+					
+				}
+			});
+		}
+		
 		
 		// add a new tab panel    
 		$('#tt').tabs('add',{    
@@ -101,14 +167,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		            alert('refresh');    
 		        }    
 		    }]    
-		});  
+		});
+		
+		  
 	</script>
   </head>
   
   <body class="easyui-layout">   
   	<!-- 顶部标题 -->
     
-    
+     
     <!-- 下部主体内容 -->
     <div border="true" data-options="region:'center'">
         <div border="false" class="easyui-layout" data-options="fit:true">
@@ -212,7 +280,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							</span>用户管理</a>
 						</p>
 						<p>
-							<a title="test.jsp"><span class="icon icon-quit">&nbsp;&nbsp;&nbsp;&nbsp;
+							<a href="index_logout"><span class="icon icon-quit">&nbsp;&nbsp;&nbsp;&nbsp;
 							</span>退出登陆</a>
 						</p>
 					</div>
@@ -255,7 +323,28 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				style="text-align:center; background:#fafafa;font-weight:bold">Copyright
 				&copy; 2015 NCUT All Rights Reserved. 京ICP证1000001号</div>
 		</div>
-    </div>   
+    </div> 
+    <div id="loginDialog" title="登陆系统" style="width:400px;padding:30px 70px 20px 70px">
+		<form id="loginForm" name="loginForm" action="userAction_login" method="post">
+			<div style="margin-bottom:10px">
+				<input name="loginname" class="easyui-textbox" style="width:100%;height:40px;padding:12px" data-options="prompt:'请输入用户名',iconCls:'icon-man',iconWidth:38">
+			</div>
+			<div style="margin-bottom:20px">
+				<input id="password" name="password" class="easyui-textbox" type="password" style="width:100%;height:40px;padding:12px" data-options="prompt:'请输入密码',iconCls:'icon-lock',iconWidth:38">
+			</div>
+			<div style="margin-bottom:20px">
+				<input type="checkbox" checked="checked">
+				<span>记住密码</span>
+			</div>
+		
+			<div>
+				<a id="loginButton" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" style="padding:5px 0px;width:100%;">
+					<span style="font-size:14px;">登陆</span>
+				</a>
+			</div>
+		</form>
+	</div>
+    
   </body>  
 
 </html>

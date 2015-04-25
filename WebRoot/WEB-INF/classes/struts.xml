@@ -12,12 +12,7 @@
     <package name="shop" extends="struts-default" namespace="/">
 
         <!-- 配置首页访问的Action -->
-		<action name="index" class="index">
-			<result name="index">/WEB-INF/jsp/index.jsp</result>
-			<result name="login">/WEB-INF/jsp/login.jsp</result>
-		</action>
-		
-		<action name="index_login" class="index"  method="login">
+		<action name="index_*" class="index"  method="{1}">
 			<result name="index">/WEB-INF/jsp/index.jsp</result>
 		</action>
 		

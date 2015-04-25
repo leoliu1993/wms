@@ -299,25 +299,23 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			});
 			
 			
-		});
-		
-		/**
-		 * 设置datebox默认时间
-		 */
-		$('#createDate').datebox({
-			formatter:myformatter,
-			parser:myparser,
-			editable:false,
-		    required:true,
-		    missingMessage:'必须填写日期！'
-		});
-		
-		/**
-		 * 启动该页面时加载的数据
-		 */
-		window.onload = function () {
+			/**
+			 * 设置datebox默认时间
+			 */
+			$('#createDate').datebox({
+				formatter:myformatter,
+				parser:myparser,
+				editable:false,
+			    required:true,
+			    missingMessage:'必须填写日期！'
+			});
 			var currentDate = myformatter(new Date());
 			$('#createDate').datebox('setValue', currentDate);
+			
+			
+			/**
+			 * 异步获取订单号
+			 */
 			$.ajax({
 				type: 'post',
 				url: 'purchaseAction_getOrderCode',
@@ -332,8 +330,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				}
 			});
 			
-			
-		}
+		});
+		
 		
 		function myformatter(date){
 			var y = date.getFullYear();

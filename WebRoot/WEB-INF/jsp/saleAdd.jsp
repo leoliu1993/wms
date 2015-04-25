@@ -74,7 +74,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						field:'unitName',
 						width:100
 					},{
-						title:'采购价',
+						title:'销售单价',
 						field:'price',
 						width:100,
 					},{
@@ -239,15 +239,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			});
 			
 			/**
-			 * 供应商下拉菜单
+			 * 客户下拉菜单
 			 */
 			$('#supplierCombobox').combobox({
-				url:'supplierAction_getSupplierList',
+				url:'clientAction_getClientList',
 				editable:false,
 				required:false,
-			    missingMessage:'必须选择供应商！',
-			    valueField:'supplierId',
-			    textField:'supplierName',
+			    missingMessage:'必须选择客户！',
+			    valueField:'clientId',
+			    textField:'clientName',
 			});
 			
 			/**
@@ -299,41 +299,37 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			});
 			
 			
-		});
-		
-		/**
-		 * 设置datebox默认时间
-		 */
-		$('#createDate').datebox({
-			formatter:myformatter,
-			parser:myparser,
-			editable:false,
-		    required:true,
-		    missingMessage:'必须填写日期！'
-		});
-		
-		/**
-		 * 启动该页面时加载的数据
-		 */
-		window.onload = function () {
+			/**
+			 * 设置datebox默认时间
+			 */
+			$('#createDate').datebox({
+				formatter:myformatter,
+				parser:myparser,
+				editable:false,
+			    required:true,
+			    missingMessage:'必须填写日期！'
+			});
 			var currentDate = myformatter(new Date());
 			$('#createDate').datebox('setValue', currentDate);
+			
+			/**
+			 * 异步获取订单号
+			 */
 			$.ajax({
 				type: 'post',
-				url: 'purchaseAction_getOrderCode',
+				url: 'saleAction_getOrderCode',
 				cache: false,
 				async: false,
 				data: {createDate:currentDate},
 				dataType: 'json',
 				success: function(result) {
 					$('#north').panel({
-						title:'订单编号：' + result.purchaseId
+						title:'订单编号：' + result.saleId
 					});
 				}
 			});
 			
-			
-		}
+		});
 		
 		function myformatter(date){
 			var y = date.getFullYear();
@@ -412,7 +408,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</div>
 			<div class="clear"></div>
 			<div class="fl" style="margin:10px">
-				采购价：<input id="price" name="price" class="easyui-textbox" />
+				销售单价：<input id="price" name="price" class="easyui-textbox" />
 			</div>
 			<div class="fl" style="margin:10px">
 				数量：<input id="amount" name=amount class="easyui-textbox" />

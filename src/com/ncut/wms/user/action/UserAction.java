@@ -62,7 +62,7 @@ public class UserAction extends ActionSupport implements ModelDriven<User> {
 		User u = userService.login(user.getLoginname());
 		if(u != null) {
 			if(user.getPassword().equals(u.getPassword())){
-				ServletActionContext.getRequest().getSession().setAttribute("curUser", u);
+				ServletActionContext.getRequest().getSession().setAttribute("user", u);
 				ActionContext.getContext().put("rurl", "home_showHome");
 				json.setSuccess(true);
 				json.setMessage("登陆成功欢迎进入智慧仓库管理系统");
