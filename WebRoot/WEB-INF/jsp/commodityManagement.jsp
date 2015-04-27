@@ -76,8 +76,20 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						field:'unitName',
 						width:100,
 					},{
-						title:'库存',
-						field:'stockAmount',
+						title:'普通售价',
+						field:'salePrice',
+						width:100,
+					},{
+						title:'初级会员售价',
+						field:'vip1Price',
+						width:100,
+					},{
+						title:'中级会员售价',
+						field:'vip2Price',
+						width:100,
+					},{
+						title:'高级会员售价',
+						field:'vip3Price',
 						width:100,
 					},{
 						title:'备注',
@@ -178,6 +190,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 									commodityType: arr[0].commodityType,
 									categoryId: arr[0].categoryId,
 									unitId: arr[0].unitId,
+									salePrice:arr[0].salePrice,
+									vip1Price:arr[0].vip1Price,
+									vip2Price:arr[0].vip2Price,
+									Vip3Price:arr[0].vip3Price,
 									remark: arr[0].remark
 								});
 							}
@@ -328,17 +344,29 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<input type="hidden" name="commodityId" class="textbox" />
 			
 			<div class="fl" style="margin:10px">
-				商品名称：<input name="commodityName" class="easyui-validatebox textbox" required=true missingMessage="请填写商品名称" />
+				商品名称：<input name="commodityName" class="easyui-textbox" required=true missingMessage="请填写商品名称" />
 			</div>
 			
 			<div class="fl" style="margin:10px">
-				规格型号：<input name="commodityType" class="textbox" />
+				规格型号：<input name="commodityType" class="easyui-textbox" />
 			</div>
 			<div class="fl" style="margin:10px">
-				商品类别：<input id="cotegoryCombobox" name="categoryId" style="width:140;height:32px" />
+				商品类别：<input id="cotegoryCombobox" name="categoryId" />
 			</div>
 			<div class="fl" style="margin:10px">
-				计量单位：<input id="unitCombobox" name="unitId" style="width:140;height:32px" />
+				计量单位：<input id="unitCombobox" name="unitId" />
+			</div>
+			<div class="fl" style="margin:10px">
+				普通售价：<input name="salePrice" class="easyui-textbox" />
+			</div>
+			<div class="fl" style="margin:10px">
+				初级会员售价：<input name="vip1Price" class="easyui-textbox" />
+			</div>
+			<div class="fl" style="margin:10px">
+				中级会员售价：<input name="vip2Price" class="easyui-textbox" />
+			</div>
+			<div class="fl" style="margin:10px">
+				高级会员售价：<input name="vip3Price" class="easyui-textbox" />
 			</div>
 			<div class="clear"></div>
 			<div style="margin:10px;">

@@ -12,7 +12,7 @@ public class PurchaseDTO {
 	private Double payablePrice;
 	private Double realPrice;
 	private Integer state;
-	private Integer userID;
+	private Integer userId;
 	private String userName;
 	private String remark;
 
@@ -83,11 +83,11 @@ public class PurchaseDTO {
 	}
 
 	public Integer getUserID() {
-		return userID;
+		return userId;
 	}
 
 	public void setUserID(Integer userID) {
-		this.userID = userID;
+		this.userId = userID;
 	}
 
 	public String getUserName() {

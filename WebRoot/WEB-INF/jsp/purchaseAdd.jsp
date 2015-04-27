@@ -1,5 +1,6 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
-<%@ taglib prefix="s" uri="/struts-tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
@@ -413,6 +414,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<div class="clear"></div>
 				<div class="fl" style="margin:5px">备&nbsp;&nbsp;&nbsp;注：<input name="remark" class="easyui-textbox" style="width:330px"/>&nbsp;</div>
 				<div class="fl" style="margin:5px">是否已付款：<input id="payState" name="state" class="easyui-combobox" value="1"/>&nbsp;</div>
+				<div class="fl" style="margin:5px">操作员：<input id="userName" name="userName" class="easyui-textbox" value="${sessionScope.user.loginname }" data-options="editable:false" />&nbsp;</div>
+				<input type="hidden" id="userId" name="userId" class="textbox" value="${sessionScope.user.userid }"/>
 				<div class="fl" style="margin:5px">
 					<a id="searchButton" class="easyui-linkbutton" data-options="iconCls:'icon-save'">保存订单</a>
 					<a id="clearButton" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">清空订单</a>

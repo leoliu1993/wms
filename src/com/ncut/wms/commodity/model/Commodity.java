@@ -19,10 +19,10 @@ public class Commodity {
 	private String commodityType;
 	private Integer categoryId;
 	private Integer unitId;
-	private Double purchasePrice;
 	private Double salePrice;
-	private Double lastPrice;
-	private Integer stockAmount;
+	private Double vip1Price;
+	private Double vip2Price;
+	private Double vip3Price;
 	private Integer minimum;
 	private Integer state;
 	private String remark;
@@ -54,14 +54,20 @@ public class Commodity {
 		this.commodityType = commodityType;
 	}
 
-	
-
-	public Double getPurchasePrice() {
-		return purchasePrice;
+	public Integer getCategoryId() {
+		return categoryId;
 	}
 
-	public void setPurchasePrice(Double purchasePrice) {
-		this.purchasePrice = purchasePrice;
+	public void setCategoryId(Integer categoryId) {
+		this.categoryId = categoryId;
+	}
+
+	public Integer getUnitId() {
+		return unitId;
+	}
+
+	public void setUnitId(Integer unitId) {
+		this.unitId = unitId;
 	}
 
 	public Double getSalePrice() {
@@ -72,20 +78,28 @@ public class Commodity {
 		this.salePrice = salePrice;
 	}
 
-	public Double getLastPrice() {
-		return lastPrice;
+	public Double getVip1Price() {
+		return vip1Price;
 	}
 
-	public void setLastPrice(Double lastPrice) {
-		this.lastPrice = lastPrice;
+	public void setVip1Price(Double vip1Price) {
+		this.vip1Price = vip1Price;
 	}
 
-	public Integer getStockAmount() {
-		return stockAmount;
+	public Double getVip2Price() {
+		return vip2Price;
 	}
 
-	public void setStockAmount(Integer stockAmount) {
-		this.stockAmount = stockAmount;
+	public void setVip2Price(Double vip2Price) {
+		this.vip2Price = vip2Price;
+	}
+
+	public Double getVip3Price() {
+		return vip3Price;
+	}
+
+	public void setVip3Price(Double vip3Price) {
+		this.vip3Price = vip3Price;
 	}
 
 	public Integer getMinimum() {
@@ -118,22 +132,6 @@ public class Commodity {
 
 	public void setCoordinate(String coordinate) {
 		this.coordinate = coordinate;
-	}
-
-	public Integer getCategoryId() {
-		return categoryId;
-	}
-
-	public void setCategoryId(Integer categoryId) {
-		this.categoryId = categoryId;
-	}
-
-	public Integer getUnitId() {
-		return unitId;
-	}
-
-	public void setUnitId(Integer unitId) {
-		this.unitId = unitId;
 	}
 
 }
