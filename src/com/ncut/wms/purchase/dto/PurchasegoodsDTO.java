@@ -7,7 +7,7 @@ public class PurchasegoodsDTO {
 	private Integer commodityId;
 	private String commodityName;
 	private Double price;
-	private Double amount;
+	private Integer amount;
 	private Double totalPrice;
 	
 	/* =====datagrid属性====== */
@@ -57,11 +57,11 @@ public class PurchasegoodsDTO {
 		this.price = price;
 	}
 
-	public Double getAmount() {
+	public Integer getAmount() {
 		return amount;
 	}
 
-	public void setAmount(Double amount) {
+	public void setAmount(Integer amount) {
 		this.amount = amount;
 	}
 

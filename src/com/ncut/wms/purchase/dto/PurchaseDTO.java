@@ -1,5 +1,7 @@
 package com.ncut.wms.purchase.dto;
 
+import java.util.Arrays;
+
 public class PurchaseDTO {
 
 	/* ======订单属性======== */
@@ -15,14 +17,7 @@ public class PurchaseDTO {
 	private String remark;
 
 	/* ======详单属性======== */
-	private Integer id;
-	private Integer commodityId;
-	private String commodityName;
-	private String commodityType;
-	private String unitName;
-	private Double price;
-	private Double amount;
-	private Double totalPrice;
+	private String pgs;
 
 	/* =====datagrid属性====== */
 	private int page;
@@ -111,54 +106,6 @@ public class PurchaseDTO {
 		this.remark = remark;
 	}
 
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public Integer getCommodityId() {
-		return commodityId;
-	}
-
-	public void setCommodityId(Integer commodityId) {
-		this.commodityId = commodityId;
-	}
-
-	public String getCommodityName() {
-		return commodityName;
-	}
-
-	public void setCommodityName(String commodityName) {
-		this.commodityName = commodityName;
-	}
-
-	public Double getPrice() {
-		return price;
-	}
-
-	public void setPrice(Double price) {
-		this.price = price;
-	}
-
-	public Double getAmount() {
-		return amount;
-	}
-
-	public void setAmount(Double amount) {
-		this.amount = amount;
-	}
-
-	public Double getTotalPrice() {
-		return totalPrice;
-	}
-
-	public void setTotalPrice(Double totalPrice) {
-		this.totalPrice = totalPrice;
-	}
-
 	public int getPage() {
 		return page;
 	}
@@ -199,20 +146,17 @@ public class PurchaseDTO {
 		this.ids = ids;
 	}
 
-	public String getCommodityType() {
-		return commodityType;
+	public String getPgs() {
+		return pgs;
 	}
 
-	public void setCommodityType(String commodityType) {
-		this.commodityType = commodityType;
+	public void setPgs(String pgs) {
+		this.pgs = pgs;
 	}
 
-	public String getUnitName() {
-		return unitName;
-	}
-
-	public void setUnitName(String unitName) {
-		this.unitName = unitName;
+	@Override
+	public String toString() {
+		return "PurchaseDTO [pgs=" + pgs + "]";
 	}
 
 }

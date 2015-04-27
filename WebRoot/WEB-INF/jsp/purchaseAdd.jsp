@@ -21,6 +21,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<link rel="stylesheet" type="text/css" href="js/jquery-easyui-1.4.1/themes/icon.css" />
 	<script type="text/javascript" src="js/jquery-easyui-1.4.1/jquery.easyui.min.js"></script>
 	<script type="text/javascript" src="js/jquery-easyui-1.4.1/locale/easyui-lang-zh_CN.js"></script>
+	<script type="text/javascript" src="js/json2.js"></script>
 	
 	<link rel="stylesheet" type="text/css" href="css/common2.css" />
 	<script type="text/javascript" src="js/commons.js"></script>
@@ -31,10 +32,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			var flag = '';
 			//搜索框展开标志
 			var searchStatus = 0;
+			//订单号
+			var orderCode = '';
+			
 			/**
 			 * 表格初始化
 			 */
-			$('#supplierTable').datagrid({
+			$('#grid').datagrid({
 				
 				idField:'id',
 				//ajax异步后台请求
@@ -55,6 +59,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				    	field:'checkbox',
 				    	width:50,
 				    	checkbox:true
+				    },{
+				    	title:'进货单详单ID',
+						field:'id',
+						width:100,
+						hidden: true
+				    },{
+				    	title:'进货单ID',
+						field:'purchaseId',
+						width:100,
+						hidden: true
 				    },{
 				    	title:'商品ID',
 						field:'commodityId',
@@ -99,10 +113,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							//标志为添加
 							flag = 'add';
 							//动态设定对话框标题
-							$('#addDialog').dialog({
+							$('#addDialog').panel({
 								title: '添加商品详单'
 							});
 							$('#addDialog').dialog('open');
+							$('#addForm').form('load',{
+								purchaseId: orderCode,
+							});
 							
 						}
 					},'-',{
@@ -110,7 +127,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						iconCls:'icon-remove',
 						handler:function(){
 							
-							var arr = $('#supplierTable').datagrid('getSelections');
+							var arr = $('#grid').datagrid('getSelections');
 							if(arr.length < 1) {
 								$.messager.show({
 									title: '提示信息！',
@@ -120,9 +137,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 								
 								$.messager.confirm('提示信息' , '删除后商品信息无法回复，是否确认删除？' , function(result){
 									if(result) {
-										var rowIndex=$('#supplierTable').datagrid('getRowIndex',$('#supplierTable').datagrid('getSelected')) 
-										$('#supplierTable').datagrid('deleteRow',rowIndex);
-										$('#supplierTable').datagrid('clearSelections');
+										var rowIndex=$('#grid').datagrid('getRowIndex',$('#grid').datagrid('getSelected')) 
+										$('#grid').datagrid('deleteRow',rowIndex);
+										$('#grid').datagrid('clearSelections');
 									} else {
 										return;
 									}
@@ -142,7 +159,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							$('#addDialog').dialog({
 								title: '修改商品信息'
 							});
-							var arr = $('#supplierTable').datagrid('getSelections');
+							var arr = $('#grid').datagrid('getSelections');
 							if(arr.length != 1) {
 								$.messager.show({
 									title: '提示信息！',
@@ -152,6 +169,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 								$('#addDialog').dialog('open');
 								$('#addForm').form('reset');
 								$('#addForm').form('load',{
+									purchaseId: arr[0].purchaseId,
 									commodityId: arr[0].commodityId,
 									commodityName: arr[0].commodityName,
 									commodityType: arr[0].commodityType,
@@ -174,7 +192,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				if($('#addForm').form('validate')){
 					if(flag == 'add') {
 						//向grid中添加数据
-						$('#supplierTable').datagrid('appendRow',{
+						$('#grid').datagrid('appendRow',{
+							purchaseId: $('#purchaseId').val(),
 							commodityId: $('#commodityCombobox').combobox("getValue"),
 							commodityName: $('#commodityCombobox').combobox("getText"),
 							commodityType: $('#commodityType').textbox("getValue"),
@@ -186,9 +205,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						
 					} else {
 						//对grid中的选定行进行修改
-						$('#supplierTable').datagrid('updateRow',{
-							index: $('#supplierTable').datagrid('getRowIndex'),
+						$('#grid').datagrid('updateRow',{
+							index: $('#grid').datagrid('getRowIndex'),
 							row: {
+								purchaseId: $('#purchaseId').val(), 
 								commodityId: $('#commodityCombobox').combobox("getValue"),
 								commodityName: $('#commodityCombobox').combobox("getText"),
 								commodityType: $('#commodityType').textbox("getValue"),
@@ -202,7 +222,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					$('#addForm').form('reset');
 					$('#addDialog').dialog('close');
 					//计算应付总额
-					var rows = $('#supplierTable').datagrid('getRows');
+					var rows = $('#grid').datagrid('getRows');
 					var pay = 0;
 					for(var i=0; i<rows.length; i++) {
 						pay += rows[i].totalPrice;
@@ -227,7 +247,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			 * 订单保存按钮
 			 */
 			$('#searchButton').click(function() {
-				$('#supplierTable').datagrid('load', serializeForm($('#commoditySearch')));
+				$.ajax({
+					type: 'post',
+					url: 'purchaseAction_saveOrder',
+					chache: false,
+					data: $('#commoditySearch').serialize() + '&pgs=' + JSON.stringify($('#grid').datagrid('getRows')),
+					dataType: 'json',
+					success: function() {
+						
+					}
+				});
+				$('#grid').datagrid('load', serializeForm($('#commoditySearch')));
 			});
 			
 			/**
@@ -324,8 +354,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				data: {createDate:currentDate},
 				dataType: 'json',
 				success: function(result) {
+					orderCode = result.purchaseId;
 					$('#north').panel({
-						title:'订单编号：' + result.purchaseId
+						title:'订单编号：' + orderCode
 					});
 				}
 			});
@@ -389,13 +420,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</form>
 		</div>
 		<div region="center" title="商品详单">
-			<table id="supplierTable"></table>
+			<table id="grid"></table>
 		</div>
 	</div>
 	<div id="addDialog" title="添加商品详单" modal=true class="easyui-dialog"
 		closed=true style="width:550px;padding:30px;">
 		<form id="addForm" method="post">
-			<input type="hidden" name="purchaseId" class="textbox" />
+			<input id="pgId" type="hidden" name="id" class="textbox" />
+			<input id="purchaseId" type="hidden" name="purchaseId" class="textbox" />
 			<div class="fl" style="margin:10px">
 				商品名称：<input type="text" id="commodityCombobox" name="commodityId" class="easyui-combobox" required=true missingMessage="请选择商品！"  />
 			</div>

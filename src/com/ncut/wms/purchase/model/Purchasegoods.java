@@ -11,7 +11,7 @@ public class Purchasegoods {
 	private String purchaseId;
 	private Integer commodityId;
 	private Double price;
-	private Double amount;
+	private Integer amount;
 	private Double totalPrice;
 
 	@Id
@@ -48,11 +48,11 @@ public class Purchasegoods {
 		this.price = price;
 	}
 
-	public Double getAmount() {
+	public Integer getAmount() {
 		return amount;
 	}
 
-	public void setAmount(Double amount) {
+	public void setAmount(Integer amount) {
 		this.amount = amount;
 	}
 
