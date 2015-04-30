@@ -33,6 +33,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		 */
 		.icon-instorage{background-position:-200px -80px}
 		.icon-outstorage{background-position:-60px -140px}
+		.icon-instock{background-position:-0px -40px}
 		.icon-warning{background-position:-60px -200px}
 		.icon-break{background-position:-320px -160px}
 		.icon-over{background-position:-20px -180px}
@@ -235,11 +236,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						</p>
 						<p>
 							<a title="purchaseAction_addPage"><span class="icon icon-instorage">&nbsp;&nbsp;&nbsp;&nbsp;
-							</span>进货入库</a>
+							</span>进货订单</a>
 						</p>
 						<p>
 							<a title="purchaseAction_addPage"><span class="icon icon-back">&nbsp;&nbsp;&nbsp;&nbsp;
 							</span>退货出库</a>
+						</p>
+						<p>
+							<a title="inStockAction_managementPage"><span class="icon icon-instock">&nbsp;&nbsp;&nbsp;&nbsp;
+							</span>入库管理</a>
 						</p>
 						<p>
 							<a title="purchaseAction_addPage"><span class="icon icon icon-searchplus">&nbsp;&nbsp;&nbsp;&nbsp;

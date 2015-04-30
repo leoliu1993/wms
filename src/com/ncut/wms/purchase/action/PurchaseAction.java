@@ -9,9 +9,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import net.sf.json.util.JSONUtils;
 
 import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.BeanUtils;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
@@ -20,7 +20,10 @@ import com.ncut.wms.purchase.dto.PurchasegoodsDTO;
 import com.ncut.wms.purchase.model.Purchase;
 import com.ncut.wms.purchase.model.Purchasegoods;
 import com.ncut.wms.purchase.service.PurchaseService;
-import com.ncut.wms.supplier.model.Supplier;
+import com.ncut.wms.purchase.service.PurchasegoodsService;
+import com.ncut.wms.supplier.dto.SupplierDTO;
+import com.ncut.wms.util.easyui.DataGrid;
+import com.ncut.wms.util.json.Json;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.ModelDriven;
 
@@ -49,10 +52,10 @@ public class PurchaseAction extends ActionSupport implements ModelDriven<Purchas
 		return NONE;
 	}
 	
-	@SuppressWarnings("unused")
 	public String saveOrder() {
 		JSONArray jArr = JSONArray.fromObject(pDTO.getPgs());
 		List<Purchasegoods> pgList = new ArrayList<Purchasegoods>();
+		//获取前台数据
 		for(int i=0; i<jArr.size(); i++) {
 			
 			JSONObject jObj = JSONObject.fromObject(jArr.get(i));
@@ -73,20 +76,64 @@ public class PurchaseAction extends ActionSupport implements ModelDriven<Purchas
 			}
 			pg.setTotalPrice(jObj.getDouble("totalPrice"));
 			pgList.add(pg);
-			System.out.println("---");
+		}
+		
+		//存入前台数据
+		Json json = new Json();
+		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
+		try {
+			BeanUtils.copyProperties(pDTO, p);
+			pService.add(p);
+			pgService.add(pgList);
+			json.setSuccess(true);
+			json.setMessage("添加进货订单成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.setSuccess(false);
+			json.setMessage("添加进货订单失败");
+		}
+		try {
+			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(json).toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return NONE;
+	}
+	
+	public String getDatagrid() {
+
+		DataGrid<PurchaseDTO> dg = pService.datagrid(pDTO);
+		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
+		try {
+			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(dg).toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return NONE;
+	}
+	
+	public String getDetailGrid() {
+		
+		DataGrid<PurchasegoodsDTO> dg = pgService.datagrid(pDTO);
+		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
+		try {
+			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(dg).toString());
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		return NONE;
 	}
 	
 	
 	
+	
 	/* ======以下声明======== */
-	private Purchase p;
+	private Purchase p = new Purchase();
 	private PurchaseDTO pDTO;
 	private Purchasegoods pg;
 	private PurchasegoodsDTO pgDTO;
-	private PurchasegoodsDTO [] pgDTOs;
 	private PurchaseService pService;
+	private PurchasegoodsService pgService;
 
 	public void setP(Purchase p) {
 		this.p = p;
@@ -117,8 +164,10 @@ public class PurchaseAction extends ActionSupport implements ModelDriven<Purchas
 		return pDTO;
 	}
 
-	public void setPgDTOs(PurchasegoodsDTO[] pgDTOs) {
-		this.pgDTOs = pgDTOs;
+	@Resource
+	public void setPgService(PurchasegoodsService pgService) {
+		this.pgService = pgService;
 	}
+
 
 }

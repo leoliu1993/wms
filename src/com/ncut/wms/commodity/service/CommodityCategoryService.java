@@ -44,7 +44,7 @@ public class CommodityCategoryService {
 		}
 		int totals = cmdtCtgrDAO.count("select count (*) from CommodityCategory");
 		dg.setRows(ctgrDTOs);
-		dg.setTotals(totals);
+		dg.setTotal(totals);
 		return dg;
 	}
 

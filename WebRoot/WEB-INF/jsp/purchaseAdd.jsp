@@ -229,6 +229,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						pay += rows[i].totalPrice;
 					}
 					$('#payablePrice').textbox('setValue',pay);
+					$('#realPrice').textbox('setValue',pay);
 				} else {
 					$.messager.show({
 						title: '提示信息' ,
@@ -252,13 +253,23 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					type: 'post',
 					url: 'purchaseAction_saveOrder',
 					chache: false,
+					async: false,
 					data: $('#commoditySearch').serialize() + '&pgs=' + JSON.stringify($('#grid').datagrid('getRows')),
 					dataType: 'json',
-					success: function() {
-						
+					success: function(result) {
+						if(result.success) {
+							$.messager.alert('ok!',result.message);
+							$('#commoditySearch').form('reset');
+							window.location.reload();
+							
+						} else {
+							$.messager.show({
+								title: "fail!",
+								msg: result.message
+							});
+						}
 					}
 				});
-				$('#grid').datagrid('load', serializeForm($('#commoditySearch')));
 			});
 			
 			/**
@@ -359,6 +370,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					$('#north').panel({
 						title:'订单编号：' + orderCode
 					});
+					$('#purchase-pid').val(orderCode);
 				}
 			});
 			
@@ -407,15 +419,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   	<div id="lay" class="easyui-layout" fit=true >
 		<div id="north" region="north" title="订单编号" style="height:120px;padding:10px">
 			<form id="commoditySearch">
-				<div class="fl" style="margin:5px">供应商：<input id="supplierCombobox" name="supplierName" class="easyui-combobox"/>&nbsp;</div>
+				<div class="fl" style="margin:5px">供应商：<input id="supplierCombobox" name="supplierId" class="easyui-combobox"/>&nbsp;</div>
 				<div class="fl" style="margin:5px">应付金额：<input id="payablePrice" name="payablePrice" class="easyui-textbox" data-options="editable:false"/>&nbsp;</div>
-				<div class="fl" style="margin:5px">实付金额：<input name="realPrice" class="easyui-textbox"/>&nbsp;</div>
+				<div class="fl" style="margin:5px">实付金额：<input id="realPrice" name="realPrice" class="easyui-textbox"/>&nbsp;</div>
 				<div class="fl" style="margin:5px">收货日期：<input id="createDate" name="createDate" class="easyui-datebox"/>&nbsp;</div>
 				<div class="clear"></div>
 				<div class="fl" style="margin:5px">备&nbsp;&nbsp;&nbsp;注：<input name="remark" class="easyui-textbox" style="width:330px"/>&nbsp;</div>
 				<div class="fl" style="margin:5px">是否已付款：<input id="payState" name="state" class="easyui-combobox" value="1"/>&nbsp;</div>
 				<div class="fl" style="margin:5px">操作员：<input id="userName" name="userName" class="easyui-textbox" value="${sessionScope.user.loginname }" data-options="editable:false" />&nbsp;</div>
-				<input type="hidden" id="userId" name="userId" class="textbox" value="${sessionScope.user.userid }"/>
+				<input type="hidden" id="userId" name="userId" class="textbox" value=${sessionScope.user.userid } />
+				<input type="hidden" id="purchase-pid" name="purchaseId" class="textbox" />
+				<input type="hidden" id="stockState" name="stockState" class="textbox" value="0" />
 				<div class="fl" style="margin:5px">
 					<a id="searchButton" class="easyui-linkbutton" data-options="iconCls:'icon-save'">保存订单</a>
 					<a id="clearButton" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">清空订单</a>

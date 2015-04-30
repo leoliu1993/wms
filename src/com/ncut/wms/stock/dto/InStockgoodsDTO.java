@@ -1,16 +1,16 @@
-package com.ncut.wms.purchase.dto;
+package com.ncut.wms.stock.dto;
 
-public class PurchasegoodsDTO {
+public class InStockgoodsDTO {
 
-	private Integer id;
-	private String purchaseId;
+	private Integer inStockgoodsId;
+	private String inStockId;
 	private Integer commodityId;
 	private String commodityName;
 	private Double price;
 	private Integer amount;
 	private Double totalPrice;
 	private Integer returnedAmount;
-	
+
 	/* =====datagrid属性====== */
 	private int page;
 	private int rows;
@@ -18,20 +18,20 @@ public class PurchasegoodsDTO {
 	private String sort;
 	private String ids;
 
-	public Integer getId() {
-		return id;
+	public Integer getInStockgoodsId() {
+		return inStockgoodsId;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public void setInStockgoodsId(Integer inStockgoodsId) {
+		this.inStockgoodsId = inStockgoodsId;
 	}
 
-	public String getPurchaseId() {
-		return purchaseId;
+	public String getInStockId() {
+		return inStockId;
 	}
 
-	public void setPurchaseId(String purchaseId) {
-		this.purchaseId = purchaseId;
+	public void setInStockId(String inStockId) {
+		this.inStockId = inStockId;
 	}
 
 	public Integer getCommodityId() {
@@ -74,6 +74,14 @@ public class PurchasegoodsDTO {
 		this.totalPrice = totalPrice;
 	}
 
+	public Integer getReturnedAmount() {
+		return returnedAmount;
+	}
+
+	public void setReturnedAmount(Integer returnedAmount) {
+		this.returnedAmount = returnedAmount;
+	}
+
 	public int getPage() {
 		return page;
 	}
@@ -112,13 +120,5 @@ public class PurchasegoodsDTO {
 
 	public void setIds(String ids) {
 		this.ids = ids;
-	}
-
-	public Integer getReturnedAmount() {
-		return returnedAmount;
-	}
-
-	public void setReturnedAmount(Integer returnedAmount) {
-		this.returnedAmount = returnedAmount;
 	}
 }

@@ -1,37 +1,36 @@
-package com.ncut.wms.purchase.model;
+package com.ncut.wms.stock.model;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
-public class Purchasegoods {
+public class InStockgoods {
 
-	private Integer id;
-	private String purchaseId;
+	private Integer inStockgoodsId;
+	private String inStockId;
 	private Integer commodityId;
 	private Double price;
 	private Integer amount;
 	private Integer returnedAmount;
 	private Double totalPrice;
 
-
 	@Id
 	@GeneratedValue
-	public Integer getId() {
-		return id;
+	public Integer getInStockgoodsId() {
+		return inStockgoodsId;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public void setInStockgoodsId(Integer id) {
+		this.inStockgoodsId = id;
 	}
 
-	public String getPurchaseId() {
-		return purchaseId;
+	public String getInStockId() {
+		return inStockId;
 	}
 
-	public void setPurchaseId(String purchaseId) {
-		this.purchaseId = purchaseId;
+	public void setInStockId(String inStockId) {
+		this.inStockId = inStockId;
 	}
 
 	public Integer getCommodityId() {
@@ -58,20 +57,20 @@ public class Purchasegoods {
 		this.amount = amount;
 	}
 
-	public Double getTotalPrice() {
-		return totalPrice;
-	}
-
-	public void setTotalPrice(Double totalPrice) {
-		this.totalPrice = totalPrice;
-	}
-
 	public Integer getReturnedAmount() {
 		return returnedAmount;
 	}
 
 	public void setReturnedAmount(Integer returnedAmount) {
 		this.returnedAmount = returnedAmount;
+	}
+
+	public Double getTotalPrice() {
+		return totalPrice;
+	}
+
+	public void setTotalPrice(Double totalPrice) {
+		this.totalPrice = totalPrice;
 	}
 
 }

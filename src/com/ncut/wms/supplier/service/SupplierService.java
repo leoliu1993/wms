@@ -49,7 +49,7 @@ public class SupplierService {
 			
 			supplerDTOs.add(suppDTO);
 		}
-		dg.setTotals(supplierDAO.count(totalHql, map));
+		dg.setTotal(supplierDAO.count(totalHql, map));
 		dg.setRows(supplerDTOs);
 		return dg;
 	}
@@ -75,6 +75,11 @@ public class SupplierService {
 	public List<Supplier> getSupplierList() {
 		List<Supplier> supplierList = supplierDAO.list("from Supplier");
 		return supplierList;
+	}
+	
+	public Supplier findById(Integer id) {
+		return supplierDAO.load(id);
+		
 	}
 
 }

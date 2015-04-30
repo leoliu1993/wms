@@ -87,7 +87,7 @@ public class CommodityService {
 
 			cmdtrDTOs.add(cmdtDTO);
 		}
-		dg.setTotals(commodityDAO.count(totalHql, map));
+		dg.setTotal(commodityDAO.count(totalHql, map));
 		dg.setRows(cmdtrDTOs);
 		return dg;
 	}

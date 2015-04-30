@@ -1,18 +1,15 @@
-package com.ncut.wms.purchase.dto;
+package com.ncut.wms.stock.dto;
 
-import java.util.Arrays;
-
-public class PurchaseDTO {
+public class InStockDTO {
 
 	/* ======订单属性======== */
-	private String purchaseId;
+	private String inStockId;
 	private Integer supplierId;
 	private String supplierName;
 	private String createDate;
 	private Double payablePrice;
 	private Double realPrice;
 	private Integer state;
-	private Integer stockState;
 	private Integer userId;
 	private String userName;
 	private String remark;
@@ -20,7 +17,7 @@ public class PurchaseDTO {
 	private String endDate;
 
 	/* ======详单属性======== */
-	private String pgs;
+	private String inStockgoods;
 
 	/* =====datagrid属性====== */
 	private int page;
@@ -29,12 +26,12 @@ public class PurchaseDTO {
 	private String sort;
 	private String ids;
 
-	public String getPurchaseId() {
-		return purchaseId;
+	public String getInStockId() {
+		return inStockId;
 	}
 
-	public void setPurchaseId(String purchaseId) {
-		this.purchaseId = purchaseId;
+	public void setInStockId(String inStockId) {
+		this.inStockId = inStockId;
 	}
 
 	public Integer getSupplierId() {
@@ -85,12 +82,12 @@ public class PurchaseDTO {
 		this.state = state;
 	}
 
-	public Integer getUserID() {
+	public Integer getUserId() {
 		return userId;
 	}
 
-	public void setUserID(Integer userID) {
-		this.userId = userID;
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
 
 	public String getUserName() {
@@ -107,6 +104,30 @@ public class PurchaseDTO {
 
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+
+	public String getBeginDate() {
+		return beginDate;
+	}
+
+	public void setBeginDate(String beginDate) {
+		this.beginDate = beginDate;
+	}
+
+	public String getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
+	}
+
+	public String getInStockgoods() {
+		return inStockgoods;
+	}
+
+	public void setInStockgoods(String inStockgoods) {
+		this.inStockgoods = inStockgoods;
 	}
 
 	public int getPage() {
@@ -148,50 +169,4 @@ public class PurchaseDTO {
 	public void setIds(String ids) {
 		this.ids = ids;
 	}
-
-	public String getPgs() {
-		return pgs;
-	}
-
-	public void setPgs(String pgs) {
-		this.pgs = pgs;
-	}
-
-	@Override
-	public String toString() {
-		return "PurchaseDTO [pgs=" + pgs + "]";
-	}
-
-	public Integer getUserId() {
-		return userId;
-	}
-
-	public void setUserId(Integer userId) {
-		this.userId = userId;
-	}
-
-	public Integer getStockState() {
-		return stockState;
-	}
-
-	public void setStockState(Integer stockState) {
-		this.stockState = stockState;
-	}
-
-	public String getBeginDate() {
-		return beginDate;
-	}
-
-	public void setBeginDate(String beginDate) {
-		this.beginDate = beginDate;
-	}
-
-	public String getEndDate() {
-		return endDate;
-	}
-
-	public void setEndDate(String endDate) {
-		this.endDate = endDate;
-	}
-
 }

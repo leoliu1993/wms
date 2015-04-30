@@ -64,6 +64,12 @@
 			
 		</action>
 		
+		<!-- 入库管理模块 -->
+		<action name="inStockAction_*" class="inStockAction" method="{1}">
+			<result name="managementPage">/WEB-INF/jsp/inStockManagement.jsp</result>
+			
+		</action>
+		
 		
     </package>
 

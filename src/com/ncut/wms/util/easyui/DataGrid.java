@@ -5,15 +5,15 @@ import java.util.List;
 
 public class DataGrid<T> {
 
-	private int totals = 0;
+	private int total = 0;
 	private List<T> rows = new ArrayList<T>();
 
-	public int getTotals() {
-		return totals;
+	public int getTotal() {
+		return total;
 	}
 
-	public void setTotals(int totals) {
-		this.totals = totals;
+	public void setTotal(int totals) {
+		this.total = totals;
 	}
 
 	public List<T> getRows() {

@@ -1,28 +1,27 @@
-package com.ncut.wms.purchase.model;
+package com.ncut.wms.stock.model;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
 @Entity
-public class Purchase {
+public class InStock {
 
-	private String purchaseId;
+	private String inStockId;
 	private Integer supplierId;
 	private String createDate;
 	private Double payablePrice;
 	private Double realPrice;
 	private Integer state;
-	private Integer stockState;
 	private Integer userId;
 	private String remark;
 
 	@Id
-	public String getPurchaseId() {
-		return purchaseId;
+	public String getInStockId() {
+		return inStockId;
 	}
 
-	public void setPurchaseId(String purchaseId) {
-		this.purchaseId = purchaseId;
+	public void setInStockId(String inStockId) {
+		this.inStockId = inStockId;
 	}
 
 	public Integer getSupplierId() {
@@ -69,8 +68,8 @@ public class Purchase {
 		return userId;
 	}
 
-	public void setUserId(Integer userID) {
-		this.userId = userID;
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
 
 	public String getRemark() {
@@ -80,13 +79,4 @@ public class Purchase {
 	public void setRemark(String remark) {
 		this.remark = remark;
 	}
-
-	public Integer getStockState() {
-		return stockState;
-	}
-
-	public void setStockState(Integer stockState) {
-		this.stockState = stockState;
-	}
-
 }

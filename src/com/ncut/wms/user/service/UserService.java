@@ -14,10 +14,13 @@ import com.ncut.wms.user.model.User;
 @Component("userService")
 public class UserService {
 
-	private UserDAO userDAO;
-	
+	/* ======以下业务逻辑======== */
 	public void add(User user) {
 		userDAO.add(user);
+	}
+	
+	public User login(String username) {
+		return userDAO.getUser(username);
 	}
 	
 	public List<User> getUserList() {
@@ -30,18 +33,17 @@ public class UserService {
 		String json = JSONArray.fromObject(userList).toString();
 		return json;
 	}
-
-	public UserDAO getUserDAO() {
-		return userDAO;
+	
+	public User findById(Integer id) {
+		return userDAO.load(id);
 	}
 
+	/* ======以下声明======== */
+	private UserDAO userDAO;
+	
 	@Resource
 	public void setUserDAO(UserDAO userDAO) {
 		this.userDAO = userDAO;
-	}
-
-	public User login(String username) {
-		return userDAO.getUser(username);
 	}
 
 }

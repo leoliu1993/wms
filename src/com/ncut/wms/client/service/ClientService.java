@@ -40,7 +40,7 @@ public class ClientService {
 			
 			clientDTOs.add(cDTO);
 		}
-		dg.setTotals(cDAO.count(totalHql, map));
+		dg.setTotal(cDAO.count(totalHql, map));
 		dg.setRows(clientDTOs);
 		return dg;
 	}
