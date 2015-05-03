@@ -8,8 +8,10 @@ public class InStockgoodsDTO {
 	private String commodityName;
 	private Double price;
 	private Integer amount;
-	private Double totalPrice;
 	private Integer returnedAmount;
+	private Double totalPrice;
+	private Integer storageId;
+	private String storageName;
 
 	/* =====datagrid属性====== */
 	private int page;
@@ -120,5 +122,21 @@ public class InStockgoodsDTO {
 
 	public void setIds(String ids) {
 		this.ids = ids;
+	}
+
+	public Integer getStorageId() {
+		return storageId;
+	}
+
+	public void setStorageId(Integer storageId) {
+		this.storageId = storageId;
+	}
+
+	public String getStorageName() {
+		return storageName;
+	}
+
+	public void setStorageName(String storageName) {
+		this.storageName = storageName;
 	}
 }

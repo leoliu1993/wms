@@ -80,6 +80,42 @@ public class PurchaseService {
 		return dg;
 	}
 	
+	public DataGrid<PurchaseDTO> querygrid(PurchaseDTO pDTO) {
+		DataGrid<PurchaseDTO> dg = new DataGrid<PurchaseDTO>();
+		Map<String,Object> map = new HashMap<String,Object>();
+		String hql = "from Purchase p where 1=1";
+		
+		if(pDTO.getBeginDate()!=null && !"".equals(pDTO.getBeginDate().trim())){
+			hql+=" and p.createDate between :beginDate and :endDate";
+			map.put("beginDate", pDTO.getBeginDate().trim());
+			map.put("endDate", pDTO.getEndDate().trim());
+		}
+		
+		String totalHql = "select count(*) "+hql;
+		//实现排序
+		if(pDTO.getSort()!=null){
+			hql+=" order by "+pDTO.getSort()+" "+pDTO.getOrder();
+		}
+		List<Purchase> ps = pDAO.list(hql, map, pDTO.getPage(), pDTO.getRows());
+		List<PurchaseDTO> pDTOs = new ArrayList<PurchaseDTO>();
+		for(Purchase p:ps){
+			PurchaseDTO purchaseDTO = new PurchaseDTO();
+			BeanUtils.copyProperties(p, purchaseDTO);
+			
+			//插入一些需要的数据
+			Supplier s = sDAO.load(purchaseDTO.getSupplierId());
+			purchaseDTO.setSupplierName(s.getSupplierName());
+			
+			User u = uDAO.load(purchaseDTO.getUserId());
+			purchaseDTO.setUserName(u.getUsername());
+			
+			pDTOs.add(purchaseDTO);
+		}
+		dg.setTotal(pDAO.count(totalHql, map));
+		dg.setRows(pDTOs);
+		return dg;
+	}
+	
 	public void add(Purchase p) {
 		pDAO.add(p);
 		

@@ -231,8 +231,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					</div>
 					<div title="进货管理">
 						<p>
-							<a title="purchaseAction_addPage"><span class="icon icon-searchStock">&nbsp;&nbsp;&nbsp;&nbsp;
-							</span>查当前库存询</a>
+							<a title="stockAction_managementPage"><span class="icon icon-searchStock">&nbsp;&nbsp;&nbsp;&nbsp;
+							</span>查询当前库存</a>
 						</p>
 						<p>
 							<a title="purchaseAction_addPage"><span class="icon icon-instorage">&nbsp;&nbsp;&nbsp;&nbsp;
@@ -247,8 +247,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							</span>入库管理</a>
 						</p>
 						<p>
-							<a title="purchaseAction_addPage"><span class="icon icon icon-searchplus">&nbsp;&nbsp;&nbsp;&nbsp;
+							<a title="purchaseAction_queryPage"><span class="icon icon icon-searchplus">&nbsp;&nbsp;&nbsp;&nbsp;
 							</span>查询进货单据</a>
+						</p>
+						<p>
+							<a title="inStockAction_queryPage"><span class="icon icon icon-searchplus">&nbsp;&nbsp;&nbsp;&nbsp;
+							</span>查询入库单据</a>
 						</p>
 						<p>
 							<a title="purchaseAction_addPage"><span class="icon icon-searchminus">&nbsp;&nbsp;&nbsp;&nbsp;

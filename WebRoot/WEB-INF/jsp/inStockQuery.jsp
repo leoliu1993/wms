@@ -40,7 +40,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				
 				idField:'purchaseId',
 				//ajax异步后台请求
-				url: 'purchaseAction_getDatagrid',
+				url: 'inStockAction_getQuerygrid',
 				fit: true,
 				//自动列间距
 				fitColumns: false,
@@ -54,14 +54,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				//列内容
 				columns:[[
 				    {
-				    	title:'进购订单ID',
-						field:'purchaseId',
+				    	title:'入库订单ID',
+						field:'inStockId',
 						width:150,
 						hidden: false
 				    },{
 						title:'订单生成日期',
 						field:'createDate',
-						width:100,
+						width:170,
 						sortable: false
 					},{
 						title:'应付金额',
@@ -96,42 +96,65 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				
 				//添加点击事件
 				onClickRow:function(rowIndex,rowData){
-					var ids = rowData.purchaseId;
-			        $('#detailGrid').datagrid('options').url = 'purchaseAction_getDetailGrid';
-			        $('#detailGrid').datagrid('load', {purchaseId:ids}); 
+					var ids = rowData.inStockId;
+			        $('#detailGrid').datagrid('options').url = 'inStockAction_getDetailGrid';
+			        $('#detailGrid').datagrid('load', {inStockId:ids}); 
 				},
 				
 				//增加工具栏，添加增删改查按钮
 				toolbar:[
 					{
-						text:'确认商品入库',
-						iconCls:'icon-add',
+						text:'删除供应商信息',
+						iconCls:'icon-remove',
 						handler:function(){
 							
-							var rows = $('#detailGrid').datagrid('getRows');
-							for(var i=0; i<rows.length; i++) {
-								if(rows[i].storageId == undefined) {
-									$.messager.show({
-										title: '提示信息！',
-										msg: '必须选择仓库后才能进行入库！'
-									});
-									return;
-								}
-							}
 							var arr = $('#supplierTable').datagrid('getSelections');
-							if(arr.length != 1) {
+							if(arr.length < 1) {
 								$.messager.show({
 									title: '提示信息！',
-									msg: '只能选择一行记录进行修改！'
+									msg: '至少选择一行记录进行修改！'
 								});
 							} else {
-								$('#addDialog').dialog('open');
+								
+								$.messager.confirm('提示信息' , '删除后商品信息无法回复，是否确认删除？' , function(result){
+									if(result) {
+										
+										var ids = '';
+										for(var i=0; i<arr.length; i++) {
+											ids += arr[i].supplierId + ',';
+										}
+										ids = ids.substring(0, ids.length-1);
+										$.post('supplierAction_delete', {ids:ids}, function(result){
+											if(result){
+												//1.刷新数据表格
+												$('#supplierTable').datagrid('reload');
+												//2.给出提示信息
+												$.messager.show ({
+													title: 'ok!',
+													msg: '商品信息删除成功！'
+												});
+												//3.清楚数据表格勾选
+												$('#supplierTable').datagrid('clearSelections');
+												$('#detailGrid').datagrid('loadData',{total:0,rows:[]});
+												
+											} else {
+												$.messager.show ({
+													title: 'fail!',
+													msg: '商品信息删除失败！'
+												});
+											}
+										});
+										
+									} else {
+										return;
+									}
+								});
 								
 							}
 							
-						}
+						}						
 					},'-',{
-						text:'修改订单信息',
+						text:'修改供应商信息',
 						iconCls:'icon-edit',
 						handler:function(){
 							
@@ -222,38 +245,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						title:'总价',
 						field:'totalPrice',
 						width:100,
-					},{
-						title:'请选择入库仓库',
-						field:'storageId',
-						width:120,
-					 	formatter:function(value,row){
-                            return row.storageName;
-                        },
-						editor:{
-							type:'combobox',
-							options:{
-							 	valueField:'storageId',
-                                textField:'storageName',
-                                method:'post',
-                                url:'storageAction_getStorageList',
-                                required:true
-							}
-						}
-					},{
-						field:'action',
-						title:'操作',
-						resizable:false,
-						formatter:function(value,row,index){
-							
-								var s = "<a href='javascript:void(0)' onclick='saveType(this)'>确认</a>";
-								var c = "<a href='javascript:void(0)' onclick='cancelType(this)'>取消</a>";
-								return s+" | "+c;
-							
-						}
 					}
 				]],
 				
-				onClickCell: onClickCell
 				
 			});
 			
@@ -471,7 +465,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   
   <body>
   	<div id="lay" class="easyui-layout" fit=true >
-		<div region="north" title="进货订单查询" collapsed=false style="height:80px;padding:10px">
+		<div region="north" title="条件查询" collapsed=false style="height:80px;padding:10px">
 			<form id="commoditySearch">
 				开始时间：<input id="beginDate" name="beginDate" class="easyui-datebox" />&nbsp;
 				结束时间：<input id="endDate" name="endDate" class="easyui-datebox" />&nbsp;
@@ -479,10 +473,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<a id="clearButton" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">清空</a>
 			</form>
 		</div>
-		<div region="center" title="进货订单总单">
+		<div region="center" title="入库总单">
 			<table id="supplierTable"></table>
 		</div>
-		<div region="south" title="进货订单详单" collapsed=false style="height:40%">
+		<div region="south" title="入库详单" collapsed=false style="height:40%">
 			<table id="detailGrid"></table>
 		</div>
 	</div>

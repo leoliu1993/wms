@@ -8,12 +8,12 @@ import javax.persistence.Id;
 public class Stock {
 
 	private Integer stockId;
-	private Integer storageId;
 	private Integer commodityId;
 	private Integer inStock;
 	private Integer outStock;
 	private Integer visibleStock;
 	private Integer stockAmount;
+	private Integer storageId;
 	
 
 	@Id

@@ -55,6 +55,7 @@
 		<!-- 进货管理模块 -->
 		<action name="purchaseAction_*" class="purchaseAction" method="{1}">
 			<result name="addPage">/WEB-INF/jsp/purchaseAdd.jsp</result>
+			<result name="queryPage">/WEB-INF/jsp/purchaseQuery.jsp</result>
 			
 		</action>
 		
@@ -67,7 +68,17 @@
 		<!-- 入库管理模块 -->
 		<action name="inStockAction_*" class="inStockAction" method="{1}">
 			<result name="managementPage">/WEB-INF/jsp/inStockManagement.jsp</result>
+			<result name="queryPage">/WEB-INF/jsp/inStockQuery.jsp</result>
 			
+		</action>
+		
+		<!-- 仓库管理模块 -->
+		<action name="storageAction_*" class="storageAction" method="{1}">
+		</action>
+		
+		<!-- 库存管理模块 -->
+		<action name="stockAction_*" class="stockAction" method="{1}">
+			<result name="managementPage">/WEB-INF/jsp/stockQuery.jsp</result>
 		</action>
 		
 		

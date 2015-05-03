@@ -41,7 +41,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			 */
 			$('#grid').datagrid({
 				
-				idField:'id',
 				//ajax异步后台请求
 				fit: true,
 				//自动列间距
@@ -60,11 +59,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				    	field:'checkbox',
 				    	width:50,
 				    	checkbox:true
-				    },{
-				    	title:'进货单详单ID',
-						field:'id',
-						width:100,
-						hidden: true
 				    },{
 				    	title:'进货单ID',
 						field:'purchaseId',
@@ -96,6 +90,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						title:'数量',
 						field:'amount',
 						width:100
+					},{
+						title:'退货数量',
+						field:'returnedAmount',
+						width:100,
+						hidden: true
 					},{
 						title:'总金额',
 						field:'totalPrice',
@@ -207,7 +206,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					} else {
 						//对grid中的选定行进行修改
 						$('#grid').datagrid('updateRow',{
-							index: $('#grid').datagrid('getRowIndex'),
+							index: $('#grid').datagrid('getRowIndex', $('#grid').datagrid('getSelected')),
 							row: {
 								purchaseId: $('#purchaseId').val(), 
 								commodityId: $('#commodityCombobox').combobox("getValue"),
@@ -443,7 +442,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<div id="addDialog" title="添加商品详单" modal=true class="easyui-dialog"
 		closed=true style="width:550px;padding:30px;">
 		<form id="addForm" method="post">
-			<input id="pgId" type="hidden" name="id" class="textbox" />
 			<input id="purchaseId" type="hidden" name="purchaseId" class="textbox" />
 			<div class="fl" style="margin:10px">
 				商品名称：<input type="text" id="commodityCombobox" name="commodityId" class="easyui-combobox" required=true missingMessage="请选择商品！"  />

@@ -37,6 +37,10 @@ public class PurchaseAction extends ActionSupport implements ModelDriven<Purchas
 		return "addPage";
 	}
 	
+	public String queryPage() {
+		return "queryPage";
+	}
+	
 	public String getOrderCode() {
 		
 		String orderCode = pService.getOrderCode(pDTO.getCreateDate());
@@ -74,6 +78,7 @@ public class PurchaseAction extends ActionSupport implements ModelDriven<Purchas
 			} else {
 				pg.setAmount(jObj.getInt("amount"));
 			}
+			pg.setReturnedAmount(0);
 			pg.setTotalPrice(jObj.getDouble("totalPrice"));
 			pgList.add(pg);
 		}
@@ -103,6 +108,18 @@ public class PurchaseAction extends ActionSupport implements ModelDriven<Purchas
 	public String getDatagrid() {
 
 		DataGrid<PurchaseDTO> dg = pService.datagrid(pDTO);
+		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
+		try {
+			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(dg).toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return NONE;
+	}
+	
+	public String getQuerygrid() {
+
+		DataGrid<PurchaseDTO> dg = pService.querygrid(pDTO);
 		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
 		try {
 			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(dg).toString());

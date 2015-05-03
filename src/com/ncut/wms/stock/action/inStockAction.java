@@ -11,12 +11,15 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
+import com.ncut.wms.purchase.dto.PurchaseDTO;
+import com.ncut.wms.purchase.dto.PurchasegoodsDTO;
 import com.ncut.wms.stock.dto.InStockDTO;
 import com.ncut.wms.stock.dto.InStockgoodsDTO;
 import com.ncut.wms.stock.model.InStock;
 import com.ncut.wms.stock.model.InStockgoods;
 import com.ncut.wms.stock.service.InStockService;
 import com.ncut.wms.stock.service.InStockgoodsService;
+import com.ncut.wms.util.easyui.DataGrid;
 import com.ncut.wms.util.json.Json;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.ModelDriven;
@@ -36,8 +39,35 @@ public class inStockAction extends ActionSupport implements ModelDriven<InStockD
 		return "managementPage";
 	}
 	
+	public String queryPage() {
+		return "queryPage";
+	}
+	
+	public String getQuerygrid() {
+
+		DataGrid<InStockDTO> dg = iService.querygrid(iDTO);
+		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
+		try {
+			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(dg).toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return NONE;
+	}
+	
+	public String getDetailGrid() {
+		
+		DataGrid<InStockgoodsDTO> dg = igService.datagrid(iDTO);
+		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
+		try {
+			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(dg).toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return NONE;
+	}
+	
 	public String purchase() {
-		System.out.println("iDTO:" + iDTO);
 		Json json = new Json();
 		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
 		try {

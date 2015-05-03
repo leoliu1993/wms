@@ -1,15 +1,21 @@
 package com.ncut.wms.stock.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import com.ncut.wms.purchase.dao.PurchaseDAO;
 import com.ncut.wms.purchase.dao.PurchasegoodsDAO;
+import com.ncut.wms.purchase.dto.PurchaseDTO;
 import com.ncut.wms.purchase.model.Purchase;
 import com.ncut.wms.purchase.model.Purchasegoods;
 import com.ncut.wms.stock.dao.InStockDAO;
@@ -18,6 +24,12 @@ import com.ncut.wms.stock.dao.StockDAO;
 import com.ncut.wms.stock.dto.InStockDTO;
 import com.ncut.wms.stock.model.InStock;
 import com.ncut.wms.stock.model.InStockgoods;
+import com.ncut.wms.stock.model.Stock;
+import com.ncut.wms.supplier.dao.SupplierDAO;
+import com.ncut.wms.supplier.model.Supplier;
+import com.ncut.wms.user.dao.UserDAO;
+import com.ncut.wms.user.model.User;
+import com.ncut.wms.util.easyui.DataGrid;
 import com.ncut.wms.util.system.Tools;
 
 @Service("inStockService")
@@ -52,25 +64,101 @@ public class InStockService {
 		purchase.setStockState(1);
 		
 		//对入库详单进行赋值
-		List<Purchasegoods> pgList = pgDAO.list("from Purchasegoods pg where pg.purchaseId = " + purchaseId);
+		//获取前台详单的json字符串并转换成对象
+		JSONArray jArr = JSONArray.fromObject(iDTO.getInStockgoods());
 		List<InStockgoods> igList = new ArrayList<InStockgoods>();
-		for(Purchasegoods pg : pgList) {
+		for(int i=0; i<jArr.size(); i++) {
+			//根据前台的详单ID查找对应的进货详单
+			JSONObject jObj = JSONObject.fromObject(jArr.get(i));
+			Integer purchasegoodsId = jObj.getInt("id");
+			Purchasegoods pg = pgDAO.load(purchasegoodsId);
+			
+			//将进货详单的内容赋值给入库详单
+			//赋值库存总表ID
+			//赋值仓库ID
 			InStockgoods ig = new InStockgoods();
 			BeanUtils.copyProperties(pg, ig);
 			ig.setInStockId(inStockId);
+			ig.setStorageId(jObj.getInt("storageId"));
 			igList.add(ig);
+			
 		}
-		
+				
 		//对总单和详单进行存储
 		iDAO.add(inStock);
 		for(InStockgoods ig : igList) {
 			igDAO.add(ig);
+			
+			//对库存信息进行修改:首先搜索商品编号和仓库编号，如果有则修改该库存量，
+			//如果没有则添加该库存信息。同时注意实际库存量应该为入库数量减去退货数量
+			Stock stock = sDAO.findByCommodityAndStorage(ig.getCommodityId(), ig.getStorageId());
+			if(stock != null) {
+				//有则修改原表
+				Integer inStockAmount = stock.getInStock() + ig.getAmount() - ig.getReturnedAmount();
+				Integer visibleStockAmount = stock.getVisibleStock() + ig.getAmount() - ig.getReturnedAmount();
+				Integer stockAmount = stock.getStockAmount() + ig.getAmount() - ig.getReturnedAmount();
+				
+				stock.setInStock(inStockAmount);
+				stock.setVisibleStock(visibleStockAmount);
+				stock.setStockAmount(stockAmount);
+				sDAO.update(stock);
+			} else {
+				//没有则添加一张新表
+				Integer commodityId = ig.getCommodityId();
+				Integer inStockAmount = ig.getAmount() - ig.getReturnedAmount();
+				Integer storageId = ig.getStorageId();
+				
+				stock = new Stock();
+				stock.setCommodityId(commodityId);
+				stock.setInStock(inStockAmount);
+				stock.setOutStock(0);
+				stock.setVisibleStock(inStockAmount);
+				stock.setStockAmount(inStockAmount);
+				stock.setStorageId(storageId);
+				sDAO.add(stock);
+			}
 		}
 		//进货总单的库存状态进行修改存储
 		pDAO.update(purchase);
 		
-		//对库存信息进行修改:首先搜索商品编号，如果有则修改改库存量，如果没有则添加该库存信息。同时注意实际库存量应该为入库数量减去退货数量
 		
+	}
+	
+public DataGrid<InStockDTO> querygrid(InStockDTO iDTO) {
+		
+		DataGrid<InStockDTO> dg = new DataGrid<InStockDTO>();
+		Map<String,Object> map = new HashMap<String,Object>();
+		String hql = "from InStock inStock where 1=1";
+		
+		if(iDTO.getBeginDate()!=null && !"".equals(iDTO.getBeginDate().trim())){
+			hql+=" and inStock.createDate between :beginDate and :endDate";
+			map.put("beginDate", iDTO.getBeginDate().trim());
+			map.put("endDate", iDTO.getEndDate().trim());
+		}
+		
+		String totalHql = "select count(*) "+hql;
+		//实现排序
+		if(iDTO.getSort()!=null){
+			hql+=" order by "+iDTO.getSort()+" "+iDTO.getOrder();
+		}
+		List<InStock> iList = iDAO.list(hql, map, iDTO.getPage(), iDTO.getRows());
+		List<InStockDTO> iDTOList = new ArrayList<InStockDTO>();
+		for(InStock i:iList){
+			InStockDTO inStockDTO = new InStockDTO();
+			BeanUtils.copyProperties(i, inStockDTO);
+			
+			//插入一些需要的数据
+			Supplier s = supplierDAO.load(inStockDTO.getSupplierId());
+			inStockDTO.setSupplierName(s.getSupplierName());
+			
+			User u = uDAO.load(inStockDTO.getUserId());
+			inStockDTO.setUserName(u.getUsername());
+			
+			iDTOList.add(inStockDTO);
+		}
+		dg.setTotal(iDAO.count(totalHql, map));
+		dg.setRows(iDTOList);
+		return dg;
 	}
 	
 	/* ======以下声明======== */
@@ -79,6 +167,8 @@ public class InStockService {
 	private PurchaseDAO pDAO;
 	private PurchasegoodsDAO pgDAO;
 	private StockDAO sDAO;
+	private SupplierDAO supplierDAO;
+	private UserDAO uDAO;
 	
 	@Resource
 	public void setiDAO(InStockDAO iDAO) {
@@ -104,4 +194,16 @@ public class InStockService {
 	public void setsDAO(StockDAO sDAO) {
 		this.sDAO = sDAO;
 	}
+
+	@Resource
+	public void setSupplierDAO(SupplierDAO supplierDAO) {
+		this.supplierDAO = supplierDAO;
+	}
+
+	@Resource
+	public void setuDAO(UserDAO uDAO) {
+		this.uDAO = uDAO;
+	}
+
+	
 }
