@@ -9,10 +9,10 @@ public class Stock {
 
 	private Integer stockId;
 	private Integer commodityId;
-	private Integer inStock;
-	private Integer outStock;
-	private Integer visibleStock;
-	private Integer stockAmount;
+	private Integer inStock = 0;
+	private Integer outStock = 0;
+	private Integer visibleStock = 0;
+	private Integer stockAmount = 0;
 	private Integer storageId;
 	
 

@@ -7,9 +7,9 @@ public class InStockDTO {
 	private Integer supplierId;
 	private String supplierName;
 	private String createDate;
-	private Double payablePrice;
-	private Double realPrice;
-	private Integer state;
+	private Double payablePrice = 0.0;
+	private Double realPrice = 0.0;
+	private Integer state = 0;
 	private Integer userId;
 	private String userName;
 	private String remark;

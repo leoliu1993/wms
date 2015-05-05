@@ -10,10 +10,10 @@ public class InStockgoods {
 	private Integer inStockgoodsId;
 	private String inStockId;
 	private Integer commodityId;
-	private Double price;
-	private Integer amount;
-	private Integer returnedAmount;
-	private Double totalPrice;
+	private Double price = 0.0;
+	private Integer amount = 0;
+	private Integer returnedAmount = 0;
+	private Double totalPrice = 0.0;
 	private Integer storageId;
 
 	@Id

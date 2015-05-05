@@ -5,11 +5,11 @@ public class TotalStockDTO {
 	private Integer totalStockId;
 	private Integer commodityId;
 	private String commodityName;
-	private Integer purchase;
-	private Integer inStock;
-	private Integer outStock;
-	private Integer visibleStock;
-	private Integer stockAmount;
+	private Integer purchase = 0;
+	private Integer inStock = 0;
+	private Integer outStock = 0;
+	private Integer visibleStock = 0;
+	private Integer stockAmount = 0;
 	
 	/* =====datagrid属性====== */
 	private int page;

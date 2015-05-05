@@ -18,11 +18,11 @@ import com.ncut.wms.purchase.dao.PurchasegoodsDAO;
 import com.ncut.wms.purchase.dto.PurchaseDTO;
 import com.ncut.wms.purchase.model.Purchase;
 import com.ncut.wms.purchase.model.Purchasegoods;
+import com.ncut.wms.stock.dao.TotalStockDAO;
+import com.ncut.wms.stock.model.TotalStock;
 import com.ncut.wms.supplier.dao.SupplierDAO;
-import com.ncut.wms.supplier.dao.impl.SupplierDAOImpl;
 import com.ncut.wms.supplier.model.Supplier;
 import com.ncut.wms.user.dao.UserDAO;
-import com.ncut.wms.user.dao.impl.UserDAO4MySqlImpl;
 import com.ncut.wms.user.model.User;
 import com.ncut.wms.util.easyui.DataGrid;
 import com.ncut.wms.util.system.Tools;
@@ -157,6 +157,22 @@ public class PurchaseService {
 		BeanUtils.copyProperties(pDTO, p);
 		pDAO.add(p);
 		pgDAO.add(pgList);
+		
+		//添加库存总表中的预定量
+		for(Purchasegoods pg : pgList) {
+			TotalStock ts = tsDAO.findByCommodityId(pg.getCommodityId());
+			if(ts != null) {
+				Integer purchaseAmount = ts.getPurchase();
+				purchaseAmount += pg.getAmount();
+				ts.setPurchase(purchaseAmount);
+				tsDAO.update(ts);
+			} else {
+				ts = new TotalStock();
+				ts.setCommodityId(pg.getCommodityId());
+				ts.setPurchase(pg.getAmount());
+				tsDAO.add(ts);
+			}
+		}
 	}
 
 	/* ======以下声明======== */
@@ -164,6 +180,7 @@ public class PurchaseService {
 	private PurchasegoodsDAO pgDAO;
 	private SupplierDAO sDAO;
 	private UserDAO uDAO;
+	private TotalStockDAO tsDAO;
 
 	@Resource
 	public void setpDAO(PurchaseDAO pDAO) {
@@ -183,6 +200,11 @@ public class PurchaseService {
 	@Resource
 	public void setuDAO(UserDAO uDAO) {
 		this.uDAO = uDAO;
+	}
+
+	@Resource
+	public void setTsDAO(TotalStockDAO tsDAO) {
+		this.tsDAO = tsDAO;
 	}
 
 	

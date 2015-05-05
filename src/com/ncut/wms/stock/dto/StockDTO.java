@@ -7,10 +7,10 @@ public class StockDTO {
 	private String commodityName;
 	private Integer storageId;
 	private String storageName;
-	private Integer inStock;
-	private Integer outStock;
-	private Integer visibleStock;
-	private Integer stockAmount;
+	private Integer inStock = 0;
+	private Integer outStock = 0;
+	private Integer visibleStock = 0;
+	private Integer stockAmount = 0;
 
 	/* =====datagrid属性====== */
 	private int page;

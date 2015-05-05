@@ -9,11 +9,11 @@ public class TotalStock {
 
 	private Integer totalStockId;
 	private Integer commodityId;
-	private Integer purchase;
-	private Integer inStock;
-	private Integer outStock;
-	private Integer visibleStock;
-	private Integer stockAmount;
+	private Integer purchase = 0;
+	private Integer inStock = 0;
+	private Integer outStock = 0;
+	private Integer visibleStock = 0;
+	private Integer stockAmount = 0;
 
 	@Id
 	@GeneratedValue
