@@ -7,6 +7,9 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +17,7 @@ import com.ncut.wms.purchase.dao.PurchaseDAO;
 import com.ncut.wms.purchase.dao.PurchasegoodsDAO;
 import com.ncut.wms.purchase.dto.PurchaseDTO;
 import com.ncut.wms.purchase.model.Purchase;
+import com.ncut.wms.purchase.model.Purchasegoods;
 import com.ncut.wms.supplier.dao.SupplierDAO;
 import com.ncut.wms.supplier.dao.impl.SupplierDAOImpl;
 import com.ncut.wms.supplier.model.Supplier;
@@ -120,6 +124,40 @@ public class PurchaseService {
 		pDAO.add(p);
 		
 	}
+	
+	public void saveOrder(PurchaseDTO pDTO) {
+
+		JSONArray jArr = JSONArray.fromObject(pDTO.getPgs());
+		List<Purchasegoods> pgList = new ArrayList<Purchasegoods>();
+		//格式化前台数据
+		for(int i=0; i<jArr.size(); i++) {
+			
+			JSONObject jObj = JSONObject.fromObject(jArr.get(i));
+			
+			Purchasegoods pg = new Purchasegoods();
+			//对商品详单赋值
+			pg.setPurchaseId(jObj.getString("purchaseId"));
+			pg.setCommodityId(jObj.getInt("commodityId"));
+			if(jObj.getString("price") == null || "".equals(jObj.getString("price"))) {
+				pg.setPrice(0.0);
+			} else {
+				pg.setPrice(jObj.getDouble("price"));
+			}
+			if(jObj.getString("amount") == null || "".equals(jObj.getString("amount"))) {
+				pg.setAmount(0);
+			} else {
+				pg.setAmount(jObj.getInt("amount"));
+			}
+			pg.setReturnedAmount(0);
+			pg.setTotalPrice(jObj.getDouble("totalPrice"));
+			pgList.add(pg);
+		}
+		
+		Purchase p = new Purchase();
+		BeanUtils.copyProperties(pDTO, p);
+		pDAO.add(p);
+		pgDAO.add(pgList);
+	}
 
 	/* ======以下声明======== */
 	private PurchaseDAO pDAO;
@@ -146,6 +184,8 @@ public class PurchaseService {
 	public void setuDAO(UserDAO uDAO) {
 		this.uDAO = uDAO;
 	}
+
+	
 
 	
 }

@@ -9,6 +9,7 @@ public class Purchase {
 	private String purchaseId;
 	private Integer supplierId;
 	private String createDate;
+	private String receivedDate;
 	private Double payablePrice;
 	private Double realPrice;
 	private Integer state;
@@ -87,6 +88,14 @@ public class Purchase {
 
 	public void setStockState(Integer stockState) {
 		this.stockState = stockState;
+	}
+
+	public String getReceivedDate() {
+		return receivedDate;
+	}
+
+	public void setReceivedDate(String receivedDate) {
+		this.receivedDate = receivedDate;
 	}
 
 }

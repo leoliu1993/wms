@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
@@ -34,12 +35,6 @@ public class BaseDAOImpl<T> implements BaseDAO<T> {
 	@Override
 	public void update(T t) {
 		this.getSession().update(t);
-		
-	}
-
-	@Override
-	public void merge(Object t) {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -119,6 +114,19 @@ public class BaseDAOImpl<T> implements BaseDAO<T> {
 	@Resource
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
+	}
+
+
+	@Override
+	public List<T> listBySql(String sql) {
+		SQLQuery query = this.getSession().createSQLQuery(sql);
+		return query.list();
+	}
+
+	@Override
+	public void merge(T t) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

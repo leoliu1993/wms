@@ -78,7 +78,7 @@
 		
 		<!-- 库存管理模块 -->
 		<action name="stockAction_*" class="stockAction" method="{1}">
-			<result name="managementPage">/WEB-INF/jsp/stockQuery.jsp</result>
+			<result name="stockQueryPage">/WEB-INF/jsp/stockQuery.jsp</result>
 		</action>
 		
 		

@@ -231,7 +231,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					</div>
 					<div title="进货管理">
 						<p>
-							<a title="stockAction_managementPage"><span class="icon icon-searchStock">&nbsp;&nbsp;&nbsp;&nbsp;
+							<a title="stockAction_stockQueryPage"><span class="icon icon-searchStock">&nbsp;&nbsp;&nbsp;&nbsp;
 							</span>查询当前库存</a>
 						</p>
 						<p>

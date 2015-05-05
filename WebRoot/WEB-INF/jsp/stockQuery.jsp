@@ -10,7 +10,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <head>
     <base href="<%=basePath%>">
     
-    <title>当前库存查询</title>
+    <title>库存查询</title>
 	<meta http-equiv="pragma" content="no-cache">
 	<meta http-equiv="cache-control" content="no-cache">
 	<meta http-equiv="expires" content="0">    
@@ -21,6 +21,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<link rel="stylesheet" type="text/css" href="js/jquery-easyui-1.4.1/themes/icon.css" />
 	<script type="text/javascript" src="js/jquery-easyui-1.4.1/jquery.easyui.min.js"></script>
 	<script type="text/javascript" src="js/jquery-easyui-1.4.1/locale/easyui-lang-zh_CN.js"></script>
+	<script type="text/javascript" src="js/json2.js"></script>
 	
 	<link rel="stylesheet" type="text/css" href="css/common2.css" />
 	<script type="text/javascript" src="js/commons.js"></script>
@@ -31,20 +32,91 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			var flag = '';
 			//搜索框展开标志
 			var searchStatus = 0;
+			
 			/**
 			 * 表格初始化
 			 */
-			$('#commodityTable').datagrid({
+			$('#supplierTable').datagrid({
 				
-				idField:'stockId',
+				idField:'totalStockId',
 				//ajax异步后台请求
-				url: 'stockAction_getDatagrid',
+				url: 'stockAction_getTotalgrid',
 				fit: true,
 				//自动列间距
 				fitColumns: false,
 				border: false,
 				//分页查询
 				pagination: true,
+				//加载等待提示
+				loadMsg:'数据正在加载中，请耐心等待…',
+				singleSelect:true,
+				rownumbers:true,
+				//列内容
+				columns:[[
+				    {
+				    	title:'库存总单ID',
+						field:'totalStockId',
+						width:100,
+						hidden: true
+				    },{
+						title:'商品ID',
+						field:'commodityId',
+						width:100,
+						hidden: true
+					},{
+						title:'商品名称',
+						field:'commodityName',
+						width:100,
+						sortable: false
+					},{
+						title:'订购量',
+						field:'purchase',
+						width:100
+					},{
+						title:'入库量',
+						field:'inStock',
+						width:100,
+					},{
+						title:'出库量',
+						field:'outStock',
+						width:100,
+					},{
+						title:'可见销售量',
+						field:'visibleStock',
+						width:100,
+					},{
+						title:'库存量',
+						field:'stockAmount',
+						width:100,
+					}
+				]],
+				
+				//添加点击事件
+				onClickRow:function(rowIndex,rowData){
+					var ids = rowData.commodityId;
+			        $('#detailGrid').datagrid('options').url = 'stockAction_getDetailgrid';
+			        $('#detailGrid').datagrid('load', {commodityId:ids}); 
+				}
+				
+				
+				
+				
+			});
+			
+			/**
+			 * 详单表格初始化
+			 */
+			$('#detailGrid').datagrid({
+				
+				idField:'stockId',
+				//ajax异步后台请求
+				url: '',
+				fit: true,
+				//自动列间距
+				fitColumns: false,
+				border: false,
+				//分页查询
+				pagination: false,
 				//加载等待提示
 				loadMsg:'数据正在加载中，请耐心等待…',
 				//列内容
@@ -93,48 +165,60 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				]],
 				
 				
-				
-				
 			});
 			
-			/**
-			 * 商品编号输入框初始化
-			 */
-			$('#commodityNum').validatebox({
-				required : true ,
-				validType : 'midLength[2,5]' , 
-				invalidMessage : '商品编号必须在2到5个长度之间' ,
-				missingMessage : '请填写商品编号'
-			});
 			
 			/**
 			 * 表单提交按钮
 			 */
 			$('#saveButton').click(function(){
 				if($('#addForm').form('validate')){
-					$.ajax({
-						type: 'post',
-						url: flag=='add'? 'commodityAction_add' : 'commodityAction_update',
-						cache: false,
-						data: $('#addForm').serialize(),
-						dataType: 'json',
-						success: function(result) {
-							$('#addDialog').dialog('close');
-							if(result.success){
-								$.messager.show ({
-									title: "ok!",
-									msg: result.message
-								});
-								$('#addForm').form('reset');
-								$('#commodityTable').datagrid('reload');
-							} else {
-								$.messager.show ({
-									title: "fail!",
-									msg: result.message
-								});
+					
+					$.messager.confirm('提示信息' , '确认入库后订单将无法修改，是否确认入库？' , function(result){
+						if(result) {
+							var arr = $('#supplierTable').datagrid('getSelections');
+							var ids = '';
+							/* for(var i=0; i<arr.length; i++) {
+								ids += arr[i].purchaseId + ',';
 							}
-						},
-					});
+							ids = ids.substring(0, ids.length-1); */
+							ids += arr[0].purchaseId;
+							$.ajax({
+								type: 'post',
+								url: 'inStockAction_purchase',
+								cache: false,
+								data: $('#addForm').serialize() + '&ids=' + ids + '&inStockgoods=' + JSON.stringify($('#detailGrid').datagrid('getRows')),
+								dataType: 'json',
+								success: function(result) {
+									$('#addDialog').dialog('close');
+									if(result.success){
+										//1.刷新数据表格
+										$('#supplierTable').datagrid('reload');
+										//2.给出提示信息
+										$.messager.show ({
+											title: "ok!",
+											msg: result.message
+										});
+										//3.清楚数据表格勾选
+										$('#supplierTable').datagrid('clearSelections');
+										$('#addForm').form('reset');
+										$('#supplierTable').datagrid('reload');
+										$('#detailGrid').datagrid('loadData',{total:0,rows:[]});
+										
+									} else {
+										$.messager.show ({
+											title: "fail!",
+											msg: result.message
+										});
+									}
+								},
+							});
+							
+						} else {
+							return;
+						}
+					}); 
+					
 				} else {
 					$.messager.show({
 						title: '提示信息' ,
@@ -154,7 +238,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			 * 搜索按钮
 			 */
 			$('#searchButton').click(function() {
-				$('#commodityTable').datagrid('load', serializeForm($('#commoditySearch')));
+				$('#supplierTable').datagrid('load', serializeForm($('#commoditySearch')));
+				$('#supplierTable').datagrid('clearSelections');
+				$('#detailGrid').datagrid('loadData',{total:0,rows:[]});
 			});
 			
 			/**
@@ -175,16 +261,104 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			});
 			
 			/**
-			 * 商品类别下拉菜单
+			 * 设置datebox默认时间
 			 */
-			$('#cotegoryCombobox').combobox({
-				url:'cmdtCtgrAction_getCategoryList',
+			$('#beginDate').datebox({
+				formatter:myformatter,
+				parser:myparser,
 				editable:false,
-			    valueField:'cid',
-			    textField:'cname',
+			    required:false,
+			    missingMessage:'必须填写日期！'
+			});
+			/**
+			 * 设置datebox默认时间
+			 */
+			$('#endDate').datebox({
+				formatter:myformatter,
+				parser:myparser,
+				editable:false,
+			    required:false,
+			    missingMessage:'必须填写日期！'
 			});
 			
+			/**
+			 * 入库时间框
+			 */
+			$('#createDate').datetimebox({    
+			    editable: false,   
+			    required: true,   
+			    missingMessage: '请填写入库时间',
+			    showSeconds: true,   
+			}); 
 		});
+		//编辑仓库状态
+		var editIndex = undefined;
+		//详单表格点击事件
+		function onClickCell(index,field,value){
+			if(field == 'storageId' & editIndex == undefined) {
+				editIndex = index;
+				$(this).datagrid('beginEdit', index);
+				var ed = $(this).datagrid('getEditor', {index:index,field:field});
+				$(ed.target).focus();
+			} else {
+				return;
+			}
+			
+		}
+		//详单保存按钮
+		function saveType(target) {
+			var index = getRowIndex(target);
+			if ($('#detailGrid').datagrid('validateRow', editIndex) & editIndex == index){
+				var ed = $('#detailGrid').datagrid('getEditor', {index:editIndex,field:'storageId'});
+			 	var storageName = $(ed.target).combobox('getText');
+                $('#detailGrid').datagrid('getRows')[editIndex]['storageName'] = storageName;
+				$('#detailGrid').datagrid('endEdit', editIndex);
+				editIndex = undefined;
+				
+				
+			} else {
+				return;
+			}
+			
+			
+		}
+		//详单取消按钮
+		function cancelType(target) {
+			var index = getRowIndex(target);
+			if ($('#detailGrid').datagrid('validateRow', editIndex) && editIndex == index){
+				$('#detailGrid').datagrid('cancelEdit', editIndex);
+				editIndex = undefined;
+			} else {
+				return;
+			}
+		}
+		//获取当前行
+		function getRowIndex(target){
+			var tr = $(target).closest('tr.datagrid-row');
+			return parseInt(tr.attr("datagrid-row-index"));
+		}
+		
+		//时间格式化
+		function myformatter(date){
+			var y = date.getFullYear();
+			var m = date.getMonth()+1;
+			var d = date.getDate();
+			return y+'-'+(m<10?('0'+m):m)+'-'+(d<10?('0'+d):d);
+		}
+		//时间解析
+		function myparser(s){
+			if (!s) return new Date();
+			var ss = (s.split('-'));
+			var y = parseInt(ss[0],10);
+			var m = parseInt(ss[1],10);
+			var d = parseInt(ss[2],10);
+			if (!isNaN(y) && !isNaN(m) && !isNaN(d)){
+				return new Date(y,m-1,d);
+			} else {
+				return new Date();
+			}
+		}
+		
 		
 		//js方法：序列化表单 			
 		function serializeForm(form) {
@@ -207,48 +381,28 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   
   <body>
   	<div id="lay" class="easyui-layout" fit=true >
-		<div region="center" title="当前库存查询">
-			<table id="commodityTable"></table>
+		<div region="north" title="库存查询" collapsed=false style="height:80px;padding:10px">
+			<form id="commoditySearch">
+				商品名称：<input name="commodityName" class="easyui-textbox"/>&nbsp;
+				<a id="searchButton" class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a>
+				<a id="clearButton" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">清空</a>
+			</form>
+		</div>
+		<div region="center" title="库存总单">
+			<table id="supplierTable"></table>
+		</div>
+		<div region="south" title="库存详单" collapsed=false style="height:40%">
+			<table id="detailGrid"></table>
 		</div>
 	</div>
-	<div id="addDialog" title="添加商品信息" modal=true class="easyui-dialog"
-		closed=true style="width:550px;padding:30px;">
+	<div id="addDialog" title="确认入库时间" modal=true class="easyui-dialog"
+		closed=true style="width:350px;padding:30px;">
 		<form id="addForm" method="post">
-			<input type="hidden" name="commodityId" class="textbox" />
-			
-			<div class="fl" style="margin:10px">
-				商品名称：<input name="commodityName" class="easyui-textbox" required=true missingMessage="请填写商品名称" />
-			</div>
-			
-			<div class="fl" style="margin:10px">
-				规格型号：<input name="commodityType" class="easyui-textbox" />
-			</div>
-			<div class="fl" style="margin:10px">
-				商品类别：<input id="cotegoryCombobox" name="categoryId" />
-			</div>
-			<div class="fl" style="margin:10px">
-				计量单位：<input id="unitCombobox" name="unitId" />
-			</div>
-			<div class="fl" style="margin:10px">
-				普通售价：<input name="salePrice" class="easyui-textbox" />
-			</div>
-			<div class="fl" style="margin:10px">
-				初级会员售价：<input name="vip1Price" class="easyui-textbox" />
-			</div>
-			<div class="fl" style="margin:10px">
-				中级会员售价：<input name="vip2Price" class="easyui-textbox" />
-			</div>
-			<div class="fl" style="margin:10px">
-				高级会员售价：<input name="vip3Price" class="easyui-textbox" />
-			</div>
-			<div class="clear"></div>
-			<div style="margin:10px;">
-				<p style="margin:5px">备注：</p>
-				<p><input name="remark" class="easyui-textbox" multiline="true"
-					style="width:100%;height:100px;" /></p>
+			<div style="margin:10px;text-align:center">
+				设置入库时间：<input id="createDate" name="createDate" />
 			</div>
 			<div style="margin:10px;text-align:center">
-				<a id="saveButton" class="easyui-linkbutton" iconCls="icon-save" style="margin-right:10px">保存</a>
+				<a id="saveButton" class="easyui-linkbutton" iconCls="icon-save" style="margin-right:10px">入库</a>
 				<a id="cancelButton" class="easyui-linkbutton" iconCls="icon-cancel" style="margin-left:10px">取消</a>
 			</div>
 			

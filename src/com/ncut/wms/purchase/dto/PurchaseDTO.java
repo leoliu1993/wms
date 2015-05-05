@@ -9,6 +9,7 @@ public class PurchaseDTO {
 	private Integer supplierId;
 	private String supplierName;
 	private String createDate;
+	private String receivedDate;
 	private Double payablePrice;
 	private Double realPrice;
 	private Integer state;
@@ -192,6 +193,14 @@ public class PurchaseDTO {
 
 	public void setEndDate(String endDate) {
 		this.endDate = endDate;
+	}
+
+	public String getReceivedDate() {
+		return receivedDate;
+	}
+
+	public void setReceivedDate(String receivedDate) {
+		this.receivedDate = receivedDate;
 	}
 
 }

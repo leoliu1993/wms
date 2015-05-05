@@ -130,4 +130,5 @@ public class StockDTO {
 	public void setIds(String ids) {
 		this.ids = ids;
 	}
+
 }

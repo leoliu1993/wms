@@ -352,6 +352,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			});
 			var currentDate = myformatter(new Date());
 			$('#createDate').datebox('setValue', currentDate);
+			$('#receivedDate').datebox({
+				formatter:myformatter,
+				parser:myparser,
+				editable:false,
+			    required:true,
+			    missingMessage:'必须填写日期！'
+			});
+			var currentDate_7 = myformatter_7(new Date());
+			$('#receivedDate').datebox('setValue', currentDate_7);
 			
 			
 			/**
@@ -380,6 +389,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			var y = date.getFullYear();
 			var m = date.getMonth()+1;
 			var d = date.getDate();
+			return y+'-'+(m<10?('0'+m):m)+'-'+(d<10?('0'+d):d);
+		}
+		function myformatter_7(date){
+			var y = date.getFullYear();
+			var m = date.getMonth()+1;
+			var d = date.getDate()+7;
 			return y+'-'+(m<10?('0'+m):m)+'-'+(d<10?('0'+d):d);
 		}
 		function myparser(s){
@@ -421,7 +436,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<div class="fl" style="margin:5px">供应商：<input id="supplierCombobox" name="supplierId" class="easyui-combobox"/>&nbsp;</div>
 				<div class="fl" style="margin:5px">应付金额：<input id="payablePrice" name="payablePrice" class="easyui-textbox" data-options="editable:false"/>&nbsp;</div>
 				<div class="fl" style="margin:5px">实付金额：<input id="realPrice" name="realPrice" class="easyui-textbox"/>&nbsp;</div>
-				<div class="fl" style="margin:5px">收货日期：<input id="createDate" name="createDate" class="easyui-datebox"/>&nbsp;</div>
+				<div class="fl" style="margin:5px">创表日期：<input id="createDate" name="createDate" class="easyui-datebox"/>&nbsp;</div>
+				<div class="fl" style="margin:5px">收获日期：<input id="receivedDate" name="receivedDate" class="easyui-datebox"/>&nbsp;</div>
 				<div class="clear"></div>
 				<div class="fl" style="margin:5px">备&nbsp;&nbsp;&nbsp;注：<input name="remark" class="easyui-textbox" style="width:330px"/>&nbsp;</div>
 				<div class="fl" style="margin:5px">是否已付款：<input id="payState" name="state" class="easyui-combobox" value="1"/>&nbsp;</div>

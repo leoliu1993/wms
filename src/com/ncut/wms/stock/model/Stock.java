@@ -73,6 +73,4 @@ public class Stock {
 		this.stockAmount = stockAmount;
 	}
 
-	
-
 }

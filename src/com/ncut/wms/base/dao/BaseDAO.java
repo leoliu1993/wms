@@ -19,4 +19,6 @@ public interface BaseDAO<T> {
 	public List<T> list(String hql,Object[] args);
 	public List<T> list(String hql,int page,int rows);
 	public List<T> list(String hql,Map<String,Object> args,int page,int rows);
+	
+	public List<T> listBySql(String sql);
 }
