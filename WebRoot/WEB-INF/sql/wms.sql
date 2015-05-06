@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.6.23, for Win32 (x86)
+-- MySQL dump 10.13  Distrib 5.6.21, for Win64 (x86_64)
 --
 -- Host: localhost    Database: wms
 -- ------------------------------------------------------
--- Server version	5.6.23-log
+-- Server version	5.6.21-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -129,7 +129,7 @@ CREATE TABLE `instock` (
 
 LOCK TABLES `instock` WRITE;
 /*!40000 ALTER TABLE `instock` DISABLE KEYS */;
-INSERT INTO `instock` VALUES ('CKJH201505020001',8,'2015-05-02 15:20:53',130000,130000,1,1,''),('CKJH201505020002',8,'2015-05-02 18:05:13',70000,70000,1,1,'');
+INSERT INTO `instock` VALUES ('CKJH201505060001',8,'2015-05-06 10:35:47',100000,100000,1,1,''),('CKJH201505060002',9,'2015-05-06 10:36:24',150000,150000,1,1,''),('CKJH201505060003',9,'2015-05-06 10:37:03',50000,50000,1,1,''),('CKJH201505060004',8,'2015-05-06 16:25:00',200000,200000,1,1,'');
 /*!40000 ALTER TABLE `instock` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -149,8 +149,9 @@ CREATE TABLE `instockgoods` (
   `returnedAmount` int(11) DEFAULT '0' COMMENT '退货数量',
   `totalPrice` double DEFAULT '0' COMMENT '总价',
   `storageId` int(11) NOT NULL COMMENT '仓库ID',
+  `shelfId` int(11) NOT NULL COMMENT '货架ID',
   PRIMARY KEY (`inStockgoodsId`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='入库详单';
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8 COMMENT='入库详单';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -159,8 +160,33 @@ CREATE TABLE `instockgoods` (
 
 LOCK TABLES `instockgoods` WRITE;
 /*!40000 ALTER TABLE `instockgoods` DISABLE KEYS */;
-INSERT INTO `instockgoods` VALUES (2,'CKJH201505020001',8,7000,10,0,70000,1),(3,'CKJH201505020001',9,6000,10,0,60000,1),(5,'CKJH201505020002',8,7000,10,0,70000,1);
+INSERT INTO `instockgoods` VALUES (15,'CKJH201505060001',8,5000,10,0,50000,1,0),(16,'CKJH201505060001',9,5000,10,0,50000,2,0),(17,'CKJH201505060002',10,10000,10,0,100000,1,0),(18,'CKJH201505060002',9,5000,10,0,50000,2,0),(19,'CKJH201505060003',9,5000,10,0,50000,1,0),(20,'CKJH201505060004',10,10000,20,0,200000,1,2);
 /*!40000 ALTER TABLE `instockgoods` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `instockremain`
+--
+
+DROP TABLE IF EXISTS `instockremain`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `instockremain` (
+  `inStockRemainId` int(11) NOT NULL AUTO_INCREMENT COMMENT '中间表ID',
+  `inStockgoodsId` int(11) NOT NULL COMMENT '入库详单ID',
+  `remain` int(11) DEFAULT '0' COMMENT '剩余量',
+  PRIMARY KEY (`inStockRemainId`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='中间表_入库信息_剩余量';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `instockremain`
+--
+
+LOCK TABLES `instockremain` WRITE;
+/*!40000 ALTER TABLE `instockremain` DISABLE KEYS */;
+INSERT INTO `instockremain` VALUES (1,20,20);
+/*!40000 ALTER TABLE `instockremain` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -174,6 +200,7 @@ CREATE TABLE `purchase` (
   `purchaseId` varchar(16) NOT NULL COMMENT '进货单ID',
   `supplierId` int(11) DEFAULT NULL COMMENT '供应商ID',
   `createDate` date NOT NULL COMMENT '表单创建日期',
+  `receivedDate` date DEFAULT NULL COMMENT '收货日期',
   `payablePrice` double DEFAULT '0' COMMENT '应付金额',
   `realPrice` double DEFAULT '0' COMMENT '实付金额',
   `state` int(11) DEFAULT '0' COMMENT '进货单状态',
@@ -190,7 +217,7 @@ CREATE TABLE `purchase` (
 
 LOCK TABLES `purchase` WRITE;
 /*!40000 ALTER TABLE `purchase` DISABLE KEYS */;
-INSERT INTO `purchase` VALUES ('JHDD201504290001',8,'2015-04-29',130000,130000,1,1,1,''),('JHDD201504290002',8,'2015-04-29',70000,70000,1,1,1,''),('JHDD201504290003',8,'2015-04-29',100000,100000,1,0,1,''),('JHDD201504290004',8,'2015-04-29',80000,80000,1,0,1,''),('JHDD201505020001',9,'2015-05-02',150000,150000,1,0,1,'');
+INSERT INTO `purchase` VALUES ('JHDD201505060001',8,'2015-05-06','2015-05-13',100000,100000,1,1,1,''),('JHDD201505060002',9,'2015-05-06','2015-05-13',150000,150000,1,1,1,''),('JHDD201505060003',9,'2015-05-06','2015-05-13',50000,50000,1,1,1,''),('JHDD201505060004',8,'2015-05-06','2015-05-13',200000,200000,1,1,1,''),('JHDD201505060005',8,'2015-05-06','2015-05-13',50000,50000,1,0,1,'');
 /*!40000 ALTER TABLE `purchase` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -210,7 +237,7 @@ CREATE TABLE `purchasegoods` (
   `totalPrice` double DEFAULT '0' COMMENT '总价',
   `returnedAmount` int(11) DEFAULT '0' COMMENT '退货数量',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COMMENT='进货单商品信息';
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8 COMMENT='进货单商品信息';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -219,7 +246,7 @@ CREATE TABLE `purchasegoods` (
 
 LOCK TABLES `purchasegoods` WRITE;
 /*!40000 ALTER TABLE `purchasegoods` DISABLE KEYS */;
-INSERT INTO `purchasegoods` VALUES (1,'JHDD201504290001',8,7000,10,70000,0),(2,'JHDD201504290001',9,6000,10,60000,0),(3,'JHDD201504290002',8,7000,10,70000,0),(4,'JHDD201504290003',10,10000,10,100000,0),(5,'JHDD201504290004',11,8000,10,80000,0),(6,'JHDD201505020001',10,10000,10,100000,0),(7,'JHDD201505020001',10,10000,5,50000,0);
+INSERT INTO `purchasegoods` VALUES (21,'JHDD201505060001',8,5000,10,50000,0),(22,'JHDD201505060001',9,5000,10,50000,0),(23,'JHDD201505060002',10,10000,10,100000,0),(24,'JHDD201505060002',9,5000,10,50000,0),(25,'JHDD201505060003',9,5000,10,50000,0),(26,'JHDD201505060004',10,10000,20,200000,0),(27,'JHDD201505060005',8,5000,10,50000,0);
 /*!40000 ALTER TABLE `purchasegoods` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -280,6 +307,31 @@ LOCK TABLES `salegoods` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `shelf`
+--
+
+DROP TABLE IF EXISTS `shelf`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `shelf` (
+  `shelfId` int(11) NOT NULL AUTO_INCREMENT COMMENT '货架ID',
+  `shelfName` varchar(45) NOT NULL COMMENT '货架名称',
+  `coordinate` varchar(6) NOT NULL COMMENT '货架坐标',
+  PRIMARY KEY (`shelfId`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='货架信息表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `shelf`
+--
+
+LOCK TABLES `shelf` WRITE;
+/*!40000 ALTER TABLE `shelf` DISABLE KEYS */;
+INSERT INTO `shelf` VALUES (1,'A01','1,1'),(2,'A02','1,2');
+/*!40000 ALTER TABLE `shelf` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `stock`
 --
 
@@ -288,14 +340,15 @@ DROP TABLE IF EXISTS `stock`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `stock` (
   `stockId` int(11) NOT NULL AUTO_INCREMENT COMMENT '库存ID',
-  `storageId` int(11) NOT NULL COMMENT '仓库ID',
   `commodityId` int(11) NOT NULL COMMENT '商品ID',
+  `storageId` int(11) NOT NULL COMMENT '仓库ID',
+  `shelfId` int(11) NOT NULL COMMENT '货架ID',
   `inStock` int(11) DEFAULT '0' COMMENT '入库量',
   `outStock` int(11) DEFAULT '0' COMMENT '出库量',
   `visibleStock` int(11) DEFAULT '0' COMMENT '可见销售量',
   `stockAmount` int(11) DEFAULT '0' COMMENT '库存量',
-  PRIMARY KEY (`stockId`,`storageId`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='库存信息';
+  PRIMARY KEY (`stockId`,`storageId`,`shelfId`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COMMENT='库存信息';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -304,7 +357,7 @@ CREATE TABLE `stock` (
 
 LOCK TABLES `stock` WRITE;
 /*!40000 ALTER TABLE `stock` DISABLE KEYS */;
-INSERT INTO `stock` VALUES (1,1,8,20,0,20,20),(2,1,9,10,0,10,10);
+INSERT INTO `stock` VALUES (6,8,1,0,10,0,10,10),(7,9,2,0,20,0,20,20),(8,10,1,0,30,0,30,30),(9,9,1,0,10,0,10,10);
 /*!40000 ALTER TABLE `stock` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -359,6 +412,35 @@ LOCK TABLES `supplier` WRITE;
 /*!40000 ALTER TABLE `supplier` DISABLE KEYS */;
 INSERT INTO `supplier` VALUES (8,'刘思远','刘思远','82312745','海淀区',''),(9,'刘刘刘','刘思远','','','');
 /*!40000 ALTER TABLE `supplier` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `totalstock`
+--
+
+DROP TABLE IF EXISTS `totalstock`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `totalstock` (
+  `totalStockId` int(11) NOT NULL AUTO_INCREMENT,
+  `commodityId` int(11) NOT NULL,
+  `purchase` int(11) DEFAULT '0' COMMENT '订购量',
+  `inStock` int(11) DEFAULT '0' COMMENT '入库量',
+  `outStock` int(11) DEFAULT '0' COMMENT '出库量',
+  `visibleStock` int(11) DEFAULT '0' COMMENT '可见销售量',
+  `stockAmount` int(11) DEFAULT '0' COMMENT '库存总量',
+  PRIMARY KEY (`totalStockId`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COMMENT='库存总表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `totalstock`
+--
+
+LOCK TABLES `totalstock` WRITE;
+/*!40000 ALTER TABLE `totalstock` DISABLE KEYS */;
+INSERT INTO `totalstock` VALUES (6,8,10,10,0,10,10),(7,9,0,30,0,30,30),(8,10,0,30,0,30,30);
+/*!40000 ALTER TABLE `totalstock` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -426,4 +508,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-05-03 22:16:14
+-- Dump completed on 2015-05-06 21:09:52
