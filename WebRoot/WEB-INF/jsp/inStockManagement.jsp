@@ -130,38 +130,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							}
 							
 						}
-					},'-',{
-						text:'修改订单信息',
-						iconCls:'icon-edit',
-						handler:function(){
-							
-							
-							/* //标志位修改
-							flag = 'edit';
-							//动态设定对话框标题
-							$('#addDialog').panel({
-								title: '修改商品信息'
-							});
-							var arr = $('#supplierTable').datagrid('getSelections');
-							if(arr.length != 1) {
-								$.messager.show({
-									title: '提示信息！',
-									msg: '只能选择一行记录进行修改！'
-								});
-							} else {
-								$('#addDialog').dialog('open');
-								$('#addForm').form('reset');
-								$('#addForm').form('load',{
-									supplierId: arr[0].supplierId,
-									supplierName: arr[0].supplierName,
-									contactPeople: arr[0].contactPeople,
-									contactTel: arr[0].contactTel,
-									address: arr[0].address,
-									remark: arr[0].remark
-								});
-							} */
-							
-						}						
 					}
 				]
 				
@@ -236,6 +204,23 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                 textField:'storageName',
                                 method:'post',
                                 url:'storageAction_getStorageList',
+                                required:true
+							}
+						}
+					},{
+						title:'请选择入库架位',
+						field:'shelfId',
+						width:120,
+					 	formatter:function(value,row){
+                            return row.shelfName;
+                        },
+						editor:{
+							type:'combobox',
+							options:{
+							 	valueField:'shelfId',
+                                textField:'shelfName',
+                                method:'post',
+                                url:'shelfAction_getShelfList',
                                 required:true
 							}
 						}
@@ -385,7 +370,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		var editIndex = undefined;
 		//详单表格点击事件
 		function onClickCell(index,field,value){
-			if(field == 'storageId' & editIndex == undefined) {
+			if((field == 'storageId' | field == 'shelfId') & editIndex == undefined) {
 				editIndex = index;
 				$(this).datagrid('beginEdit', index);
 				var ed = $(this).datagrid('getEditor', {index:index,field:field});
@@ -399,9 +384,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		function saveType(target) {
 			var index = getRowIndex(target);
 			if ($('#detailGrid').datagrid('validateRow', editIndex) & editIndex == index){
-				var ed = $('#detailGrid').datagrid('getEditor', {index:editIndex,field:'storageId'});
-			 	var storageName = $(ed.target).combobox('getText');
+				var ed1 = $('#detailGrid').datagrid('getEditor', {index:editIndex,field:'storageId'});
+				var ed2 = $('#detailGrid').datagrid('getEditor', {index:editIndex,field:'shelfId'});
+			 	var storageName = $(ed1.target).combobox('getText');
+			 	var shelfName = $(ed2.target).combobox('getText');
                 $('#detailGrid').datagrid('getRows')[editIndex]['storageName'] = storageName;
+                $('#detailGrid').datagrid('getRows')[editIndex]['shelfName'] = shelfName;
 				$('#detailGrid').datagrid('endEdit', editIndex);
 				editIndex = undefined;
 				

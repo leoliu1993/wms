@@ -76,6 +76,10 @@
 		<action name="storageAction_*" class="storageAction" method="{1}">
 		</action>
 		
+		<!-- 架位管理模块 -->
+		<action name="shelfAction_*" class="shelfAction" method="{1}">
+		</action>
+		
 		<!-- 库存管理模块 -->
 		<action name="stockAction_*" class="stockAction" method="{1}">
 			<result name="stockQueryPage">/WEB-INF/jsp/stockQuery.jsp</result>

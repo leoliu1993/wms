@@ -15,6 +15,7 @@ public class InStockgoods {
 	private Integer returnedAmount = 0;
 	private Double totalPrice = 0.0;
 	private Integer storageId;
+	private Integer shelfId;
 
 	@Id
 	@GeneratedValue
@@ -80,6 +81,14 @@ public class InStockgoods {
 
 	public void setStorageId(Integer storageId) {
 		this.storageId = storageId;
+	}
+
+	public Integer getShelfId() {
+		return shelfId;
+	}
+
+	public void setShelfId(Integer shelfId) {
+		this.shelfId = shelfId;
 	}
 
 }

@@ -12,6 +12,8 @@ public class InStockgoodsDTO {
 	private Double totalPrice = 0.0;
 	private Integer storageId;
 	private String storageName;
+	private Integer shelfId;
+	private Integer shelfName;
 
 	/* =====datagrid属性====== */
 	private int page;
@@ -138,5 +140,21 @@ public class InStockgoodsDTO {
 
 	public void setStorageName(String storageName) {
 		this.storageName = storageName;
+	}
+
+	public Integer getShelfId() {
+		return shelfId;
+	}
+
+	public void setShelfId(Integer shelfId) {
+		this.shelfId = shelfId;
+	}
+
+	public Integer getShelfName() {
+		return shelfName;
+	}
+
+	public void setShelfName(Integer shelfName) {
+		this.shelfName = shelfName;
 	}
 }
