@@ -10,7 +10,6 @@ public class Stock {
 	private Integer stockId;
 	private Integer commodityId;
 	private Integer storageId;
-	private Integer shelfId;
 	private Integer inStock = 0;
 	private Integer outStock = 0;
 	private Integer visibleStock = 0;
@@ -75,12 +74,5 @@ public class Stock {
 		this.stockAmount = stockAmount;
 	}
 
-	public Integer getShelfId() {
-		return shelfId;
-	}
-
-	public void setShelfId(Integer shelfId) {
-		this.shelfId = shelfId;
-	}
 
 }

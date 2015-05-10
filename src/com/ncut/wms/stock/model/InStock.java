@@ -7,6 +7,7 @@ import javax.persistence.Id;
 public class InStock {
 
 	private String inStockId;
+	private String purchaseId;
 	private Integer supplierId;
 	private String createDate;
 	private Double payablePrice = 0.0;
@@ -78,5 +79,13 @@ public class InStock {
 
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+
+	public String getPurchaseId() {
+		return purchaseId;
+	}
+
+	public void setPurchaseId(String purchaseId) {
+		this.purchaseId = purchaseId;
 	}
 }

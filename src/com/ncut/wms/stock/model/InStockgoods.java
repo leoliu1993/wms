@@ -9,6 +9,7 @@ public class InStockgoods {
 
 	private Integer inStockgoodsId;
 	private String inStockId;
+	private Integer purchasegoodsId;
 	private Integer commodityId;
 	private Double price = 0.0;
 	private Integer amount = 0;
@@ -90,5 +91,14 @@ public class InStockgoods {
 	public void setShelfId(Integer shelfId) {
 		this.shelfId = shelfId;
 	}
+
+	public Integer getPurchasegoodsId() {
+		return purchasegoodsId;
+	}
+
+	public void setPurchasegoodsId(Integer purchasegoodsId) {
+		this.purchasegoodsId = purchasegoodsId;
+	}
+
 
 }

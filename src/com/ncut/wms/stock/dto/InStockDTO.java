@@ -4,6 +4,7 @@ public class InStockDTO {
 
 	/* ======订单属性======== */
 	private String inStockId;
+	private String purchaseId;
 	private Integer supplierId;
 	private String supplierName;
 	private String createDate;
@@ -168,5 +169,13 @@ public class InStockDTO {
 
 	public void setIds(String ids) {
 		this.ids = ids;
+	}
+
+	public String getPurchaseId() {
+		return purchaseId;
+	}
+
+	public void setPurchaseId(String purchaseId) {
+		this.purchaseId = purchaseId;
 	}
 }

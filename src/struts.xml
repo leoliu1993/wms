@@ -85,6 +85,16 @@
 			<result name="stockQueryPage">/WEB-INF/jsp/stockQuery.jsp</result>
 		</action>
 		
+		<!-- 配置退货管理模块 -->
+		<action name="returnedAction_*" class="returnedAction" method="{1}">
+			<result name="managementPage">/WEB-INF/jsp/returnedManagement.jsp</result>
+			
+		</action>
+		
+		<!-- 配置中间表 -->
+		<action name="shelfRemainAction_*" class="shelfRemainAction" method="{1}">
+			
+		</action>
 		
     </package>
 

@@ -28,10 +28,12 @@ public class StockService {
 		DataGrid<StockDTO> dg = new DataGrid<StockDTO>();
 		Map<String,Object> map = new HashMap<String,Object>();
 		String hql = "from Stock stock where 1=1";
+		
 		if(tsDTO.getCommodityId()!=null){
 			hql+=" and stock.commodityId = :commodityId";
 			map.put("commodityId", tsDTO.getCommodityId());
 		}
+		
 		String totalHql = "select count(*) "+hql;
 		//实现排序
 		if(tsDTO.getSort()!=null){

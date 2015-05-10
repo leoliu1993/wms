@@ -7,9 +7,6 @@ public class StockDTO {
 	private String commodityName;
 	private Integer storageId;
 	private String storageName;
-	private Integer shelfId;
-	private String shelfName;
-	private String shelfCoordinate;
 	private Integer inStock = 0;
 	private Integer outStock = 0;
 	private Integer visibleStock = 0;
@@ -132,30 +129,6 @@ public class StockDTO {
 
 	public void setIds(String ids) {
 		this.ids = ids;
-	}
-
-	public Integer getShelfId() {
-		return shelfId;
-	}
-
-	public void setShelfId(Integer shelfId) {
-		this.shelfId = shelfId;
-	}
-
-	public String getShelfName() {
-		return shelfName;
-	}
-
-	public void setShelfName(String shelfName) {
-		this.shelfName = shelfName;
-	}
-
-	public String getShelfCoordinate() {
-		return shelfCoordinate;
-	}
-
-	public void setShelfCoordinate(String shelfCoordinate) {
-		this.shelfCoordinate = shelfCoordinate;
 	}
 
 }

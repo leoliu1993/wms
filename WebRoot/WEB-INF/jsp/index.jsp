@@ -236,11 +236,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						</p>
 						<p>
 							<a title="purchaseAction_addPage"><span class="icon icon-instorage">&nbsp;&nbsp;&nbsp;&nbsp;
-							</span>进货订单</a>
+							</span>商品进货</a>
 						</p>
 						<p>
-							<a title="purchaseAction_addPage"><span class="icon icon-back">&nbsp;&nbsp;&nbsp;&nbsp;
-							</span>退货出库</a>
+							<a title="returnedAction_managementPage"><span class="icon icon-back">&nbsp;&nbsp;&nbsp;&nbsp;
+							</span>商品退货</a>
 						</p>
 						<p>
 							<a title="inStockAction_managementPage"><span class="icon icon-instock">&nbsp;&nbsp;&nbsp;&nbsp;

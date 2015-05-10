@@ -18,13 +18,13 @@ import com.ncut.wms.purchase.dao.PurchasegoodsDAO;
 import com.ncut.wms.purchase.model.Purchase;
 import com.ncut.wms.purchase.model.Purchasegoods;
 import com.ncut.wms.stock.dao.InStockDAO;
-import com.ncut.wms.stock.dao.InStockRemainDAO;
+import com.ncut.wms.stock.dao.ShelfRemainDAO;
 import com.ncut.wms.stock.dao.InStockgoodsDAO;
 import com.ncut.wms.stock.dao.StockDAO;
 import com.ncut.wms.stock.dao.TotalStockDAO;
 import com.ncut.wms.stock.dto.InStockDTO;
 import com.ncut.wms.stock.model.InStock;
-import com.ncut.wms.stock.model.InStockRemain;
+import com.ncut.wms.stock.model.ShelfRemain;
 import com.ncut.wms.stock.model.InStockgoods;
 import com.ncut.wms.stock.model.Stock;
 import com.ncut.wms.stock.model.TotalStock;
@@ -40,7 +40,7 @@ public class InStockService {
 
 	/* ======以下业务逻辑======== */
 	public String getOrderCode(String date) {
-		String head = "CKJH";
+		String head = "RKJH";
 		String code = date.replaceAll("-", "");
 		String hql = "select max(t.inStockId) from InStock as t where t.createDate between '"+date+" 00:00:00' and '"+date+" 23:59:59'";
 		List<Purchase> list = pDAO.list(hql);
@@ -80,6 +80,7 @@ public class InStockService {
 			InStockgoods ig = new InStockgoods();
 			BeanUtils.copyProperties(pg, ig);
 			ig.setInStockId(inStockId);
+			ig.setPurchasegoodsId(purchasegoodsId);
 			ig.setStorageId(jObj.getInt("storageId"));
 			ig.setShelfId(jObj.getInt("shelfId"));
 			igList.add(ig);
@@ -92,10 +93,12 @@ public class InStockService {
 			//对入库表进行存储
 			igDAO.add(ig);
 			//对中间表进行存储
-			InStockRemain inStockRemain = new InStockRemain();
-			inStockRemain.setInStockgoodsId(ig.getInStockgoodsId());
-			inStockRemain.setRemain(ig.getAmount());
-			irDAO.add(inStockRemain);
+			ShelfRemain sr = new ShelfRemain();
+			sr.setOrderId(ig.getInStockId());
+			sr.setDetailId(ig.getInStockgoodsId());
+			sr.setVisibleRemain(ig.getAmount());
+			sr.setRealRemain(ig.getAmount());
+			srDAO.add(sr);
 			
 			//对库存信息进行修改:首先搜索商品编号和仓库编号，如果有则修改该库存量，
 			//如果没有则添加该库存信息。同时注意实际库存量应该为入库数量减去退货数量
@@ -167,7 +170,7 @@ public class InStockService {
 		
 	}
 	
-public DataGrid<InStockDTO> querygrid(InStockDTO iDTO) {
+	public DataGrid<InStockDTO> querygrid(InStockDTO iDTO) {
 		
 		DataGrid<InStockDTO> dg = new DataGrid<InStockDTO>();
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -207,7 +210,7 @@ public DataGrid<InStockDTO> querygrid(InStockDTO iDTO) {
 	/* ======以下声明======== */
 	private InStockDAO iDAO;
 	private InStockgoodsDAO igDAO;
-	private InStockRemainDAO irDAO;
+	private ShelfRemainDAO srDAO;
 	private TotalStockDAO tsDAO;
 	private PurchaseDAO pDAO;
 	private PurchasegoodsDAO pgDAO;
@@ -256,9 +259,11 @@ public DataGrid<InStockDTO> querygrid(InStockDTO iDTO) {
 	}
 
 	@Resource
-	public void setIrDAO(InStockRemainDAO irDAO) {
-		this.irDAO = irDAO;
+	public void setSrDAO(ShelfRemainDAO srDAO) {
+		this.srDAO = srDAO;
 	}
+
+	
 
 	
 }

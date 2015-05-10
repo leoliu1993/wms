@@ -4,6 +4,7 @@ public class InStockgoodsDTO {
 
 	private Integer inStockgoodsId;
 	private String inStockId;
+	private Integer purchasegoodsId;
 	private Integer commodityId;
 	private String commodityName;
 	private Double price = 0.0;
@@ -13,7 +14,7 @@ public class InStockgoodsDTO {
 	private Integer storageId;
 	private String storageName;
 	private Integer shelfId;
-	private Integer shelfName;
+	private String shelfName;
 
 	/* =====datagrid属性====== */
 	private int page;
@@ -150,11 +151,21 @@ public class InStockgoodsDTO {
 		this.shelfId = shelfId;
 	}
 
-	public Integer getShelfName() {
+	public String getShelfName() {
 		return shelfName;
 	}
 
-	public void setShelfName(Integer shelfName) {
+	public void setShelfName(String shelfName) {
 		this.shelfName = shelfName;
 	}
+
+	public Integer getPurchasegoodsId() {
+		return purchasegoodsId;
+	}
+
+	public void setPurchasegoodsId(Integer purchasegoodsId) {
+		this.purchasegoodsId = purchasegoodsId;
+	}
+
+	
 }
