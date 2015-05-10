@@ -88,6 +88,8 @@
 		<!-- 配置退货管理模块 -->
 		<action name="returnedAction_*" class="returnedAction" method="{1}">
 			<result name="managementPage">/WEB-INF/jsp/returnedManagement.jsp</result>
+			<result name="purchaseReturnQueryPage">/WEB-INF/jsp/purchaseReturnQuery.jsp</result>
+			
 			
 		</action>
 		

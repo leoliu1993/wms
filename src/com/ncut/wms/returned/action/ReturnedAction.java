@@ -10,8 +10,10 @@ import org.apache.struts2.ServletActionContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
+import com.ncut.wms.purchase.dto.PurchaseDTO;
 import com.ncut.wms.returned.dto.ReturnedDTO;
 import com.ncut.wms.returned.service.ReturnedService;
+import com.ncut.wms.util.easyui.DataGrid;
 import com.ncut.wms.util.json.Json;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.ModelDriven;
@@ -25,8 +27,8 @@ public class ReturnedAction extends ActionSupport implements ModelDriven<Returne
 		return "managementPage";
 	}
 	
-	public String purchase() {
-		return NONE;
+	public String purchaseReturnQueryPage() {
+		return "purchaseReturnQueryPage";
 	}
 	
 	public String purchaseReturn() {
@@ -43,6 +45,28 @@ public class ReturnedAction extends ActionSupport implements ModelDriven<Returne
 		}
 		try {
 			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(json).toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return NONE;
+	}
+	
+	public String getPurchaseReturnTotalGrid() {
+		DataGrid<ReturnedDTO> dg = rService.purchaseReturnTotalGrid(rDTO);
+		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
+		try {
+			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(dg).toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return NONE;
+	}
+	
+	public String getPurchaseReturnDetailGrid() {
+		DataGrid<ReturnedDTO> dg = rService.purchaseReturnDetailGrid(rDTO);
+		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
+		try {
+			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(dg).toString());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

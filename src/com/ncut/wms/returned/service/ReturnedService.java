@@ -1,7 +1,9 @@
 package com.ncut.wms.returned.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -11,6 +13,8 @@ import net.sf.json.JSONObject;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import com.ncut.wms.commodity.dao.CommodityDAO;
+import com.ncut.wms.commodity.model.Commodity;
 import com.ncut.wms.purchase.dao.PurchasegoodsDAO;
 import com.ncut.wms.purchase.model.Purchasegoods;
 import com.ncut.wms.returned.dao.PurchaseReturnedDetailDAO;
@@ -28,12 +32,20 @@ import com.ncut.wms.stock.model.InStockgoods;
 import com.ncut.wms.stock.model.ShelfRemain;
 import com.ncut.wms.stock.model.Stock;
 import com.ncut.wms.stock.model.TotalStock;
+import com.ncut.wms.user.dao.UserDAO;
+import com.ncut.wms.user.model.User;
+import com.ncut.wms.util.easyui.DataGrid;
 import com.ncut.wms.util.system.Tools;
 
 @Service("returnedService")
 public class ReturnedService {
 
 	/* ======以下业务逻辑======== */
+	/**
+	 * 获得退货单号
+	 * @param date
+	 * @return
+	 */
 	public String getOrderCode(String date) {
 		String head = "THJH";
 		String code = date.replaceAll("-", "");
@@ -45,6 +57,10 @@ public class ReturnedService {
 		return head+code+"0001";
 	}
 	
+	/**
+	 * 存储进货退货单
+	 * @param rDTO
+	 */
 	public void savePurchaseReturn(ReturnedDTO rDTO) {
 		//对退货总单进行赋值
 		String inStockId = rDTO.getOrderId();
@@ -116,6 +132,81 @@ public class ReturnedService {
 		
 	}
 	
+	/**
+	 * easyui datagrid展示退货总表
+	 * @param rDTO
+	 * @return
+	 */
+	public DataGrid<ReturnedDTO> purchaseReturnTotalGrid(ReturnedDTO rDTO) {
+		DataGrid<ReturnedDTO> dg = new DataGrid<ReturnedDTO>();
+		Map<String,Object> map = new HashMap<String,Object>();
+		String hql = "from PurchaseReturnedTotal prt where 1=1";
+		
+		if(rDTO.getBeginDate()!=null && !"".equals(rDTO.getBeginDate().trim())){
+			hql+=" and prt.createDate between :beginDate and :endDate";
+			map.put("beginDate", rDTO.getBeginDate().trim());
+			map.put("endDate", rDTO.getEndDate().trim());
+		}
+		
+		String totalHql = "select count(*) "+hql;
+		//实现排序
+		if(rDTO.getSort()!=null){
+			hql+=" order by "+rDTO.getSort()+" "+rDTO.getOrder();
+		}
+		List<PurchaseReturnedTotal> prtList = prtDAO.list(hql, map, rDTO.getPage(), rDTO.getRows());
+		List<ReturnedDTO> prtDTOList = new ArrayList<ReturnedDTO>();
+		for(PurchaseReturnedTotal prt:prtList){
+			ReturnedDTO prtDTO = new ReturnedDTO();
+			BeanUtils.copyProperties(prt, prtDTO);
+			prtDTO.setOrderId(prt.getPrtId());
+			
+			//插入一些需要的数据
+			User u = uDAO.load(prt.getUserId());
+			prtDTO.setUserName(u.getUsername());
+			
+			prtDTOList.add(prtDTO);
+		}
+		dg.setTotal(prtDAO.count(totalHql, map));
+		dg.setRows(prtDTOList);
+		return dg;
+	}
+	
+	public DataGrid<ReturnedDTO> purchaseReturnDetailGrid(ReturnedDTO rDTO) {
+		DataGrid<ReturnedDTO> dg = new DataGrid<ReturnedDTO>();
+		Map<String,Object> map = new HashMap<String,Object>();
+		String hql = "from PurchaseReturnedDetail prd where 1=1";
+		
+		if(rDTO.getOrderId()!=null && !"".equals(rDTO.getOrderId().trim())){
+			hql+=" and prd.prtId = :prtId";
+			map.put("prtId", rDTO.getOrderId().trim());
+		}
+		
+		String totalHql = "select count(*) "+hql;
+		//实现排序
+		if(rDTO.getSort()!=null){
+			hql+=" order by "+rDTO.getSort()+" "+rDTO.getOrder();
+		}
+		List<PurchaseReturnedDetail> prdList = prdDAO.list(hql, map, rDTO.getPage(), rDTO.getRows());
+		List<ReturnedDTO> prdDTOList = new ArrayList<ReturnedDTO>();
+		for(PurchaseReturnedDetail prd:prdList){
+			ReturnedDTO prdDTO = new ReturnedDTO();
+			BeanUtils.copyProperties(prd, prdDTO);
+			prdDTO.setOrderId(prd.getPrtId());
+			prdDTO.setDetailId(prd.getPrdId());
+			prdDTO.setDetailPrice(prd.getReturnedPrice());
+			
+			//插入一些需要的数据
+			Commodity c = cDAO.load(prd.getCommodityId());
+			prdDTO.setCommodityName(c.getCommodityName());
+			
+			prdDTOList.add(prdDTO);
+		}
+		dg.setTotal(prtDAO.count(totalHql, map));
+		dg.setRows(prdDTOList);
+		return dg;
+	}
+
+	
 	
 	/* ======以下声明======== */
 	private PurchaseReturnedTotalDAO prtDAO;
@@ -126,6 +217,8 @@ public class ReturnedService {
 	private ShelfRemainDAO srDAO;
 	private StockDAO stockDAO;
 	private TotalStockDAO tsDAO;
+	private UserDAO uDAO;
+	private CommodityDAO cDAO;
 
 	@Resource
 	public void setPrtDAO(PurchaseReturnedTotalDAO prtDAO) {
@@ -166,5 +259,16 @@ public class ReturnedService {
 	public void setSrDAO(ShelfRemainDAO srDAO) {
 		this.srDAO = srDAO;
 	}
+
+	@Resource
+	public void setuDAO(UserDAO uDAO) {
+		this.uDAO = uDAO;
+	}
+
+	@Resource
+	public void setcDAO(CommodityDAO cDAO) {
+		this.cDAO = cDAO;
+	}
+
 	
 }

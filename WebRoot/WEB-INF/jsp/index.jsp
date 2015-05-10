@@ -34,6 +34,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		.icon-instorage{background-position:-200px -80px}
 		.icon-outstorage{background-position:-60px -140px}
 		.icon-instock{background-position:-0px -40px}
+		.icon-outstock{background-position:-100px -40px}
 		.icon-warning{background-position:-60px -200px}
 		.icon-break{background-position:-320px -160px}
 		.icon-over{background-position:-20px -180px}
@@ -247,16 +248,24 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							</span>入库管理</a>
 						</p>
 						<p>
+							<a title="inStockAction_managementPage"><span class="icon icon-outstock">&nbsp;&nbsp;&nbsp;&nbsp;
+							</span>出库管理</a>
+						</p>
+						<p>
 							<a title="purchaseAction_queryPage"><span class="icon icon icon-searchplus">&nbsp;&nbsp;&nbsp;&nbsp;
 							</span>查询进货单据</a>
+						</p>
+						<p>
+							<a title="returnedAction_purchaseReturnQueryPage"><span class="icon icon-searchminus">&nbsp;&nbsp;&nbsp;&nbsp;
+							</span>查询退货单据</a>
 						</p>
 						<p>
 							<a title="inStockAction_queryPage"><span class="icon icon icon-searchplus">&nbsp;&nbsp;&nbsp;&nbsp;
 							</span>查询入库单据</a>
 						</p>
 						<p>
-							<a title="purchaseAction_addPage"><span class="icon icon-searchminus">&nbsp;&nbsp;&nbsp;&nbsp;
-							</span>查询退货单据</a>
+							<a title="inStockAction_queryPage"><span class="icon icon icon-searchminus">&nbsp;&nbsp;&nbsp;&nbsp;
+							</span>查询出库单据</a>
 						</p>
 					</div>
 					<div title="基础资料管理" style="overflow:auto;padding:10px;">
