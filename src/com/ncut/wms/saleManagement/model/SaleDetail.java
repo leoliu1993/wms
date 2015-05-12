@@ -1,35 +1,38 @@
-package com.ncut.wms.sale.model;
+package com.ncut.wms.saleManagement.model;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
-public class Salegoods {
+@Table(name = "sale_detail")
+public class SaleDetail {
 
-	private Integer id;
-	private String saleId;
+	private Integer sdId;
+	private String stId;
 	private Integer commodityId;
 	private Double price;
-	private Double amount;
+	private Integer amount;
 	private Double totalPrice;
-	
+	private Integer returnedAmount;
+
 	@Id
 	@GeneratedValue
-	public Integer getId() {
-		return id;
+	public Integer getSdId() {
+		return sdId;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public void setSdId(Integer sdId) {
+		this.sdId = sdId;
 	}
 
-	public String getSaleId() {
-		return saleId;
+	public String getStId() {
+		return stId;
 	}
 
-	public void setSaleId(String saleId) {
-		this.saleId = saleId;
+	public void setStId(String stId) {
+		this.stId = stId;
 	}
 
 	public Integer getCommodityId() {
@@ -48,11 +51,11 @@ public class Salegoods {
 		this.price = price;
 	}
 
-	public Double getAmount() {
+	public Integer getAmount() {
 		return amount;
 	}
 
-	public void setAmount(Double amount) {
+	public void setAmount(Integer amount) {
 		this.amount = amount;
 	}
 
@@ -64,4 +67,11 @@ public class Salegoods {
 		this.totalPrice = totalPrice;
 	}
 
+	public Integer getReturnedAmount() {
+		return returnedAmount;
+	}
+
+	public void setReturnedAmount(Integer returnedAmount) {
+		this.returnedAmount = returnedAmount;
+	}
 }

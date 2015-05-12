@@ -9,6 +9,7 @@ public class Client {
 	
 	private Integer clientId;
 	private String clientName;
+	private Integer level = 0;
 	private String contactPeople;
 	private String contactTel;
 	private String address;
@@ -62,5 +63,13 @@ public class Client {
 
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+
+	public Integer getLevel() {
+		return level;
+	}
+
+	public void setLevel(Integer level) {
+		this.level = level;
 	}
 }

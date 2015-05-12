@@ -40,7 +40,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				
 				idField:'orderId',
 				//ajax异步后台请求
-				url: 'purchaseManagement_getReturnStockOutTotalGrid',
+				url: 'returnedAction_getPurchaseReturnTotalGrid',
 				fit: true,
 				//自动列间距
 				fitColumns: false,

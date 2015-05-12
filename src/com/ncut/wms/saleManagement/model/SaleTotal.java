@@ -1,27 +1,31 @@
-package com.ncut.wms.sale.model;
+package com.ncut.wms.saleManagement.model;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
-public class Sale {
+@Table(name = "sale_total")
+public class SaleTotal {
 
-	private String saleId;
+	private String stId;
 	private Integer clientId;
 	private String createDate;
+	private String sendDate;
 	private Double payablePrice;
 	private Double realPrice;
-	private Integer state;
-	private Integer userID;
+	private Integer payState;
+	private Integer stockState;
+	private Integer userId;
 	private String remark;
 
 	@Id
-	public String getSaleId() {
-		return saleId;
+	public String getStId() {
+		return stId;
 	}
 
-	public void setSaleId(String saleId) {
-		this.saleId = saleId;
+	public void setStId(String stId) {
+		this.stId = stId;
 	}
 
 	public Integer getClientId() {
@@ -40,6 +44,14 @@ public class Sale {
 		this.createDate = createDate;
 	}
 
+	public String getSendDate() {
+		return sendDate;
+	}
+
+	public void setSendDate(String sendDate) {
+		this.sendDate = sendDate;
+	}
+
 	public Double getPayablePrice() {
 		return payablePrice;
 	}
@@ -56,20 +68,28 @@ public class Sale {
 		this.realPrice = realPrice;
 	}
 
-	public Integer getState() {
-		return state;
+	public Integer getPayState() {
+		return payState;
 	}
 
-	public void setState(Integer state) {
-		this.state = state;
+	public void setPayState(Integer payState) {
+		this.payState = payState;
 	}
 
-	public Integer getUserID() {
-		return userID;
+	public Integer getStockState() {
+		return stockState;
 	}
 
-	public void setUserID(Integer userID) {
-		this.userID = userID;
+	public void setStockState(Integer stockState) {
+		this.stockState = stockState;
+	}
+
+	public Integer getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
 
 	public String getRemark() {
@@ -79,4 +99,5 @@ public class Sale {
 	public void setRemark(String remark) {
 		this.remark = remark;
 	}
+
 }

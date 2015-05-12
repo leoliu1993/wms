@@ -105,6 +105,11 @@
 			<result name="purchaseReturnStockOutPage">/WEB-INF/jsp/purchaseReturnStockOut.jsp</result>
 		</action>
 		
+		<!-- 销售管理模块 -->
+		<action name="saleManagement_*" class="saleManagementAction" method="{1}">
+			<result name="saleAddPage">/WEB-INF/jsp/saleAdd.jsp</result>
+		</action>
+		
     </package>
 
 

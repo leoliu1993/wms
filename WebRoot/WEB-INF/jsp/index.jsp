@@ -210,12 +210,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					</div>
 					<div title="销售管理" style="overflow:auto;padding:10px;"">
 						<p>
-							<a title="purchaseAction_addPage"><span class="icon icon-searchStock">&nbsp;&nbsp;&nbsp;&nbsp;
+							<a title="stockAction_stockQueryPage"><span class="icon icon-searchStock">&nbsp;&nbsp;&nbsp;&nbsp;
 							</span>查询当前库存</a>
 						</p>
 						<p>
-							<a title="saleAction_addPage"><span class="icon icon-outstorage">&nbsp;&nbsp;&nbsp;&nbsp;
-							</span>销售出库</a>
+							<a title="saleManagement_saleAddPage"><span class="icon icon-outstorage">&nbsp;&nbsp;&nbsp;&nbsp;
+							</span>商品销售</a>
 						</p>
 						<p>
 							<a title="purchaseAction_addPage"><span class="icon icon-back">&nbsp;&nbsp;&nbsp;&nbsp;

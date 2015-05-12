@@ -1,5 +1,6 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
-<%@ taglib prefix="s" uri="/struts-tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
@@ -10,7 +11,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <head>
     <base href="<%=basePath%>">
     
-    <title>销售管理</title>
+    <title>供应商信息管理</title>
 	<meta http-equiv="pragma" content="no-cache">
 	<meta http-equiv="cache-control" content="no-cache">
 	<meta http-equiv="expires" content="0">    
@@ -21,6 +22,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<link rel="stylesheet" type="text/css" href="js/jquery-easyui-1.4.1/themes/icon.css" />
 	<script type="text/javascript" src="js/jquery-easyui-1.4.1/jquery.easyui.min.js"></script>
 	<script type="text/javascript" src="js/jquery-easyui-1.4.1/locale/easyui-lang-zh_CN.js"></script>
+	<script type="text/javascript" src="js/json2.js"></script>
 	
 	<link rel="stylesheet" type="text/css" href="css/common2.css" />
 	<script type="text/javascript" src="js/commons.js"></script>
@@ -31,12 +33,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			var flag = '';
 			//搜索框展开标志
 			var searchStatus = 0;
+			//订单号
+			var orderCode = '';
+			
 			/**
 			 * 表格初始化
 			 */
-			$('#supplierTable').datagrid({
+			$('#grid').datagrid({
 				
-				idField:'id',
 				//ajax异步后台请求
 				fit: true,
 				//自动列间距
@@ -56,6 +60,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				    	width:50,
 				    	checkbox:true
 				    },{
+				    	title:'进货单ID',
+						field:'purchaseId',
+						width:100,
+						hidden: true
+				    },{
 				    	title:'商品ID',
 						field:'commodityId',
 						width:100,
@@ -74,13 +83,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						field:'unitName',
 						width:100
 					},{
-						title:'销售单价',
+						title:'销售价',
 						field:'price',
 						width:100,
 					},{
 						title:'数量',
 						field:'amount',
 						width:100
+					},{
+						title:'退货数量',
+						field:'returnedAmount',
+						width:100,
+						hidden: true
 					},{
 						title:'总金额',
 						field:'totalPrice',
@@ -96,13 +110,23 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						iconCls:'icon-add',
 						handler:function(){
 							
-							//标志为添加
-							flag = 'add';
-							//动态设定对话框标题
-							$('#addDialog').dialog({
-								title: '添加商品详单'
-							});
-							$('#addDialog').dialog('open');
+							if($('#clientCombobox').combobox("getValue") != "") {
+								//标志为添加
+								flag = 'add';
+								//动态设定对话框标题
+								$('#addDialog').panel({
+									title: '添加商品详单'
+								});
+								$('#addDialog').dialog('open');
+								$('#addForm').form('load',{
+									purchaseId: orderCode,
+								});
+							} else {
+								$.messager.show({
+									title: '提示信息！',
+									msg: '请先选择客户再添加商品！'
+								});
+							}
 							
 						}
 					},'-',{
@@ -110,7 +134,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						iconCls:'icon-remove',
 						handler:function(){
 							
-							var arr = $('#supplierTable').datagrid('getSelections');
+							var arr = $('#grid').datagrid('getSelections');
 							if(arr.length < 1) {
 								$.messager.show({
 									title: '提示信息！',
@@ -120,9 +144,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 								
 								$.messager.confirm('提示信息' , '删除后商品信息无法回复，是否确认删除？' , function(result){
 									if(result) {
-										var rowIndex=$('#supplierTable').datagrid('getRowIndex',$('#supplierTable').datagrid('getSelected')) 
-										$('#supplierTable').datagrid('deleteRow',rowIndex);
-										$('#supplierTable').datagrid('clearSelections');
+										var rowIndex=$('#grid').datagrid('getRowIndex',$('#grid').datagrid('getSelected')) 
+										$('#grid').datagrid('deleteRow',rowIndex);
+										$('#grid').datagrid('clearSelections');
 									} else {
 										return;
 									}
@@ -142,7 +166,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							$('#addDialog').dialog({
 								title: '修改商品信息'
 							});
-							var arr = $('#supplierTable').datagrid('getSelections');
+							var arr = $('#grid').datagrid('getSelections');
 							if(arr.length != 1) {
 								$.messager.show({
 									title: '提示信息！',
@@ -152,6 +176,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 								$('#addDialog').dialog('open');
 								$('#addForm').form('reset');
 								$('#addForm').form('load',{
+									purchaseId: arr[0].purchaseId,
 									commodityId: arr[0].commodityId,
 									commodityName: arr[0].commodityName,
 									commodityType: arr[0].commodityType,
@@ -174,7 +199,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				if($('#addForm').form('validate')){
 					if(flag == 'add') {
 						//向grid中添加数据
-						$('#supplierTable').datagrid('appendRow',{
+						$('#grid').datagrid('appendRow',{
+							purchaseId: $('#purchaseId').val(),
 							commodityId: $('#commodityCombobox').combobox("getValue"),
 							commodityName: $('#commodityCombobox').combobox("getText"),
 							commodityType: $('#commodityType').textbox("getValue"),
@@ -186,9 +212,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						
 					} else {
 						//对grid中的选定行进行修改
-						$('#supplierTable').datagrid('updateRow',{
-							index: $('#supplierTable').datagrid('getRowIndex'),
+						$('#grid').datagrid('updateRow',{
+							index: $('#grid').datagrid('getRowIndex', $('#grid').datagrid('getSelected')),
 							row: {
+								purchaseId: $('#purchaseId').val(), 
 								commodityId: $('#commodityCombobox').combobox("getValue"),
 								commodityName: $('#commodityCombobox').combobox("getText"),
 								commodityType: $('#commodityType').textbox("getValue"),
@@ -202,12 +229,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					$('#addForm').form('reset');
 					$('#addDialog').dialog('close');
 					//计算应付总额
-					var rows = $('#supplierTable').datagrid('getRows');
+					var rows = $('#grid').datagrid('getRows');
 					var pay = 0;
 					for(var i=0; i<rows.length; i++) {
 						pay += rows[i].totalPrice;
 					}
 					$('#payablePrice').textbox('setValue',pay);
+					$('#realPrice').textbox('setValue',pay);
 				} else {
 					$.messager.show({
 						title: '提示信息' ,
@@ -227,7 +255,27 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			 * 订单保存按钮
 			 */
 			$('#searchButton').click(function() {
-				$('#supplierTable').datagrid('load', serializeForm($('#commoditySearch')));
+				$.ajax({
+					type: 'post',
+					url: 'purchaseAction_saveOrder',
+					chache: false,
+					async: false,
+					data: $('#commoditySearch').serialize() + '&pgs=' + JSON.stringify($('#grid').datagrid('getRows')),
+					dataType: 'json',
+					success: function(result) {
+						if(result.success) {
+							$.messager.alert('ok!',result.message);
+							$('#commoditySearch').form('reset');
+							window.location.reload();
+							
+						} else {
+							$.messager.show({
+								title: "fail!",
+								msg: result.message
+							});
+						}
+					}
+				});
 			});
 			
 			/**
@@ -239,15 +287,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			});
 			
 			/**
-			 * 客户下拉菜单
+			 * 供应商下拉菜单
 			 */
-			$('#supplierCombobox').combobox({
-				url:'clientAction_getClientList',
+			$('#clientCombobox').combobox({
+				url:'supplierAction_getSupplierList',
 				editable:false,
 				required:false,
-			    missingMessage:'必须选择客户！',
-			    valueField:'clientId',
-			    textField:'clientName',
+			    missingMessage:'必须选择供应商！',
+			    valueField:'supplierId',
+			    textField:'supplierName',
 			});
 			
 			/**
@@ -261,7 +309,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			    onSelect: function() {
 					$.ajax({
 						type: 'post',
-						url: 'commodityAction_getCommodity',
+						url: 'saleManagement_getCommodityAndStock',
 						cache: false,
 						data: $('#addForm').serialize(),
 						dataType: 'json',
@@ -273,7 +321,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 								commodityType: c.commodityType,
 								unitName: c.unitName,
 								price: c.price,
-								amount: c.amount
+								visibleAmount: c.visibleAmount
 							});
 								
 						}
@@ -311,30 +359,49 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			});
 			var currentDate = myformatter(new Date());
 			$('#createDate').datebox('setValue', currentDate);
+			$('#receivedDate').datebox({
+				formatter:myformatter,
+				parser:myparser,
+				editable:false,
+			    required:true,
+			    missingMessage:'必须填写日期！'
+			});
+			var currentDate_7 = myformatter_7(new Date());
+			$('#receivedDate').datebox('setValue', currentDate_7);
+			
 			
 			/**
 			 * 异步获取订单号
 			 */
 			$.ajax({
 				type: 'post',
-				url: 'saleAction_getOrderCode',
+				url: 'purchaseAction_getOrderCode',
 				cache: false,
 				async: false,
 				data: {createDate:currentDate},
 				dataType: 'json',
 				success: function(result) {
+					orderCode = result.purchaseId;
 					$('#north').panel({
-						title:'订单编号：' + result.saleId
+						title:'订单编号：' + orderCode
 					});
+					$('#purchase-pid').val(orderCode);
 				}
 			});
 			
 		});
 		
+		
 		function myformatter(date){
 			var y = date.getFullYear();
 			var m = date.getMonth()+1;
 			var d = date.getDate();
+			return y+'-'+(m<10?('0'+m):m)+'-'+(d<10?('0'+d):d);
+		}
+		function myformatter_7(date){
+			var y = date.getFullYear();
+			var m = date.getMonth()+1;
+			var d = date.getDate()+7;
 			return y+'-'+(m<10?('0'+m):m)+'-'+(d<10?('0'+d):d);
 		}
 		function myparser(s){
@@ -373,13 +440,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   	<div id="lay" class="easyui-layout" fit=true >
 		<div id="north" region="north" title="订单编号" style="height:120px;padding:10px">
 			<form id="commoditySearch">
-				<div class="fl" style="margin:5px">客户：<input id="supplierCombobox" name="supplierName" class="easyui-combobox"/>&nbsp;</div>
+				<div class="fl" style="margin:5px">客&nbsp;&nbsp;&nbsp;户：<input id="clientCombobox" name="clientId" class="easyui-combobox"/>&nbsp;</div>
 				<div class="fl" style="margin:5px">应付金额：<input id="payablePrice" name="payablePrice" class="easyui-textbox" data-options="editable:false"/>&nbsp;</div>
-				<div class="fl" style="margin:5px">实付金额：<input name="realPrice" class="easyui-textbox"/>&nbsp;</div>
-				<div class="fl" style="margin:5px">收货日期：<input id="createDate" name="createDate" class="easyui-datebox"/>&nbsp;</div>
+				<div class="fl" style="margin:5px">实付金额：<input id="realPrice" name="realPrice" class="easyui-textbox"/>&nbsp;</div>
+				<div class="fl" style="margin:5px">创表日期：<input id="createDate" name="createDate" class="easyui-datebox"/>&nbsp;</div>
 				<div class="clear"></div>
-				<div class="fl" style="margin:5px">备注：<input name="remark" class="easyui-textbox" style="width:330px"/>&nbsp;</div>
-				<div class="fl" style="margin:5px">是否已付款：<input id="payState" name="state" class="easyui-combobox" value="1"/>&nbsp;</div>
+				<div class="fl" style="margin:5px">备&nbsp;&nbsp;&nbsp;注：<input name="remark" class="easyui-textbox" style="width:330px"/>&nbsp;</div>
+				<div class="fl" style="margin:5px">是否已付款：<input id="payState" name="payState" class="easyui-combobox" value="1"/>&nbsp;</div>
+				<div class="fl" style="margin:5px">操作员：<input id="userName" name="userName" class="easyui-textbox" value="${sessionScope.user.loginname }" data-options="editable:false" />&nbsp;</div>
+				<input type="hidden" id="userId" name="userId" class="textbox" value=${sessionScope.user.userid } />
+				<input type="hidden" id="purchase-pid" name="purchaseId" class="textbox" />
+				<input type="hidden" id="stockState" name="stockState" class="textbox" value="0" />
 				<div class="fl" style="margin:5px">
 					<a id="searchButton" class="easyui-linkbutton" data-options="iconCls:'icon-save'">保存订单</a>
 					<a id="clearButton" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">清空订单</a>
@@ -387,28 +458,31 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</form>
 		</div>
 		<div region="center" title="商品详单">
-			<table id="supplierTable"></table>
+			<table id="grid"></table>
 		</div>
 	</div>
 	<div id="addDialog" title="添加商品详单" modal=true class="easyui-dialog"
 		closed=true style="width:550px;padding:30px;">
 		<form id="addForm" method="post">
-			<input type="hidden" name="purchaseId" class="textbox" />
+			<input id="purchaseId" type="hidden" name="purchaseId" class="textbox" />
 			<div class="fl" style="margin:10px">
 				商品名称：<input type="text" id="commodityCombobox" name="commodityId" class="easyui-combobox" required=true missingMessage="请选择商品！"  />
 			</div>
 			<div class="clear"></div>
-			<div style="width:450px;height:50px;margin:2px;border:2px dashed #99bbe8;">
+			<div style="width:450px;height:100px;margin:2px;border:2px dashed #99bbe8;">
 				<div class="fl" style="margin:10px">
 					商品型号：<input id="commodityType" name="commodityType" class="easyui-textbox" data-options="readonly:true" />
 				</div>
 				<div class="fl" style="margin:10px">
 					计量单位：<input id="unitName" name="unitName" class="easyui-textbox" data-options="readonly:true" />
 				</div>
+				<div class="fl" style="margin:10px">
+					库存数量：<input id="visibleAmount" name="visibleAmount" class="easyui-textbox" data-options="readonly:true" />
+				</div>
 			</div>
 			<div class="clear"></div>
 			<div class="fl" style="margin:10px">
-				销售单价：<input id="price" name="price" class="easyui-textbox" />
+				采购价格：<input id="price" name="price" class="easyui-textbox" data-options="readonly:true" />
 			</div>
 			<div class="fl" style="margin:10px">
 				数量：<input id="amount" name=amount class="easyui-textbox" />
