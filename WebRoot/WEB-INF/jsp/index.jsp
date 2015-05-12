@@ -248,7 +248,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							</span>入库管理</a>
 						</p>
 						<p>
-							<a title="inStockAction_managementPage"><span class="icon icon-outstock">&nbsp;&nbsp;&nbsp;&nbsp;
+							<a title="purchaseManagement_purchaseReturnStockOutPage"><span class="icon icon-outstock">&nbsp;&nbsp;&nbsp;&nbsp;
 							</span>出库管理</a>
 						</p>
 						<p>
@@ -264,7 +264,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							</span>查询入库单据</a>
 						</p>
 						<p>
-							<a title="inStockAction_queryPage"><span class="icon icon icon-searchminus">&nbsp;&nbsp;&nbsp;&nbsp;
+							<a title="returnedAction_returnStockOutQueryPage"><span class="icon icon icon-searchminus">&nbsp;&nbsp;&nbsp;&nbsp;
 							</span>查询出库单据</a>
 						</p>
 					</div>

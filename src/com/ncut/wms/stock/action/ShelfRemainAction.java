@@ -36,6 +36,18 @@ public class ShelfRemainAction extends ActionSupport implements
 		return NONE;
 	}
 	
+	public String getReturnGrid() {
+
+		DataGrid<ShelfRemainDTO> dg = srService.returnGrid(srDTO);
+		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
+		try {
+			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(dg).toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return NONE;
+	}
+	
 	/* ======以下声明======== */
 	private InStockDTO iDTO;
 	private ShelfRemainDTO srDTO;

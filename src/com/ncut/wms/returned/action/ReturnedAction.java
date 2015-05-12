@@ -31,6 +31,14 @@ public class ReturnedAction extends ActionSupport implements ModelDriven<Returne
 		return "purchaseReturnQueryPage";
 	}
 	
+	public String purchaseReturnStockOutPage() {
+		return "purchaseReturnStockOutPage";
+	}
+	
+	public String returnStockOutQueryPage() {
+		return "returnStockOutQueryPage";
+	}
+	
 	public String purchaseReturn() {
 		Json json = new Json();
 		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
@@ -53,6 +61,17 @@ public class ReturnedAction extends ActionSupport implements ModelDriven<Returne
 	
 	public String getPurchaseReturnTotalGrid() {
 		DataGrid<ReturnedDTO> dg = rService.purchaseReturnTotalGrid(rDTO);
+		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
+		try {
+			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(dg).toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return NONE;
+	}
+	
+	public String getPurchaseReturnQueryGrid() {
+		DataGrid<ReturnedDTO> dg = rService.purchaseReturnQueryGrid(rDTO);
 		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
 		try {
 			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(dg).toString());

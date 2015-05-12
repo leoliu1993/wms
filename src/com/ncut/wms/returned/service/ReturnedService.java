@@ -79,20 +79,22 @@ public class ReturnedService {
 		List<PurchaseReturnedDetail> prdList = new ArrayList<PurchaseReturnedDetail>();
 		for(int i=0; i<jArr.size(); i++) {
 			JSONObject jObj = JSONObject.fromObject(jArr.get(i));
-			Integer inStockgoodsId = jObj.getInt("detailId");
-			Integer commodityId = jObj.getInt("commodityId");
-			Double returnedPrice = jObj.getDouble("price");
 			Integer returnedAmount = jObj.getInt("returnedAmount");
-			Double totalPrice = returnedPrice * returnedAmount;
-			
-			PurchaseReturnedDetail prd = new PurchaseReturnedDetail();
-			prd.setPrtId(prtId);
-			prd.setInStockgoodsId(inStockgoodsId);
-			prd.setCommodityId(commodityId);
-			prd.setReturnedPrice(returnedPrice);
-			prd.setReturnedAmount(returnedAmount);
-			prd.setTotalPrice(totalPrice);
-			prdList.add(prd);
+			if(returnedAmount != 0) {
+				Integer inStockgoodsId = jObj.getInt("detailId");
+				Integer commodityId = jObj.getInt("commodityId");
+				Double returnedPrice = jObj.getDouble("price");
+				Double totalPrice = returnedPrice * returnedAmount;
+				
+				PurchaseReturnedDetail prd = new PurchaseReturnedDetail();
+				prd.setPrtId(prtId);
+				prd.setInStockgoodsId(inStockgoodsId);
+				prd.setCommodityId(commodityId);
+				prd.setReturnedPrice(returnedPrice);
+				prd.setReturnedAmount(returnedAmount);
+				prd.setTotalPrice(totalPrice);
+				prdList.add(prd);
+			}
 		}
 		
 		//对总单和详单进行存储
@@ -102,12 +104,14 @@ public class ReturnedService {
 			
 			//入库单的退货量进行修改
 			InStockgoods ig = igDAO.load(prd.getInStockgoodsId());
-			ig.setReturnedAmount(prd.getReturnedAmount());
+			Integer returnedAmount = ig.getReturnedAmount() + prd.getReturnedAmount();
+			ig.setReturnedAmount(returnedAmount);
 			igDAO.update(ig);
 			
 			//进货单的退货量进行修改
 			Purchasegoods pg = pgDAO.load(ig.getPurchasegoodsId());
-			pg.setReturnedAmount(prd.getReturnedAmount());
+			returnedAmount = pg.getReturnedAmount() + prd.getReturnedAmount();
+			pg.setReturnedAmount(returnedAmount);
 			pgDAO.update(pg);
 			
 			//中间表的退货量进行修改
@@ -138,6 +142,40 @@ public class ReturnedService {
 	 * @return
 	 */
 	public DataGrid<ReturnedDTO> purchaseReturnTotalGrid(ReturnedDTO rDTO) {
+		DataGrid<ReturnedDTO> dg = new DataGrid<ReturnedDTO>();
+		Map<String,Object> map = new HashMap<String,Object>();
+		String hql = "from PurchaseReturnedTotal prt where 1=1 and stockState=0";
+		
+		if(rDTO.getBeginDate()!=null && !"".equals(rDTO.getBeginDate().trim())){
+			hql+=" and prt.createDate between :beginDate and :endDate";
+			map.put("beginDate", rDTO.getBeginDate().trim());
+			map.put("endDate", rDTO.getEndDate().trim());
+		}
+		
+		String totalHql = "select count(*) "+hql;
+		//实现排序
+		if(rDTO.getSort()!=null){
+			hql+=" order by "+rDTO.getSort()+" "+rDTO.getOrder();
+		}
+		List<PurchaseReturnedTotal> prtList = prtDAO.list(hql, map, rDTO.getPage(), rDTO.getRows());
+		List<ReturnedDTO> prtDTOList = new ArrayList<ReturnedDTO>();
+		for(PurchaseReturnedTotal prt:prtList){
+			ReturnedDTO prtDTO = new ReturnedDTO();
+			BeanUtils.copyProperties(prt, prtDTO);
+			prtDTO.setOrderId(prt.getPrtId());
+			
+			//插入一些需要的数据
+			User u = uDAO.load(prt.getUserId());
+			prtDTO.setUserName(u.getUsername());
+			
+			prtDTOList.add(prtDTO);
+		}
+		dg.setTotal(prtDAO.count(totalHql, map));
+		dg.setRows(prtDTOList);
+		return dg;
+	}
+	
+	public DataGrid<ReturnedDTO> purchaseReturnQueryGrid(ReturnedDTO rDTO) {
 		DataGrid<ReturnedDTO> dg = new DataGrid<ReturnedDTO>();
 		Map<String,Object> map = new HashMap<String,Object>();
 		String hql = "from PurchaseReturnedTotal prt where 1=1";
@@ -172,6 +210,41 @@ public class ReturnedService {
 	}
 	
 	public DataGrid<ReturnedDTO> purchaseReturnDetailGrid(ReturnedDTO rDTO) {
+		DataGrid<ReturnedDTO> dg = new DataGrid<ReturnedDTO>();
+		Map<String,Object> map = new HashMap<String,Object>();
+		String hql = "from PurchaseReturnedDetail prd where 1=1";
+		
+		if(rDTO.getOrderId()!=null && !"".equals(rDTO.getOrderId().trim())){
+			hql+=" and prd.prtId = :prtId";
+			map.put("prtId", rDTO.getOrderId().trim());
+		}
+		
+		String totalHql = "select count(*) "+hql;
+		//实现排序
+		if(rDTO.getSort()!=null){
+			hql+=" order by "+rDTO.getSort()+" "+rDTO.getOrder();
+		}
+		List<PurchaseReturnedDetail> prdList = prdDAO.list(hql, map, rDTO.getPage(), rDTO.getRows());
+		List<ReturnedDTO> prdDTOList = new ArrayList<ReturnedDTO>();
+		for(PurchaseReturnedDetail prd:prdList){
+			ReturnedDTO prdDTO = new ReturnedDTO();
+			BeanUtils.copyProperties(prd, prdDTO);
+			prdDTO.setOrderId(prd.getPrtId());
+			prdDTO.setDetailId(prd.getPrdId());
+			prdDTO.setDetailPrice(prd.getReturnedPrice());
+			
+			//插入一些需要的数据
+			Commodity c = cDAO.load(prd.getCommodityId());
+			prdDTO.setCommodityName(c.getCommodityName());
+			
+			prdDTOList.add(prdDTO);
+		}
+		dg.setTotal(prtDAO.count(totalHql, map));
+		dg.setRows(prdDTOList);
+		return dg;
+	}
+	
+	public DataGrid<ReturnedDTO> purchaseReturnDetailQuery(ReturnedDTO rDTO) {
 		DataGrid<ReturnedDTO> dg = new DataGrid<ReturnedDTO>();
 		Map<String,Object> map = new HashMap<String,Object>();
 		String hql = "from PurchaseReturnedDetail prd where 1=1";
@@ -270,5 +343,4 @@ public class ReturnedService {
 		this.cDAO = cDAO;
 	}
 
-	
 }

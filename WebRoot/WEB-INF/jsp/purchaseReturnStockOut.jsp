@@ -10,7 +10,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <head>
     <base href="<%=basePath%>">
     
-    <title>退货单据查询</title>
+    <title>进货退货出库管理</title>
 	<meta http-equiv="pragma" content="no-cache">
 	<meta http-equiv="cache-control" content="no-cache">
 	<meta http-equiv="expires" content="0">    
@@ -38,9 +38,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			 */
 			$('#supplierTable').datagrid({
 				
-				idField:'prtId',
+				idField:'orderId',
 				//ajax异步后台请求
-				url: 'returnedAction_getPurchaseReturnQueryGrid',
+				url: 'purchaseManagement_getReturnStockOutTotalGrid',
 				fit: true,
 				//自动列间距
 				fitColumns: false,
@@ -101,6 +101,27 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			        $('#detailGrid').datagrid('load', {orderId:ids}); 
 				},
 				
+				//增加工具栏，添加增删改查按钮
+				toolbar:[
+					{
+						text:'确认商品退货',
+						iconCls:'icon-add',
+						handler:function(){
+							
+							var arr = $('#supplierTable').datagrid('getSelections');
+							if(arr.length != 1) {
+								$.messager.show({
+									title: '提示信息！',
+									msg: '只能选择一行记录进行退货！'
+								});
+							} else {
+								$('#addDialog').dialog('open');
+								
+							}
+							
+						}
+					}
+				]
 				
 			});
 			
@@ -159,6 +180,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					}
 				]],
 				
+				onClickCell: onClickCell
 				
 			});
 			
@@ -169,51 +191,40 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			$('#saveButton').click(function(){
 				if($('#addForm').form('validate')){
 					
-					$.messager.confirm('提示信息' , '确认入库后订单将无法修改，是否确认入库？' , function(result){
-						if(result) {
-							var arr = $('#supplierTable').datagrid('getSelections');
-							var ids = '';
-							/* for(var i=0; i<arr.length; i++) {
-								ids += arr[i].purchaseId + ',';
+					var arr = $('#supplierTable').datagrid('getSelections');
+					var ids = '';
+					ids += arr[0].orderId;
+					$.ajax({
+						type: 'post',
+						url: 'purchaseManagement_saveReturnStockOut',
+						cache: false,
+						data: $('#addForm').serialize() + '&orderId=' + ids,
+						dataType: 'json',
+						success: function(result) {
+							$('#addDialog').dialog('close');
+							if(result.success){
+								//1.刷新数据表格
+								$('#supplierTable').datagrid('reload');
+								//2.给出提示信息
+								$.messager.show ({
+									title: "ok!",
+									msg: result.message
+								});
+								//3.清楚数据表格勾选
+								$('#supplierTable').datagrid('clearSelections');
+								$('#addForm').form('reset');
+								$('#supplierTable').datagrid('reload');
+								$('#detailGrid').datagrid('loadData',{total:0,rows:[]});
+								
+							} else {
+								$.messager.show ({
+									title: "fail!",
+									msg: result.message
+								});
 							}
-							ids = ids.substring(0, ids.length-1); */
-							ids += arr[0].purchaseId;
-							$.ajax({
-								type: 'post',
-								url: 'inStockAction_purchase',
-								cache: false,
-								data: $('#addForm').serialize() + '&ids=' + ids + '&inStockgoods=' + JSON.stringify($('#detailGrid').datagrid('getRows')),
-								dataType: 'json',
-								success: function(result) {
-									$('#addDialog').dialog('close');
-									if(result.success){
-										//1.刷新数据表格
-										$('#supplierTable').datagrid('reload');
-										//2.给出提示信息
-										$.messager.show ({
-											title: "ok!",
-											msg: result.message
-										});
-										//3.清楚数据表格勾选
-										$('#supplierTable').datagrid('clearSelections');
-										$('#addForm').form('reset');
-										$('#supplierTable').datagrid('reload');
-										$('#detailGrid').datagrid('loadData',{total:0,rows:[]});
-										
-									} else {
-										$.messager.show ({
-											title: "fail!",
-											msg: result.message
-										});
-									}
-								},
-							});
-							
-						} else {
-							return;
-						}
-					}); 
-					
+						},
+					});
+						
 				} else {
 					$.messager.show({
 						title: '提示信息' ,
@@ -290,7 +301,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		var editIndex = undefined;
 		//详单表格点击事件
 		function onClickCell(index,field,value){
-			if(field == 'storageId' & editIndex == undefined) {
+			if((field == 'storageId' | field == 'shelfId') & editIndex == undefined) {
 				editIndex = index;
 				$(this).datagrid('beginEdit', index);
 				var ed = $(this).datagrid('getEditor', {index:index,field:field});
@@ -304,9 +315,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		function saveType(target) {
 			var index = getRowIndex(target);
 			if ($('#detailGrid').datagrid('validateRow', editIndex) & editIndex == index){
-				var ed = $('#detailGrid').datagrid('getEditor', {index:editIndex,field:'storageId'});
-			 	var storageName = $(ed.target).combobox('getText');
+				var ed1 = $('#detailGrid').datagrid('getEditor', {index:editIndex,field:'storageId'});
+				var ed2 = $('#detailGrid').datagrid('getEditor', {index:editIndex,field:'shelfId'});
+			 	var storageName = $(ed1.target).combobox('getText');
+			 	var shelfName = $(ed2.target).combobox('getText');
                 $('#detailGrid').datagrid('getRows')[editIndex]['storageName'] = storageName;
+                $('#detailGrid').datagrid('getRows')[editIndex]['shelfName'] = shelfName;
 				$('#detailGrid').datagrid('endEdit', editIndex);
 				editIndex = undefined;
 				
@@ -376,7 +390,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   
   <body>
   	<div id="lay" class="easyui-layout" fit=true >
-		<div region="north" title="退货申请查询" collapsed=false style="height:80px;padding:10px">
+		<div region="north" title="退货出库查询" collapsed=false style="height:80px;padding:10px">
 			<form id="commoditySearch">
 				开始时间：<input id="beginDate" name="beginDate" class="easyui-datebox" />&nbsp;
 				结束时间：<input id="endDate" name="endDate" class="easyui-datebox" />&nbsp;
@@ -384,21 +398,31 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<a id="clearButton" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">清空</a>
 			</form>
 		</div>
-		<div region="center" title="退货申请总单">
+		<div region="center" title="退货出库总单">
 			<table id="supplierTable"></table>
 		</div>
-		<div region="south" title="退货申请详单" collapsed=false style="height:40%">
+		<div region="south" title="退货出库详单" collapsed=false style="height:40%">
 			<table id="detailGrid"></table>
 		</div>
 	</div>
-	<div id="addDialog" title="确认入库时间" modal=true class="easyui-dialog"
+	<div id="addDialog" title="确认出库时间" modal=true class="easyui-dialog"
 		closed=true style="width:350px;padding:30px;">
 		<form id="addForm" method="post">
-			<div style="margin:10px;text-align:center">
-				设置入库时间：<input id="createDate" name="createDate" />
+			<input type="hidden" id="userId" name="userId" class="textbox" value=${sessionScope.user.userid } />
+			<div style="margin:10px;">
+				<table>
+					<tr height="30px">
+						<td>操作员：</td>
+						<td><input id="userName" name="loginName" class="easyui-textbox" value="${sessionScope.user.loginname }" data-options="editable:false" /></td>
+					</tr>
+					<tr height="30px">
+						<td>设置出库时间：</td>
+						<td><input id="createDate" name="createDate" /></td>
+					</tr>
+				</table>
 			</div>
 			<div style="margin:10px;text-align:center">
-				<a id="saveButton" class="easyui-linkbutton" iconCls="icon-save" style="margin-right:10px">入库</a>
+				<a id="saveButton" class="easyui-linkbutton" iconCls="icon-save" style="margin-right:10px">出库</a>
 				<a id="cancelButton" class="easyui-linkbutton" iconCls="icon-cancel" style="margin-left:10px">取消</a>
 			</div>
 			

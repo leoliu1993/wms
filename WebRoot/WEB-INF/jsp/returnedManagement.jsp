@@ -29,8 +29,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<script type="text/javascript">
 		$(function(){
 			
-			//添加修改标志
-			var flag = '';
 			//搜索框展开标志
 			var searchStatus = 0;
 			
@@ -39,7 +37,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			 */
 			$('#supplierTable').datagrid({
 				
-				idField:'purchaseId',
+				idField:'inStockId',
 				//ajax异步后台请求
 				url: 'inStockAction_getQuerygrid',
 				fit: true,
@@ -98,7 +96,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				//添加点击事件
 				onClickRow:function(rowIndex,rowData){
 					var ids = rowData.inStockId;
-			        $('#detailGrid').datagrid('options').url = 'shelfRemainAction_getDatagrid';
+			        $('#detailGrid').datagrid('options').url = 'shelfRemainAction_getReturnGrid';
 			        $('#detailGrid').datagrid('load', {orderId:ids}); 
 			        editIndex = undefined;
 				},
@@ -128,8 +126,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 										return;
 									} else {
 										
-										//标志为添加
-										flag = 'add';
 										//动态设定对话框标题
 										$('#addDialog').panel({
 											title: '申请商品退货'
@@ -152,7 +148,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			 */
 			$('#detailGrid').datagrid({
 				
-				idField:'id',
+				idField:'detailId',
 				//ajax异步后台请求
 				url: '',
 				fit: true,
@@ -226,7 +222,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							options:{
                                 required:true
 							}
-						}
+						},
+						
 					},{
 						field:'action',
 						title:'操作',
@@ -357,6 +354,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		});
 		//编辑仓库状态
 		var editIndex = undefined;
+		//添加修改标志
+		var flag = '';
 		//详单表格点击事件
 		function onClickCell(index,field,value){
 			if(field == 'returnedAmount' & editIndex == undefined) {
@@ -368,6 +367,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				opts.min = 0;
 				opts.max = $(this).datagrid('getSelected').visibleRemain;
 				$(ed.target).focus();
+				flag = 'edited';
 			} else {
 				return;
 			}
@@ -447,7 +447,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   
   <body>
   	<div id="lay" class="easyui-layout" fit=true >
-		<div region="north" title="条件查询" collapsed=false style="height:80px;padding:10px">
+		<div region="north" title="入库单据查询" collapsed=false style="height:80px;padding:10px">
 			<form id="commoditySearch">
 				开始时间：<input id="beginDate" name="beginDate" class="easyui-datebox" />&nbsp;
 				结束时间：<input id="endDate" name="endDate" class="easyui-datebox" />&nbsp;

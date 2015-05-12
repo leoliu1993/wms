@@ -89,13 +89,20 @@
 		<action name="returnedAction_*" class="returnedAction" method="{1}">
 			<result name="managementPage">/WEB-INF/jsp/returnedManagement.jsp</result>
 			<result name="purchaseReturnQueryPage">/WEB-INF/jsp/purchaseReturnQuery.jsp</result>
-			
+			<result name="purchaseReturnStockOutPage">/WEB-INF/jsp/purchaseReturnStockOut.jsp</result>
+			<result name="returnStockOutQueryPage">/WEB-INF/jsp/returnStockOutQuery.jsp</result>
 			
 		</action>
 		
 		<!-- 配置中间表 -->
 		<action name="shelfRemainAction_*" class="shelfRemainAction" method="{1}">
 			
+		</action>
+		
+		<!--===== 重构后配置 =====-->
+		<!-- 进货管理模块 -->
+		<action name="purchaseManagement_*" class="purchaseManagementAction" method="{1}">
+			<result name="purchaseReturnStockOutPage">/WEB-INF/jsp/purchaseReturnStockOut.jsp</result>
 		</action>
 		
     </package>
