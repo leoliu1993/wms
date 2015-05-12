@@ -287,15 +287,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			});
 			
 			/**
-			 * 供应商下拉菜单
+			 * 客户下拉菜单
 			 */
 			$('#clientCombobox').combobox({
-				url:'supplierAction_getSupplierList',
+				url:'clientAction_getClientList',
 				editable:false,
 				required:false,
 			    missingMessage:'必须选择供应商！',
-			    valueField:'supplierId',
-			    textField:'supplierName',
+			    valueField:'clientId',
+			    textField:'clientName',
 			});
 			
 			/**
@@ -311,7 +311,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						type: 'post',
 						url: 'saleManagement_getCommodityAndStock',
 						cache: false,
-						data: $('#addForm').serialize(),
+						async: true,
+						data: $('#addForm').serialize() + '&clientId=' + $('#clientCombobox').combobox("getValue"),
 						dataType: 'json',
 						success: function(c) {
 							//载入商品的表单信息
@@ -321,9 +322,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 								commodityType: c.commodityType,
 								unitName: c.unitName,
 								price: c.price,
-								visibleAmount: c.visibleAmount
+								visibleStock: c.visibleStock,
+								categoryName: c.categoryName
 							});
-								
+							
+							//设置数量的最大值
+							var opts = $('#amount').numberbox('options');
+							console.log(opts);
+							opts.min = 0;
+							opts.max = parseInt($('#visibleStock').numberbox('getValue'));
 						}
 					});
 				}
@@ -474,10 +481,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					商品型号：<input id="commodityType" name="commodityType" class="easyui-textbox" data-options="readonly:true" />
 				</div>
 				<div class="fl" style="margin:10px">
+					商品类别：<input id="categoryName" name="categoryName" class="easyui-textbox" data-options="readonly:true" />
+				</div>
+				<div class="fl" style="margin:10px">
 					计量单位：<input id="unitName" name="unitName" class="easyui-textbox" data-options="readonly:true" />
 				</div>
 				<div class="fl" style="margin:10px">
-					库存数量：<input id="visibleAmount" name="visibleAmount" class="easyui-textbox" data-options="readonly:true" />
+					库存数量：<input id="visibleStock" name="visibleStock" class="easyui-numberbox" data-options="readonly:true" />
 				</div>
 			</div>
 			<div class="clear"></div>
@@ -485,7 +495,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				采购价格：<input id="price" name="price" class="easyui-textbox" data-options="readonly:true" />
 			</div>
 			<div class="fl" style="margin:10px">
-				数量：<input id="amount" name=amount class="easyui-textbox" />
+				数量：<input id="amount" name=amount class="easyui-numberbox" />
 			</div>
 			<div class="clear"></div>
 			<br>
