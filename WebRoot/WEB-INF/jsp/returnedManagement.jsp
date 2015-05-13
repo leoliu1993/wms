@@ -53,12 +53,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				//列内容
 				columns:[[
 				    {
-				    	title:'入库订单ID',
+				    	title:'入库单ID',
 						field:'inStockId',
 						width:150,
 						hidden: false
 				    },{
-						title:'订单生成日期',
+						title:'入库日期',
 						field:'createDate',
 						width:170,
 						sortable: false

@@ -7,11 +7,15 @@ import org.springframework.stereotype.Service;
 
 import com.ncut.wms.client.dao.impl.ClientDAO;
 import com.ncut.wms.client.model.Client;
+import com.ncut.wms.commodity.dao.CommodityCategoryDAO;
 import com.ncut.wms.commodity.dao.CommodityDAO;
 import com.ncut.wms.commodity.model.Commodity;
+import com.ncut.wms.commodity.model.CommodityCategory;
 import com.ncut.wms.saleManagement.dto.SaleManagementDTO;
 import com.ncut.wms.stock.dao.TotalStockDAO;
 import com.ncut.wms.stock.model.TotalStock;
+import com.ncut.wms.unit.dao.UnitDAO;
+import com.ncut.wms.unit.model.Unit;
 
 @Service("saleManagementService")
 public class SaleManagementService {
@@ -20,11 +24,16 @@ public class SaleManagementService {
 	public SaleManagementDTO getCommodityAndStock(SaleManagementDTO smDTO) {
 		
 		Commodity commodity = commodityDAO.load(smDTO.getCommodityId());
+		CommodityCategory cc = ccDAO.load(commodity.getCategoryId());
+		Unit unit = unitDAO.load(commodity.getUnitId());
 		TotalStock ts = tsDAO.findByCommodityId(commodity.getCommodityId());
 		Client client = clientDAO.load(smDTO.getClientId());
 		
 		BeanUtils.copyProperties(commodity, smDTO);
 		BeanUtils.copyProperties(ts, smDTO);
+		
+		smDTO.setCategoryName(cc.getCname());
+		smDTO.setUnitName(unit.getUnitName());
 		
 		if(client.getLevel() == 0) {
 			smDTO.setPrice(commodity.getSalePrice());
@@ -44,6 +53,8 @@ public class SaleManagementService {
 
 	/* ======以下声明======== */
 	private CommodityDAO commodityDAO;
+	private CommodityCategoryDAO ccDAO;
+	private UnitDAO unitDAO;
 	private TotalStockDAO tsDAO;
 	private ClientDAO clientDAO;
 
@@ -62,5 +73,14 @@ public class SaleManagementService {
 		this.clientDAO = clientDAO;
 	}
 
-	
+	@Resource
+	public void setCcDAO(CommodityCategoryDAO ccDAO) {
+		this.ccDAO = ccDAO;
+	}
+
+	@Resource
+	public void setUnitDAO(UnitDAO unitDAO) {
+		this.unitDAO = unitDAO;
+	}
+
 }

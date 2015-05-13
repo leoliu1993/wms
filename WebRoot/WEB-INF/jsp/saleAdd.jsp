@@ -79,9 +79,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						field:'commodityType',
 						width:100
 					},{
+						title:'商品类别',
+						field:'categoryName',
+						width:100
+					},{
 						title:'计量单位',
 						field:'unitName',
 						width:100
+					},{
+						title:'可见库存量',
+						field:'visibleStock',
+						width:100,
+						hidden: true
 					},{
 						title:'销售价',
 						field:'price',
@@ -180,7 +189,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 									commodityId: arr[0].commodityId,
 									commodityName: arr[0].commodityName,
 									commodityType: arr[0].commodityType,
+									categoryName: arr[0].categoryName,
 									unitName: arr[0].unitName,
+									visibleStock: arr[0].visibleStock,
 									price: arr[0].price,
 									amount: arr[0].amount
 								});
@@ -204,7 +215,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							commodityId: $('#commodityCombobox').combobox("getValue"),
 							commodityName: $('#commodityCombobox').combobox("getText"),
 							commodityType: $('#commodityType').textbox("getValue"),
+							categoryName:$('#categoryName').textbox("getValue"),
 							unitName: $('#unitName').textbox("getValue"),
+							visibleStock: $('#visibleStock').numberbox("getValue"),
 							price: $('#price').textbox("getValue"),
 							amount: $('#amount').textbox("getValue"),
 							totalPrice: $('#price').val() * $('#amount').val()
@@ -219,7 +232,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 								commodityId: $('#commodityCombobox').combobox("getValue"),
 								commodityName: $('#commodityCombobox').combobox("getText"),
 								commodityType: $('#commodityType').textbox("getValue"),
+								categoryName:$('#categoryName').textbox("getValue"),
 								unitName: $('#unitName').textbox("getValue"),
+								visibleStock: $('#visibleStock').numberbox("getValue"),
 								price: $('#price').textbox("getValue"),
 								amount: $('#amount').textbox("getValue"),
 								totalPrice: $('#price').val() * $('#amount').val()

@@ -27,6 +27,7 @@ public class SaleManagementAction extends ActionSupport implements
 
 	public String getCommodityAndStock() {
 		SaleManagementDTO cs = smService.getCommodityAndStock(smDTO);
+		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
 		try {
 			ServletActionContext.getResponse().getWriter()
 					.write(JSONObject.fromObject(cs).toString());

@@ -249,7 +249,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						</p>
 						<p>
 							<a title="purchaseManagement_purchaseReturnStockOutPage"><span class="icon icon-outstock">&nbsp;&nbsp;&nbsp;&nbsp;
-							</span>出库管理</a>
+							</span>退货出库</a>
 						</p>
 						<p>
 							<a title="purchaseAction_queryPage"><span class="icon icon icon-searchplus">&nbsp;&nbsp;&nbsp;&nbsp;
