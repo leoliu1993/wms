@@ -28,8 +28,6 @@ public class SaleManagementService {
 		Unit unit = unitDAO.load(commodity.getUnitId());
 		TotalStock ts = tsDAO.findByCommodityId(commodity.getCommodityId());
 		Client client = clientDAO.load(smDTO.getClientId());
-		CommodityCategory cc = ccDAO.load(commodity.getCategoryId());
-		Unit unit = unitDAO.load(commodity.getUnitId());
 		
 		BeanUtils.copyProperties(commodity, smDTO);
 		BeanUtils.copyProperties(ts, smDTO);
