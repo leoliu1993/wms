@@ -24,6 +24,8 @@ public class SaleManagementService {
 	public SaleManagementDTO getCommodityAndStock(SaleManagementDTO smDTO) {
 		
 		Commodity commodity = commodityDAO.load(smDTO.getCommodityId());
+		CommodityCategory cc = ccDAO.load(commodity.getCategoryId());
+		Unit unit = unitDAO.load(commodity.getUnitId());
 		TotalStock ts = tsDAO.findByCommodityId(commodity.getCommodityId());
 		Client client = clientDAO.load(smDTO.getClientId());
 		CommodityCategory cc = ccDAO.load(commodity.getCategoryId());
@@ -86,5 +88,4 @@ public class SaleManagementService {
 		this.unitDAO = unitDAO;
 	}
 
-	
 }
