@@ -222,6 +222,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							</span>客户退货</a>
 						</p>
 						<p>
+							<a title="saleManagement_saleStockOutPage"><span class="icon icon-outstock">&nbsp;&nbsp;&nbsp;&nbsp;
+							</span>销售出库</a>
+						</p>
+						<p>
 							<a title="purchaseAction_addPage"><span class="icon icon-searchplus">&nbsp;&nbsp;&nbsp;&nbsp;
 							</span>查询进货单据</a>
 						</p>

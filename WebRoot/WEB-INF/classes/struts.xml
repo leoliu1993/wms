@@ -108,6 +108,7 @@
 		<!-- 销售管理模块 -->
 		<action name="saleManagement_*" class="saleManagementAction" method="{1}">
 			<result name="saleAddPage">/WEB-INF/jsp/saleAdd.jsp</result>
+			<result name="saleStockOutPage">/WEB-INF/jsp/saleStockOut.jsp</result>
 		</action>
 		
     </package>

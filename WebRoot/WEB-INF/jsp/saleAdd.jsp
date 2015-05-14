@@ -61,7 +61,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				    	checkbox:true
 				    },{
 				    	title:'进货单ID',
-						field:'purchaseId',
+						field:'orderId',
 						width:100,
 						hidden: true
 				    },{
@@ -128,7 +128,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 								});
 								$('#addDialog').dialog('open');
 								$('#addForm').form('load',{
-									purchaseId: orderCode,
+									orderId: orderCode,
 								});
 							} else {
 								$.messager.show({
@@ -185,7 +185,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 								$('#addDialog').dialog('open');
 								$('#addForm').form('reset');
 								$('#addForm').form('load',{
-									purchaseId: arr[0].purchaseId,
+									orderId: arr[0].orderId,
 									commodityId: arr[0].commodityId,
 									commodityName: arr[0].commodityName,
 									commodityType: arr[0].commodityType,
@@ -211,7 +211,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					if(flag == 'add') {
 						//向grid中添加数据
 						$('#grid').datagrid('appendRow',{
-							purchaseId: $('#purchaseId').val(),
+							orderId: $('#orderId').val(),
 							commodityId: $('#commodityCombobox').combobox("getValue"),
 							commodityName: $('#commodityCombobox').combobox("getText"),
 							commodityType: $('#commodityType').textbox("getValue"),
@@ -228,7 +228,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						$('#grid').datagrid('updateRow',{
 							index: $('#grid').datagrid('getRowIndex', $('#grid').datagrid('getSelected')),
 							row: {
-								purchaseId: $('#purchaseId').val(), 
+								orderId: $('#orderId').val(), 
 								commodityId: $('#commodityCombobox').combobox("getValue"),
 								commodityName: $('#commodityCombobox').combobox("getText"),
 								commodityType: $('#commodityType').textbox("getValue"),
@@ -272,10 +272,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			$('#searchButton').click(function() {
 				$.ajax({
 					type: 'post',
-					url: 'purchaseAction_saveOrder',
+					url: 'saleManagement_saveSale',
 					chache: false,
 					async: false,
-					data: $('#commoditySearch').serialize() + '&pgs=' + JSON.stringify($('#grid').datagrid('getRows')),
+					data: $('#commoditySearch').serialize() + '&detailOrder=' + JSON.stringify($('#grid').datagrid('getRows')),
 					dataType: 'json',
 					success: function(result) {
 						if(result.success) {
@@ -397,17 +397,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			 */
 			$.ajax({
 				type: 'post',
-				url: 'purchaseAction_getOrderCode',
+				url: 'saleManagement_getSaleCode',
 				cache: false,
 				async: false,
 				data: {createDate:currentDate},
 				dataType: 'json',
 				success: function(result) {
-					orderCode = result.purchaseId;
+					orderCode = result.orderId;
 					$('#north').panel({
 						title:'订单编号：' + orderCode
 					});
-					$('#purchase-pid').val(orderCode);
+					$('#orderId2').val(orderCode);
 				}
 			});
 			
@@ -471,7 +471,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<div class="fl" style="margin:5px">是否已付款：<input id="payState" name="payState" class="easyui-combobox" value="1"/>&nbsp;</div>
 				<div class="fl" style="margin:5px">操作员：<input id="userName" name="userName" class="easyui-textbox" value="${sessionScope.user.loginname }" data-options="editable:false" />&nbsp;</div>
 				<input type="hidden" id="userId" name="userId" class="textbox" value=${sessionScope.user.userid } />
-				<input type="hidden" id="purchase-pid" name="purchaseId" class="textbox" />
+				<input type="hidden" id="orderId2" name="orderId" class="textbox" />
 				<input type="hidden" id="stockState" name="stockState" class="textbox" value="0" />
 				<div class="fl" style="margin:5px">
 					<a id="searchButton" class="easyui-linkbutton" data-options="iconCls:'icon-save'">保存订单</a>
@@ -486,7 +486,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<div id="addDialog" title="添加商品详单" modal=true class="easyui-dialog"
 		closed=true style="width:550px;padding:30px;">
 		<form id="addForm" method="post">
-			<input id="purchaseId" type="hidden" name="purchaseId" class="textbox" />
+			<input id="orderId" type="hidden" name="orderId" class="textbox" />
 			<div class="fl" style="margin:10px">
 				商品名称：<input type="text" id="commodityCombobox" name="commodityId" class="easyui-combobox" required=true missingMessage="请选择商品！"  />
 			</div>
