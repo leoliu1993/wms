@@ -23,6 +23,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<script type="text/javascript" src="js/jquery-easyui-1.4.1/jquery.easyui.min.js"></script>
 	<script type="text/javascript" src="js/jquery-easyui-1.4.1/locale/easyui-lang-zh_CN.js"></script>
 	<script type="text/javascript" src="js/json2.js"></script>
+	<script type="text/javascript" src="js/common.js"></script>
 	
 	<link rel="stylesheet" type="text/css" href="css/common2.css" />
 	<script type="text/javascript" src="js/commons.js"></script>
@@ -31,6 +32,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			
 			//搜索框展开标志
 			var searchStatus = 0;
+			//当前时间
+			var currentTime = '';
 			
 			/**
 			 * 表格初始化
@@ -39,7 +42,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				
 				idField:'inStockId',
 				//ajax异步后台请求
-				url: 'saleManagement_getQuerygrid',
+				url: 'saleManagement_getSaleTotalGrid',
 				fit: true,
 				//自动列间距
 				fitColumns: false,
@@ -53,12 +56,24 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				//列内容
 				columns:[[
 				    {
-				    	title:'入库单ID',
-						field:'inStockId',
+				    	title:'销售总单ID',
+						field:'orderId',
 						width:150,
 						hidden: false
 				    },{
-						title:'入库日期',
+						title:'客户ID',
+						field:'clientId',
+						width:100,
+						hidden: true,
+						sortable: false
+					},{
+						title:'客户名称',
+						field:'clientName',
+						width:100,
+						hidden: false,
+						sortable: false
+					},{
+						title:'创表日期',
 						field:'createDate',
 						width:170,
 						sortable: false
@@ -71,17 +86,21 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						field:'realPrice',
 						width:100
 					},{
-						title:'是否付款',
-						field:'state',
+						title:'付款状态',
+						field:'payState',
 						width:100,
 						formatter: function(value,row,index){
-							if (row.state == 1){
+							if (row.payState == 1) {
 								return '已付款';
 							} else {
 								return '未付款';
 							}
 						}
-
+					},{
+						title:'操作员ID',
+						field:'userId',
+						width:100,
+						hidden: true
 					},{
 						title:'操作员姓名',
 						field:'userName',
@@ -90,22 +109,53 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						title:'备注',
 						field:'remark',
 						width:100
+					},{
+						title:'出库状态',
+						field:'stockState',
+						width:100,
+						formatter: function(value,row,index){
+							if (row.stockState == 1) {
+								return '已出库';
+							} else {
+								return '未出库';
+							}
+						}
 					}
 				]],
 				
 				//添加点击事件
 				onClickRow:function(rowIndex,rowData){
-					var ids = rowData.inStockId;
-			        $('#detailGrid').datagrid('options').url = 'shelfRemainAction_getReturnGrid';
+					var ids = rowData.orderId;
+			        $('#detailGrid').datagrid('options').url = 'saleManagement_getSaleDetailGrid';
+			        if(rowData.stockState == 1){
+			        	var columnOption = $('#detailGrid').datagrid('getColumnOption','returnedAmount');
+			        	columnOption.hidden = true;
+			        	columnOption = $('#detailGrid').datagrid('getColumnOption','action');
+			        	columnOption.hidden = true;
+			        } else {
+			        	var columnOption = $('#detailGrid').datagrid('getColumnOption','returnedAmount');
+			        	columnOption.hidden = false;
+			        	columnOption = $('#detailGrid').datagrid('getColumnOption','action');
+			        	columnOption.hidden = false;
+			        }
 			        $('#detailGrid').datagrid('load', {orderId:ids}); 
-			        editIndex = undefined;
 				},
 				
 				toolbar:[
 							{
-								text:'申请商品退货',
+								text:'确认商品退货',
 								iconCls:'icon-remove',
 								handler:function(){
+									var stockState;
+									var row = $('#supplierTable').datagrid('getSelected');
+									if(row == null) {
+										$.messager.show({
+											title: '提示信息！',
+											msg: '至少选择一行记录进行修改！'
+										});
+										return;
+									}
+									stockState = row.stockState;
 									
 									//判断是否选择退货数量
 									var rows = $('#detailGrid').datagrid('getRows');
@@ -118,7 +168,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 										}
 									}
 									
-									if(returnedPrice == 0) {
+									if(returnedPrice == 0 && stockState == 0) {
 										$.messager.show({
 											title: '提示信息！',
 											msg: '必须选择退货数量后才能申请退货！'
@@ -128,11 +178,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 										
 										//动态设定对话框标题
 										$('#addDialog').panel({
-											title: '申请商品退货'
+											title: '确认商品退货'
 										});
-										$('#returnedPrice').textbox('setValue', returnedPrice);
+										$('#returnedPrice').numberbox('setValue', returnedPrice);
 										$('#orderId').val(orderId);
 										$('#addDialog').dialog('open');
+										currentTime = dateTimeFormatter(new Date())
+										$('#createDate').datetimebox('setValue', currentTime);
 									}
 									
 									
@@ -163,17 +215,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				singleSelect:true,
 				//列内容
 				columns:[[
-				    {
-				    	title:'入库详单ID',
+					{
+						title:'销售详单ID',
 						field:'detailId',
 						width:100,
 						hidden: true
-				    },{
-				    	title:'入库订单ID',
+					},{
+						title:'销售总单ID',
 						field:'orderId',
 						width:150,
 						hidden: true
-				    },{
+					},{
 						title:'商品ID',
 						field:'commodityId',
 						width:50,
@@ -184,39 +236,22 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						field:'commodityName',
 						width:100
 					},{
-						title:'仓库ID',
-						field:'storageId',
-						width:100,
-						hidden: true
-					},{
-						title:'仓库名称',
-						field:'storageName',
-						width:100,
-					},{
-						title:'货架ID',
-						field:'shelfId',
-						width:100,
-						hidden: true
-					},{
-						title:'货架名称',
-						field:'shelfName',
-						width:100,
-					},{
-						title:'进购价',
+						title:'销售单价',
 						field:'price',
 						width:100
 					},{
-						title:'进购数量',
+						title:'销售数量',
 						field:'amount',
-						width:100,
+						width:100
 					},{
-						title:'剩余量',
-						field:'visibleRemain',
+						title:'销售总价',
+						field:'totalPrice',
 						width:100,
 					},{
 						title:'请选择退货数量',
 						field:'returnedAmount',
 						width:100,
+						hidden:false,
 						editor:{
 							type:'numberbox',
 							options:{
@@ -343,12 +378,21 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			});
 			
 			/**
-			 * 入库时间框
+			 * 创表时间框
 			 */
-			$('#createDate').datetimebox({    
+			$('#createDate').datetimebox({
 			    editable: false,   
 			    required: true,   
-			    missingMessage: '请填写入库时间',
+			    showSeconds: true,
+			}); 
+			
+			/**
+			 * 出库时间框
+			 */
+			$('#outDate').datetimebox({
+			    editable: false,   
+			    required: true,   
+			    missingMessage: '请填写出库时间',
 			    showSeconds: true,   
 			}); 
 		});
@@ -365,7 +409,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				var ed = $(this).datagrid('getEditor', {index:index,field:field});
 				var opts = $(ed.target).numberbox('options');
 				opts.min = 0;
-				opts.max = $(this).datagrid('getSelected').visibleRemain;
+				opts.max = $(this).datagrid('getSelected').amount;
 				$(ed.target).focus();
 				flag = 'edited';
 			} else {
@@ -475,11 +519,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					</tr>
 					<tr height="30px">
 						<td>退款金额：</td>
-						<td><input id="returnedPrice" name="returnedPrice" class="easyui-textbox" data-options="editable:false" /></td>
+						<td><input id="returnedPrice" name="returnedPrice" class="easyui-numberbox" data-options="editable:false" /></td>
 					</tr>
 					<tr height="30px">
-						<td>申请退款时间：</td>
+						<td>设置创表时间：</td>
 						<td><input id="createDate" name="createDate" /></td>
+					</tr>
+					<tr height="30px">
+						<td>设置退货时间：</td>
+						<td><input id="outDate" name="outDate" /></td>
 					</tr>
 				</table>
 			</div>

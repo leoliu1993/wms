@@ -287,7 +287,12 @@ public class SaleManagementService {
 	public DataGrid<SaleManagementDTO> getSaleTotalGrid(SaleManagementDTO smDTO) {
 		DataGrid<SaleManagementDTO> dg = new DataGrid<SaleManagementDTO>();
 		Map<String,Object> map = new HashMap<String,Object>();
-		String hql = "from SaleTotal st where 1=1 and st.stockState = 0";
+		String hql = "from SaleTotal st where 1=1";
+		
+		if(smDTO.getStockState() != null){
+			hql+=" and st.stockState = :stockState";
+			map.put("stockState", smDTO.getStockState());
+		}
 		
 		if(smDTO.getBeginDate()!=null && !"".equals(smDTO.getBeginDate().trim())){
 			hql+=" and st.createDate between :beginDate and :endDate";

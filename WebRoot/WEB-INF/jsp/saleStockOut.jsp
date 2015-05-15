@@ -43,6 +43,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				idField:'orderId',
 				//ajax异步后台请求
 				url: 'saleManagement_getSaleTotalGrid',
+				queryParams: {stockState:0},
 				fit: true,
 				//自动列间距
 				fitColumns: false,
@@ -181,7 +182,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						width:100,
 						hidden: true
 				    },{
-				    	title:'退货总单ID',
+				    	title:'销售总单ID',
 						field:'orderId',
 						width:150,
 						hidden: true

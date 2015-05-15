@@ -109,6 +109,7 @@
 		<action name="saleManagement_*" class="saleManagementAction" method="{1}">
 			<result name="saleAddPage">/WEB-INF/jsp/saleAdd.jsp</result>
 			<result name="saleStockOutPage">/WEB-INF/jsp/saleStockOut.jsp</result>
+			<result name="saleReturnPage">/WEB-INF/jsp/saleReturn.jsp</result>
 		</action>
 		
     </package>

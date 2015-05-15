@@ -218,7 +218,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							</span>商品销售</a>
 						</p>
 						<p>
-							<a title="purchaseAction_addPage"><span class="icon icon-back">&nbsp;&nbsp;&nbsp;&nbsp;
+							<a title="saleManagement_saleReturnPage"><span class="icon icon-back">&nbsp;&nbsp;&nbsp;&nbsp;
 							</span>客户退货</a>
 						</p>
 						<p>

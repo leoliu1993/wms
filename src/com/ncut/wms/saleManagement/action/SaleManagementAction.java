@@ -39,6 +39,10 @@ public class SaleManagementAction extends ActionSupport implements
 	public String saleStockOutPage() {
 		return "saleStockOutPage";
 	}
+	
+	public String saleReturnPage() {
+		return "saleReturnPage";
+	}
 
 	/**
 	 * 获得商品和对应的库存信息
