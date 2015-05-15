@@ -132,6 +132,10 @@ public class PurchaseManagementService {
 		return dg;
 	}
 	
+	/**
+	 * 保存进货退货单
+	 * @param pmDTO
+	 */
 	public void saveReturnStockOut(PurchaseManagementDTO pmDTO) {
 
 		//对出库总单进行赋值
@@ -165,8 +169,12 @@ public class PurchaseManagementService {
 			//中间表的退货量进行修改
 			ShelfRemain sr = srDAO.findByOrderIdAndDetailId(prt.getInStockId(),prd.getInStockgoodsId());
 			Integer realRemain = sr.getRealRemain() - prd.getReturnedAmount();
-			sr.setRealRemain(realRemain);
-			srDAO.update(sr);
+			if(realRemain == 0) {
+				srDAO.delete(sr.getShelfRemainId());
+			} else {
+				sr.setRealRemain(realRemain);
+				srDAO.update(sr);
+			}
 			
 			//库存总单的退货量进行修改
 			TotalStock ts = tsDAO.findByCommodityId(prd.getCommodityId());

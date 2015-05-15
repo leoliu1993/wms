@@ -22,9 +22,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<script type="text/javascript" src="js/jquery-easyui-1.4.1/jquery.easyui.min.js"></script>
 	<script type="text/javascript" src="js/jquery-easyui-1.4.1/locale/easyui-lang-zh_CN.js"></script>
 	<script type="text/javascript" src="js/json2.js"></script>
+	<script type="text/javascript" src="js/common.js"></script>
 	
 	<link rel="stylesheet" type="text/css" href="css/common2.css" />
-	<script type="text/javascript" src="js/commons.js"></script>
+	
 	<script type="text/javascript">
 		$(function(){
 			
@@ -32,7 +33,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			var flag = '';
 			//搜索框展开标志
 			var searchStatus = 0;
-			
+			//当前时间
+			var currentTime = '';
 			/**
 			 * 表格初始化
 			 */
@@ -40,7 +42,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				
 				idField:'orderId',
 				//ajax异步后台请求
-				url: 'saleManagement_getPurchaseReturnTotalGrid',
+				url: 'saleManagement_getSaleTotalGrid',
 				fit: true,
 				//自动列间距
 				fitColumns: false,
@@ -54,19 +56,46 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				//列内容
 				columns:[[
 				    {
-				    	title:'退货申请单ID',
+				    	title:'销售总单ID',
 						field:'orderId',
 						width:150,
 						hidden: false
 				    },{
-						title:'申请单生成日期',
+						title:'客户ID',
+						field:'clientId',
+						width:100,
+						hidden: true,
+						sortable: false
+					},{
+						title:'客户名称',
+						field:'clientName',
+						width:100,
+						hidden: false,
+						sortable: false
+					},{
+						title:'创表日期',
 						field:'createDate',
 						width:170,
 						sortable: false
 					},{
-						title:'退款金额',
-						field:'returnedPrice',
+						title:'应付金额',
+						field:'payablePrice',
 						width:100
+					},{
+						title:'实付金额',
+						field:'realPrice',
+						width:100
+					},{
+						title:'付款状态',
+						field:'payState',
+						width:100,
+						formatter: function(value,row,index){
+							if (row.payState == 1) {
+								return '已付款';
+							} else {
+								return '未付款';
+							}
+						}
 					},{
 						title:'操作员ID',
 						field:'userId',
@@ -97,7 +126,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				//添加点击事件
 				onClickRow:function(rowIndex,rowData){
 					var ids = rowData.orderId;
-			        $('#detailGrid').datagrid('options').url = 'returnedAction_getPurchaseReturnDetailGrid';
+			        $('#detailGrid').datagrid('options').url = 'saleManagement_getSaleDetailGrid';
 			        $('#detailGrid').datagrid('load', {orderId:ids}); 
 				},
 				
@@ -116,7 +145,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 								});
 							} else {
 								$('#addDialog').dialog('open');
-								
+								currentTime = dateTimeFormatter(new Date())
+								$('#createDate').datetimebox('setValue', currentTime);
 							}
 							
 						}
@@ -146,7 +176,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				//列内容
 				columns:[[
 				    {
-				    	title:'退货详单ID',
+				    	title:'销售详单ID',
 						field:'detailId',
 						width:100,
 						hidden: true
@@ -160,21 +190,25 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						field:'commodityId',
 						width:50,
 						sortable: false,
-						hidden: false
 					},{
 						title:'商品名称',
 						field:'commodityName',
 						width:100
 					},{
-						title:'退货单价',
-						field:'detailPrice',
+						title:'销售单价',
+						field:'price',
+						width:100
+					},{
+						title:'销售数量',
+						field:'amount',
 						width:100
 					},{
 						title:'退货数量',
 						field:'returnedAmount',
-						width:100
+						width:100,
+						hidden: true
 					},{
-						title:'退货总价',
+						title:'销售总价',
 						field:'totalPrice',
 						width:100,
 					}
@@ -196,7 +230,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					ids += arr[0].orderId;
 					$.ajax({
 						type: 'post',
-						url: 'purchaseManagement_saveReturnStockOut',
+						url: 'saleManagement_saveSaleStockOut',
 						cache: false,
 						data: $('#addForm').serialize() + '&orderId=' + ids,
 						dataType: 'json',
@@ -213,7 +247,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 								//3.清楚数据表格勾选
 								$('#supplierTable').datagrid('clearSelections');
 								$('#addForm').form('reset');
-								$('#supplierTable').datagrid('reload');
 								$('#detailGrid').datagrid('loadData',{total:0,rows:[]});
 								
 							} else {
@@ -270,8 +303,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			 * 设置datebox默认时间
 			 */
 			$('#beginDate').datebox({
-				formatter:myformatter,
-				parser:myparser,
 				editable:false,
 			    required:false,
 			    missingMessage:'必须填写日期！'
@@ -280,8 +311,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			 * 设置datebox默认时间
 			 */
 			$('#endDate').datebox({
-				formatter:myformatter,
-				parser:myparser,
 				editable:false,
 			    required:false,
 			    missingMessage:'必须填写日期！'
@@ -294,7 +323,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			    editable: false,   
 			    required: true,   
 			    missingMessage: '请填写入库时间',
-			    showSeconds: true,   
+			    showSeconds: true,
 			}); 
 			
 			/**
@@ -306,8 +335,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			    missingMessage: '请填写入库时间',
 			    showSeconds: true,   
 			}); 
-			var time = myformatter(new Date());
-			$('#createDate').datetimebox('setValue', time);
 			
 		});
 		//编辑仓库状态
@@ -360,16 +387,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			return parseInt(tr.attr("datagrid-row-index"));
 		}
 		
-		//时间格式化
-		function myformatter(date){
-			var y = date.getFullYear();
-			var m = date.getMonth()+1;
-			var d = date.getDate();
-			var h = date.getHours();
-			var min = date.getMinutes();
-			var s = date.getSeconds();
-			return y+'-'+(m<10?('0'+m):m)+'-'+(d<10?('0'+d):d)+" "+(h<10?('0'+h):h)+":"+(min<10?('0'+min):min)+":"+(s<10?('0'+s):s);
-		}
 		//时间解析
 		function myparser(s){
 			if (!s) return new Date();

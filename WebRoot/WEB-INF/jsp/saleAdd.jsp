@@ -23,9 +23,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<script type="text/javascript" src="js/jquery-easyui-1.4.1/jquery.easyui.min.js"></script>
 	<script type="text/javascript" src="js/jquery-easyui-1.4.1/locale/easyui-lang-zh_CN.js"></script>
 	<script type="text/javascript" src="js/json2.js"></script>
+	<script type="text/javascript" src="js/common.js"></script>
+	<script type="text/javascript" src="js/commons.js"></script>
 	
 	<link rel="stylesheet" type="text/css" href="css/common2.css" />
-	<script type="text/javascript" src="js/commons.js"></script>
+	
+	
 	<script type="text/javascript">
 		$(function(){
 			
@@ -298,7 +301,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			 */
 			$('#clearButton').click(function() {
 				$('#commoditySearch').form('reset');
-				$('#createDate').datebox('setValue', myformatter(new Date()));
+				$('#createDate').datetimebox('setValue', myformatter(new Date()));
 			});
 			
 			/**
@@ -372,25 +375,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			/**
 			 * 设置datebox默认时间
 			 */
-			$('#createDate').datebox({
-				formatter:myformatter,
-				parser:myparser,
+			$('#createDate').datetimebox({
+				width:150,
 				editable:false,
 			    required:true,
 			    missingMessage:'必须填写日期！'
 			});
-			var currentDate = myformatter(new Date());
-			$('#createDate').datebox('setValue', currentDate);
-			$('#receivedDate').datebox({
-				formatter:myformatter,
-				parser:myparser,
-				editable:false,
-			    required:true,
-			    missingMessage:'必须填写日期！'
-			});
-			var currentDate_7 = myformatter_7(new Date());
-			$('#receivedDate').datebox('setValue', currentDate_7);
-			
+			var currentDate = dateFormatter(new Date());
+			var currentTime = dateTimeFormatter(new Date());
+			$('#createDate').datetimebox('setValue', currentTime);
 			
 			/**
 			 * 异步获取订单号
@@ -465,7 +458,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<div class="fl" style="margin:5px">客&nbsp;&nbsp;&nbsp;户：<input id="clientCombobox" name="clientId" class="easyui-combobox"/>&nbsp;</div>
 				<div class="fl" style="margin:5px">应付金额：<input id="payablePrice" name="payablePrice" class="easyui-textbox" data-options="editable:false"/>&nbsp;</div>
 				<div class="fl" style="margin:5px">实付金额：<input id="realPrice" name="realPrice" class="easyui-textbox"/>&nbsp;</div>
-				<div class="fl" style="margin:5px">创表日期：<input id="createDate" name="createDate" class="easyui-datebox"/>&nbsp;</div>
+				<div class="fl" style="margin:5px">创表日期：<input id="createDate" name="createDate" /></div>
 				<div class="clear"></div>
 				<div class="fl" style="margin:5px">备&nbsp;&nbsp;&nbsp;注：<input name="remark" class="easyui-textbox" style="width:330px"/>&nbsp;</div>
 				<div class="fl" style="margin:5px">是否已付款：<input id="payState" name="payState" class="easyui-combobox" value="1"/>&nbsp;</div>

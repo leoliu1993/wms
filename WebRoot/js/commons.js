@@ -1,6 +1,6 @@
 
 /**
- * ×Ô¶¨ÒåµÄĞ£ÑéÆ÷
+ * è‡ªå®šä¹‰çš„æ ¡éªŒå™¨
  */
 $.extend($.fn.validatebox.defaults.rules, {
 	midLength : {
@@ -13,12 +13,12 @@ $.extend($.fn.validatebox.defaults.rules, {
 		validator : function(value, param) {
 			return value.length == param[0];
 		},
-		message : 'ÃÜÂë±ØĞëÎª4¸ö×Ö·û!'
+		message : 'å¯†ç å¿…é¡»ä¸º4ä¸ªå­—ç¬¦!'
 	}
 });
 
 /**
- * easyui-formÔö¼Ó×Ô¶¨ÒåµÄ¶ş¼¶¶ÔÏóload·½·¨
+ * easyui-formå¢åŠ è‡ªå®šä¹‰çš„äºŒçº§å¯¹è±¡loadæ–¹æ³•
  */
 $.extend($.fn.form.methods, {
 	myLoad : function(jq, param) {
