@@ -19,15 +19,18 @@ import com.ncut.wms.commodity.dao.CommodityCategoryDAO;
 import com.ncut.wms.commodity.dao.CommodityDAO;
 import com.ncut.wms.commodity.model.Commodity;
 import com.ncut.wms.commodity.model.CommodityCategory;
-import com.ncut.wms.purchaseManagement.model.ReturnStockOutTotal;
 import com.ncut.wms.saleManagement.dao.SaleDetailDAO;
 import com.ncut.wms.saleManagement.dao.SaleDetailSourceDAO;
+import com.ncut.wms.saleManagement.dao.SaleReturnDetailDAO;
+import com.ncut.wms.saleManagement.dao.SaleReturnTotalDAO;
 import com.ncut.wms.saleManagement.dao.SaleStockOutDetailDAO;
 import com.ncut.wms.saleManagement.dao.SaleStockOutTotalDAO;
 import com.ncut.wms.saleManagement.dao.SaleTotalDAO;
 import com.ncut.wms.saleManagement.dto.SaleManagementDTO;
 import com.ncut.wms.saleManagement.model.SaleDetail;
 import com.ncut.wms.saleManagement.model.SaleDetailSource;
+import com.ncut.wms.saleManagement.model.SaleReturnDetail;
+import com.ncut.wms.saleManagement.model.SaleReturnTotal;
 import com.ncut.wms.saleManagement.model.SaleStockOutDetail;
 import com.ncut.wms.saleManagement.model.SaleStockOutTotal;
 import com.ncut.wms.saleManagement.model.SaleTotal;
@@ -51,6 +54,11 @@ import com.ncut.wms.util.system.Tools;
 public class SaleManagementService {
 
 	/* ======以下业务逻辑======== */
+	/**
+	 * 获得对应的商品信息和库存信息
+	 * @param smDTO
+	 * @return
+	 */
 	public SaleManagementDTO getCommodityAndStock(SaleManagementDTO smDTO) {
 
 		Commodity commodity = commodityDAO.load(smDTO.getCommodityId());
@@ -84,6 +92,11 @@ public class SaleManagementService {
 		return smDTO;
 	}
 
+	/**
+	 * 获得销售单号
+	 * @param date
+	 * @return
+	 */
 	public String getSaleCode(String date) {
 		String head = "XSDD";
 		String code = date.replaceAll("-", "");
@@ -96,6 +109,11 @@ public class SaleManagementService {
 		return head + code + "0001";
 	}
 	
+	/**
+	 * 获得销售出库单号
+	 * @param date
+	 * @return
+	 */
 	public String getSaleStockOutCode(String date) {
 		String head = "CKXS";
 		String code = date.replaceAll("-", "");
@@ -106,7 +124,26 @@ public class SaleManagementService {
 			return head+code+Tools.formatCode(obj.toString());
 		return head+code+"0001";
 	}
+	/**
+	 * 获得销售退货单据
+	 * @param date
+	 * @return
+	 */
+	public String getSaleReturnCode(String date) {
+		String head = "THXS";
+		String code = date.replaceAll("-", "");
+		String hql = "select max(srt.srtId) from SaleReturnTotal as srt where srt.createDate between '"+date+" 00:00:00' and '"+date+" 23:59:59'";
+		List<SaleReturnTotal> list = srtDAO.list(hql);
+		Object obj = list.get(0);
+		if(obj!=null)
+			return head+code+Tools.formatCode(obj.toString());
+		return head+code+"0001";
+	}
 	
+	/**
+	 * 保存销售单据
+	 * @param smDTO
+	 */
 	public void saveSale(SaleManagementDTO smDTO) {
 		
 		//对总单进行赋值
@@ -154,6 +191,9 @@ public class SaleManagementService {
 			Integer needAmount = sd.getAmount();
 			for(InStockgoods ig : igList) {
 				ShelfRemain sr = srDAO.findByOrderIdAndDetailId(ig.getInStockId(), ig.getInStockgoodsId());
+				if(sr == null) {
+					continue;
+				}
 				Integer visibleRemain = sr.getVisibleRemain();
 				SaleDetailSource sds = new SaleDetailSource();
 				
@@ -167,8 +207,7 @@ public class SaleManagementService {
 					//添加来源表的商品来源
 					sds.setStId(st.getStId());
 					sds.setSdId(sd.getSdId());
-					sds.setOrderId(sr.getOrderId());
-					sds.setDetailId(sr.getDetailId());
+					sds.setSsrId(sr.getShelfRemainId());
 					sds.setAmount(needAmount);
 					
 					srDAO.update(sr);
@@ -189,8 +228,7 @@ public class SaleManagementService {
 					//添加来源表的商品来源
 					sds.setStId(st.getStId());
 					sds.setSdId(sd.getSdId());
-					sds.setOrderId(sr.getOrderId());
-					sds.setDetailId(sr.getDetailId());
+					sds.setSsrId(sr.getShelfRemainId());
 					sds.setAmount(visibleRemain);
 					
 					srDAO.update(sr);
@@ -216,6 +254,10 @@ public class SaleManagementService {
 		
 	}
 	
+	/**
+	 * 保存销售出库单据
+	 * @param smDTO
+	 */
 	public void saveSaleStockOut(SaleManagementDTO smDTO) {
 		//对总单进行赋值
 		SaleStockOutTotal sot = new SaleStockOutTotal();
@@ -246,7 +288,7 @@ public class SaleManagementService {
 			List<SaleDetailSource> sdsList =  sdsDAO.findBySaleTotal(sot.getStId());
 			for(SaleDetailSource sds : sdsList) {
 				//中间表修改
-				ShelfRemain sr =  srDAO.findByOrderIdAndDetailId(sds.getOrderId(), sds.getDetailId());
+				ShelfRemain sr =  srDAO.load(sds.getSsrId());
 				Integer realRemain = sr.getRealRemain() - sds.getAmount();
 				if(realRemain == 0 ) {
 					srDAO.delete(sr.getShelfRemainId());
@@ -284,6 +326,76 @@ public class SaleManagementService {
 			
 	}
 	
+	/**
+	 * 保存销售退货单据
+	 * @param smDTO
+	 */
+	public void saveSaleReturn(SaleManagementDTO smDTO) {
+		//对总单进行赋值
+		SaleReturnTotal srt = new SaleReturnTotal();
+		BeanUtils.copyProperties(smDTO, srt);
+		srt.setStId(smDTO.getOrderId());
+		String saleReturnCode = this.getSaleReturnCode(smDTO.getCreateDate().substring(0, 10));
+		srt.setSrtId(saleReturnCode);
+		
+		//对详单进行赋值
+		JSONArray jArr = JSONArray.fromObject(smDTO.getDetailOrder());
+		List<SaleReturnDetail> srdList = new ArrayList<SaleReturnDetail>();
+		//格式化前台数据
+		for(int i=0; i<jArr.size(); i++) {
+			
+			JSONObject jObj = JSONObject.fromObject(jArr.get(i));
+			SaleReturnDetail srd = new SaleReturnDetail();
+			Integer returnedAmount = jObj.getInt("returnedAmount");
+			//对详单赋值
+			if(returnedAmount != 0) {
+				srd.setSrtId(saleReturnCode);
+				srd.setSdId(jObj.getInt("detailId"));
+				srd.setPrice(jObj.getDouble("price"));
+				srd.setReturnedAmount(jObj.getInt("returnedAmount"));
+				srd.setTotalPrice(jObj.getDouble("totalPrice"));
+				srdList.add(srd);
+			}
+		}
+		
+		//对总单和详单进行存储
+		srtDAO.add(srt);
+		for(SaleReturnDetail srd : srdList) {
+			srdDAO.add(srd);
+			
+			//销售退货
+			//销售单的退货量进行修改
+			SaleDetail sd = sdDAO.load(srd.getSdId());
+			Integer returnedAmount = sd.getReturnedAmount() + srd.getReturnedAmount();
+			sd.setReturnedAmount(returnedAmount);
+			sdDAO.update(sd);
+			
+		}
+		
+		//取消销售订单
+		SaleTotal st = stDAO.load(srt.getStId());
+		if(st.getStockState() == 0) {
+			
+			//对销售单库存状态进行修改
+			st.setStockState(2);
+			
+			//中间表可见库存量恢复
+			//根据销售来源查找对应中间表
+			st.getStId();
+			
+			//库存详单可见销售量恢复
+			
+			//库存总单可见销售量恢复
+			
+		}
+		
+	}
+	
+	/**
+	 * 获得销售单据总单表格(easyui)
+	 * @param smDTO
+	 * @return
+	 */
 	public DataGrid<SaleManagementDTO> getSaleTotalGrid(SaleManagementDTO smDTO) {
 		DataGrid<SaleManagementDTO> dg = new DataGrid<SaleManagementDTO>();
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -323,6 +435,11 @@ public class SaleManagementService {
 		return dg;
 	}
 	
+	/**
+	 * 获得销售单据详单表格(easyui)
+	 * @param smDTO
+	 * @return
+	 */
 	public DataGrid<SaleManagementDTO> getSaleDetailGrid(SaleManagementDTO smDTO) {
 		DataGrid<SaleManagementDTO> dg = new DataGrid<SaleManagementDTO>();
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -363,6 +480,9 @@ public class SaleManagementService {
 	
 	private SaleStockOutTotalDAO sotDAO;
 	private SaleStockOutDetailDAO sodDAO;
+	
+	private SaleReturnTotalDAO srtDAO;
+	private SaleReturnDetailDAO srdDAO;
 	
 	private CommodityDAO commodityDAO;
 	private CommodityCategoryDAO ccDAO;
@@ -443,6 +563,16 @@ public class SaleManagementService {
 	@Resource
 	public void setSodDAO(SaleStockOutDetailDAO sodDAO) {
 		this.sodDAO = sodDAO;
+	}
+
+	@Resource
+	public void setSrtDAO(SaleReturnTotalDAO srtDAO) {
+		this.srtDAO = srtDAO;
+	}
+
+	@Resource
+	public void setSrdDAO(SaleReturnDetailDAO srdDAO) {
+		this.srdDAO = srdDAO;
 	}
 
 }

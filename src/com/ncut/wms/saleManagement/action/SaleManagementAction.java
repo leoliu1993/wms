@@ -125,6 +125,30 @@ public class SaleManagementAction extends ActionSupport implements
 	}
 	
 	/**
+	 * 保存销售退货单据
+	 * @return
+	 */
+	public String saveSaleReturn() {
+		Json json = new Json();
+		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
+		try {
+			smService.saveSaleReturn(smDTO);
+			json.setSuccess(true);
+			json.setMessage("添加销售退货单据成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.setSuccess(false);
+			json.setMessage("添加销售退货单据失败");
+		}
+		try {
+			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(json).toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return NONE;
+	}
+	
+	/**
 	 * 获得销售总单表格(easyui)
 	 * @return
 	 */

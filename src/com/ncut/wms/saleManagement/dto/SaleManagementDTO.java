@@ -2,7 +2,7 @@ package com.ncut.wms.saleManagement.dto;
 
 public class SaleManagementDTO {
 
-	/* =====总单实体属性====== */
+	/* =====销售总单实体属性====== */
 	private String orderId;
 	private Integer clientId;
 	private String createDate;
@@ -13,6 +13,11 @@ public class SaleManagementDTO {
 	private Integer stockState;
 	private Integer userId;
 	private String remark;
+
+	/* =====退货总单实体属性====== */
+	private String returnedDate;
+	private String receivedDate;
+	private String returnedPrice;
 
 	/* =====详单实体属性====== */
 	private Integer detailId;
@@ -27,7 +32,7 @@ public class SaleManagementDTO {
 	private String endDate;
 	private String userName;
 	private String clientName;
-	//以下商品信息
+	// 以下商品信息
 	private String commodityName;
 	private String commodityType;
 	private String categoryName;
@@ -36,10 +41,10 @@ public class SaleManagementDTO {
 	private Double vip1Price;
 	private Double vip2Price;
 	private Double vip3Price;
-	
+
 	private Integer visibleStock = 0;
 
-	//存储详单字符串
+	// 存储详单字符串
 	private String detailOrder;
 
 	/* =====datagrid属性====== */
@@ -327,5 +332,29 @@ public class SaleManagementDTO {
 
 	public void setVisibleStock(Integer visibleStock) {
 		this.visibleStock = visibleStock;
+	}
+
+	public String getReturnedPrice() {
+		return returnedPrice;
+	}
+
+	public void setReturnedPrice(String returnedPrice) {
+		this.returnedPrice = returnedPrice;
+	}
+
+	public String getReturnedDate() {
+		return returnedDate;
+	}
+
+	public void setReturnedDate(String returnedDate) {
+		this.returnedDate = returnedDate;
+	}
+
+	public String getReceivedDate() {
+		return receivedDate;
+	}
+
+	public void setReceivedDate(String receivedDate) {
+		this.receivedDate = receivedDate;
 	}
 }

@@ -40,7 +40,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			 */
 			$('#supplierTable').datagrid({
 				
-				idField:'inStockId',
+				idField:'orderId',
 				//ajax异步后台请求
 				url: 'saleManagement_getSaleTotalGrid',
 				fit: true,
@@ -129,14 +129,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			        $('#detailGrid').datagrid('options').url = 'saleManagement_getSaleDetailGrid';
 			        if(rowData.stockState == 1){
 			        	var columnOption = $('#detailGrid').datagrid('getColumnOption','returnedAmount');
-			        	columnOption.hidden = true;
+			        	columnOption.hidden = false;
 			        	columnOption = $('#detailGrid').datagrid('getColumnOption','action');
-			        	columnOption.hidden = true;
+			        	columnOption.hidden = false;
 			        } else {
 			        	var columnOption = $('#detailGrid').datagrid('getColumnOption','returnedAmount');
-			        	columnOption.hidden = false;
+			        	columnOption.hidden = true;
 			        	columnOption = $('#detailGrid').datagrid('getColumnOption','action');
-			        	columnOption.hidden = false;
+			        	columnOption.hidden = true;
 			        }
 			        $('#detailGrid').datagrid('load', {orderId:ids}); 
 				},
@@ -168,7 +168,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 										}
 									}
 									
-									if(returnedPrice == 0 && stockState == 0) {
+									if(returnedPrice == 0 && stockState != 0) {
 										$.messager.show({
 											title: '提示信息！',
 											msg: '必须选择退货数量后才能申请退货！'
@@ -286,7 +286,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						
 					$.ajax({
 						type: 'post',
-						url: 'returnedAction_purchaseReturn',
+						url: 'saleManagement_saveSaleReturn',
 						cache: false,
 						data: $('#addForm').serialize() + '&detailOrder=' + JSON.stringify($('#detailGrid').datagrid('getRows')),
 						dataType: 'json',
@@ -387,9 +387,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			}); 
 			
 			/**
-			 * 出库时间框
+			 * 退货时间框
 			 */
-			$('#outDate').datetimebox({
+			$('#returnedDate').datetimebox({
 			    editable: false,   
 			    required: true,   
 			    missingMessage: '请填写出库时间',
@@ -527,7 +527,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					</tr>
 					<tr height="30px">
 						<td>设置退货时间：</td>
-						<td><input id="outDate" name="outDate" /></td>
+						<td><input id="returnedDate" name="returnedDate" /></td>
 					</tr>
 				</table>
 			</div>

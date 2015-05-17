@@ -12,8 +12,7 @@ public class SaleDetailSource {
 	private Integer sdsId;
 	private String stId;
 	private Integer sdId;
-	private String orderId;
-	private Integer detailId;
+	private Integer ssrId;
 	private Integer amount;
 
 	@Id
@@ -42,28 +41,20 @@ public class SaleDetailSource {
 		this.sdId = sdId;
 	}
 
-	public String getOrderId() {
-		return orderId;
-	}
-
-	public void setOrderId(String orderId) {
-		this.orderId = orderId;
-	}
-
-	public Integer getDetailId() {
-		return detailId;
-	}
-
-	public void setDetailId(Integer detailId) {
-		this.detailId = detailId;
-	}
-
 	public Integer getAmount() {
 		return amount;
 	}
 
 	public void setAmount(Integer amount) {
 		this.amount = amount;
+	}
+
+	public Integer getSsrId() {
+		return ssrId;
+	}
+
+	public void setSsrId(Integer ssrId) {
+		this.ssrId = ssrId;
 	}
 
 }
