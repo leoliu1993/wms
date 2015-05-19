@@ -208,7 +208,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							</span>查询损益单据</a>
 						</p>
 					</div>
-					<div title="销售管理" style="overflow:auto;padding:10px;"">
+					<div title="销售管理" style="overflow:auto;padding:10px;">
 						<p>
 							<a title="stockAction_stockQueryPage"><span class="icon icon-searchStock">&nbsp;&nbsp;&nbsp;&nbsp;
 							</span>查询当前库存</a>
@@ -226,15 +226,27 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							</span>销售出库</a>
 						</p>
 						<p>
-							<a title="purchaseAction_addPage"><span class="icon icon-searchplus">&nbsp;&nbsp;&nbsp;&nbsp;
-							</span>查询进货单据</a>
+							<a title="inStockAction_managementPage"><span class="icon icon-instock">&nbsp;&nbsp;&nbsp;&nbsp;
+							</span>退货入库</a>
 						</p>
 						<p>
-							<a title="purchaseAction_addPage"><span class="icon icon-searchminus">&nbsp;&nbsp;&nbsp;&nbsp;
+							<a title="saleManagement_saleQueryPage"><span class="icon icon-searchminus">&nbsp;&nbsp;&nbsp;&nbsp;
+							</span>查询销售单据</a>
+						</p>
+						<p>
+							<a title="saleManagement_saleReturnQueryPage"><span class="icon icon-searchminus">&nbsp;&nbsp;&nbsp;&nbsp;
 							</span>查询退货单据</a>
 						</p>
+						<p>
+							<a title="saleManagement_saleStockOutQueryPage"><span class="icon icon-searchminus">&nbsp;&nbsp;&nbsp;&nbsp;
+							</span>查询出库单据</a>
+						</p>
+						<p>
+							<a title="purchaseAction_addPage"><span class="icon icon-searchplus">&nbsp;&nbsp;&nbsp;&nbsp;
+							</span>查询入库单据</a>
+						</p>
 					</div>
-					<div title="进货管理">
+					<div title="进货管理" class="div10">
 						<p>
 							<a title="stockAction_stockQueryPage"><span class="icon icon-searchStock">&nbsp;&nbsp;&nbsp;&nbsp;
 							</span>查询当前库存</a>
@@ -314,28 +326,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <div border="false" data-options="region:'center',title:'欢迎使用智慧仓库管理系统'">
             	<!-- 标签 -->
 				<div id="tt" class="easyui-tabs" fit=true>
-					<div title="首页" style="padding:10px">
-						<div class="fl" style="width:29%;height:250px;margin-right:10px;margin:10px">
-							<div class="easyui-panel"
-								data-options="title:'库存信息',collapsible:true,iconCls:'icon-ok'"
-								fit=true></div>
-						</div>
-						<div class="fl" style="width:29%;height:250px;margin-left:10px;margin:10px">
-							<div class="easyui-panel"
-								data-options="title:'仓库信息',collapsible:true,iconCls:'icon-ok'"
-								fit=true></div>
-						</div>
-						<div class="fl" style="width:29%;height:250px;margin-right:10px;margin:10px">
-							<div class="easyui-panel"
-								data-options="title:'财务信息',collapsible:true,iconCls:'icon-ok'"
-								fit=true></div>
-						</div>
-						<div class="clear"></div>
-						<div class="fl" style="width:29%;height:250px;margin:10px">
-							<div class="easyui-panel"
-								data-options="title:'资料管理',collapsible:true,iconCls:'icon-ok'"
-								fit=true></div>
-						</div>
+					<div title="首页">
+						<iframe frameborder=0 style=width:100%;height:100% src='stockAction_stockQueryPage' ></iframe>
 					</div>
 				</div>
 			</div>

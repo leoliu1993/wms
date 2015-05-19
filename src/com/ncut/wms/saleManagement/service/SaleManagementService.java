@@ -285,7 +285,7 @@ public class SaleManagementService {
 			//对中间表进行操作
 			//首先通过销售总单ID查找销售来源表中的数据
 			//然后通过入库总单ID和详单ID查找相应的货架剩余单
-			List<SaleDetailSource> sdsList =  sdsDAO.findBySaleTotal(sot.getStId());
+			List<SaleDetailSource> sdsList =  sdsDAO.findBySaleDetail(sod.getSdId());
 			for(SaleDetailSource sds : sdsList) {
 				//中间表修改
 				ShelfRemain sr =  srDAO.load(sds.getSsrId());
@@ -376,16 +376,39 @@ public class SaleManagementService {
 		SaleTotal st = stDAO.load(srt.getStId());
 		if(st.getStockState() == 0) {
 			
+			//退货单库存状态修改
+			srt.setStockState(1);
+			srtDAO.update(srt);
+			
 			//对销售单库存状态进行修改
 			st.setStockState(2);
 			
 			//中间表可见库存量恢复
 			//根据销售来源查找对应中间表
-			st.getStId();
-			
-			//库存详单可见销售量恢复
+			List<SaleDetailSource> sdsList = sdsDAO.findBySaleTotal(st.getStId());
+			for(SaleDetailSource sds : sdsList) {
+				ShelfRemain sr = srDAO.load(sds.getSsrId());
+				Integer visibleRemain = sr.getVisibleRemain() + sds.getAmount();
+				sr.setVisibleRemain(visibleRemain);
+				srDAO.update(sr);
+				
+				//库存详单可见销售量恢复
+				InStockgoods ig = igDAO.load(sr.getDetailId());
+				Stock stock = stockDAO.findByCommodityAndStorage(ig.getCommodityId(), ig.getStorageId());
+				visibleRemain = stock.getVisibleStock() + sds.getAmount();
+				stock.setVisibleStock(visibleRemain);
+				stockDAO.update(stock);
+				
+			}
 			
 			//库存总单可见销售量恢复
+			List<SaleDetail> sdList = sdDAO.findBySaleTotal(st.getStId());
+			for(SaleDetail sd : sdList) {
+				TotalStock ts = tsDAO.findByCommodityId(sd.getCommodityId());
+				Integer visibleStock = ts.getVisibleStock() + sd.getAmount();
+				ts.setVisibleStock(visibleStock);
+				tsDAO.update(ts);
+			}
 			
 		}
 		
@@ -401,9 +424,8 @@ public class SaleManagementService {
 		Map<String,Object> map = new HashMap<String,Object>();
 		String hql = "from SaleTotal st where 1=1";
 		
-		if(smDTO.getStockState() != null){
-			hql+=" and st.stockState = :stockState";
-			map.put("stockState", smDTO.getStockState());
+		if(smDTO.getStateStr() != null && !"".equals(smDTO.getStateStr().trim())){
+			hql+=" and st.stockState " + smDTO.getStateStr();
 		}
 		
 		if(smDTO.getBeginDate()!=null && !"".equals(smDTO.getBeginDate().trim())){
@@ -470,6 +492,163 @@ public class SaleManagementService {
 		}
 		dg.setTotal(stDAO.count(totalHql, map));
 		dg.setRows(sdDTOList);
+		return dg;
+	}
+	
+	/**
+	 * 获得退货总单表格(easyui)
+	 * @param smDTO
+	 * @return
+	 */
+	public DataGrid<SaleManagementDTO> getSaleReturnTotalGrid(
+			SaleManagementDTO smDTO) {
+		DataGrid<SaleManagementDTO> dg = new DataGrid<SaleManagementDTO>();
+		Map<String,Object> map = new HashMap<String,Object>();
+		String hql = "from SaleReturnTotal srt where 1=1";
+		
+		if(smDTO.getBeginDate()!=null && !"".equals(smDTO.getBeginDate().trim())){
+			hql+=" and srt.createDate between :beginDate and :endDate";
+			map.put("beginDate", smDTO.getBeginDate().trim());
+			map.put("endDate", smDTO.getEndDate().trim());
+		}
+		
+		String totalHql = "select count(*) "+hql;
+		//实现排序
+		if(smDTO.getSort()!=null){
+			hql+=" order by "+smDTO.getSort()+" "+smDTO.getOrder();
+		}
+		List<SaleReturnTotal> srtList = srtDAO.list(hql, map, smDTO.getPage(), smDTO.getRows());
+		List<SaleManagementDTO> srtDTOList = new ArrayList<SaleManagementDTO>();
+		for(SaleReturnTotal srt : srtList){
+			SaleManagementDTO stDTO = new SaleManagementDTO();
+			BeanUtils.copyProperties(srt, stDTO);
+			stDTO.setOrderId(srt.getSrtId());
+			
+			//插入一些需要的数据
+			stDTO.setUserName(userDAO.load(srt.getUserId()).getUsername());
+			
+			srtDTOList.add(stDTO);
+		}
+		dg.setTotal(stDAO.count(totalHql, map));
+		dg.setRows(srtDTOList);
+		return dg;
+	}
+	
+	/**
+	 * 获得退货详单表格(easyui)
+	 * @param smDTO
+	 * @return
+	 */
+	public DataGrid<SaleManagementDTO> getSaleReturnDetailGrid(SaleManagementDTO smDTO) {
+		DataGrid<SaleManagementDTO> dg = new DataGrid<SaleManagementDTO>();
+		Map<String,Object> map = new HashMap<String,Object>();
+		String hql = "from SaleReturnDetail srd where 1=1";
+		
+		if(smDTO.getOrderId()!=null && !"".equals(smDTO.getOrderId().trim())){
+			hql+=" and srd.srtId = :srtId";
+			map.put("srtId", smDTO.getOrderId().trim());
+		}
+		
+		String totalHql = "select count(*) "+hql;
+		//实现排序
+		if(smDTO.getSort()!=null){
+			hql+=" order by "+smDTO.getSort()+" "+smDTO.getOrder();
+		}
+		List<SaleReturnDetail> srdList = srdDAO.list(hql, map, smDTO.getPage(), smDTO.getRows());
+		List<SaleManagementDTO> srdDTOList = new ArrayList<SaleManagementDTO>();
+		for(SaleReturnDetail srd : srdList){
+			SaleManagementDTO srdDTO = new SaleManagementDTO();
+			BeanUtils.copyProperties(srd, srdDTO);
+			srdDTO.setOrderId(srd.getSrtId());
+			srdDTO.setDetailId(srd.getSrdId());
+			
+			//插入一些需要的数据
+			SaleDetail sd = sdDAO.load(srd.getSdId());
+			srdDTO.setCommodityName(commodityDAO.load(sd.getCommodityId()).getCommodityName());
+			
+			srdDTOList.add(srdDTO);
+		}
+		dg.setTotal(srdDAO.count(totalHql, map));
+		dg.setRows(srdDTOList);
+		return dg;
+	}
+	
+	/**
+	 * 获得退货总单表格(easyui)
+	 * @param smDTO
+	 * @return
+	 */
+	public DataGrid<SaleManagementDTO> getSaleStockOutTotalGrid(
+			SaleManagementDTO smDTO) {
+		DataGrid<SaleManagementDTO> dg = new DataGrid<SaleManagementDTO>();
+		Map<String,Object> map = new HashMap<String,Object>();
+		String hql = "from SaleStockOutTotal sot where 1=1";
+		
+		if(smDTO.getBeginDate()!=null && !"".equals(smDTO.getBeginDate().trim())){
+			hql+=" and sot.createDate between :beginDate and :endDate";
+			map.put("beginDate", smDTO.getBeginDate().trim());
+			map.put("endDate", smDTO.getEndDate().trim());
+		}
+		
+		String totalHql = "select count(*) "+hql;
+		//实现排序
+		if(smDTO.getSort()!=null){
+			hql+=" order by "+smDTO.getSort()+" "+smDTO.getOrder();
+		}
+		List<SaleStockOutTotal> sotList = sotDAO.list(hql, map, smDTO.getPage(), smDTO.getRows());
+		List<SaleManagementDTO> sotDTOList = new ArrayList<SaleManagementDTO>();
+		for(SaleStockOutTotal sot : sotList){
+			SaleManagementDTO sotDTO = new SaleManagementDTO();
+			BeanUtils.copyProperties(sot, sotDTO);
+			sotDTO.setOrderId(sot.getSotId());
+			
+			//插入一些需要的数据
+			sotDTO.setUserName(userDAO.load(sot.getUserId()).getUsername());
+			
+			sotDTOList.add(sotDTO);
+		}
+		dg.setTotal(sotDAO.count(totalHql, map));
+		dg.setRows(sotDTOList);
+		return dg;
+	}
+	
+	/**
+	 * 获得销售出库详单表格(easyui)
+	 * @param smDTO
+	 * @return
+	 */
+	public DataGrid<SaleManagementDTO> getSaleStockOutDetailGrid(SaleManagementDTO smDTO) {
+		DataGrid<SaleManagementDTO> dg = new DataGrid<SaleManagementDTO>();
+		Map<String,Object> map = new HashMap<String,Object>();
+		String hql = "from SaleStockOutDetail sod where 1=1";
+		
+		if(smDTO.getOrderId()!=null && !"".equals(smDTO.getOrderId().trim())){
+			hql+=" and sod.sotId = :sotId";
+			map.put("sotId", smDTO.getOrderId().trim());
+		}
+		
+		String totalHql = "select count(*) "+hql;
+		//实现排序
+		if(smDTO.getSort()!=null){
+			hql+=" order by "+smDTO.getSort()+" "+smDTO.getOrder();
+		}
+		List<SaleStockOutDetail> sodList = sodDAO.list(hql, map, smDTO.getPage(), smDTO.getRows());
+		List<SaleManagementDTO> sodDTOList = new ArrayList<SaleManagementDTO>();
+		for(SaleStockOutDetail sod : sodList){
+			SaleManagementDTO sodDTO = new SaleManagementDTO();
+			BeanUtils.copyProperties(sod, sodDTO);
+			sodDTO.setOrderId(sod.getSotId());
+			sodDTO.setDetailId(sod.getSodId());
+			
+			//插入一些需要的数据
+			SaleDetail sd = sdDAO.load(sod.getSdId());
+			BeanUtils.copyProperties(sd, sodDTO);
+			sodDTO.setCommodityName(commodityDAO.load(sd.getCommodityId()).getCommodityName());
+			
+			sodDTOList.add(sodDTO);
+		}
+		dg.setTotal(sodDAO.count(totalHql, map));
+		dg.setRows(sodDTOList);
 		return dg;
 	}
 

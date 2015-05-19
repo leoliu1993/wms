@@ -10,14 +10,14 @@ public class SaleManagementDTO {
 	private Double payablePrice;
 	private Double realPrice;
 	private Integer payState;
-	private Integer stockState;
+	private Integer stockState = 0;
 	private Integer userId;
 	private String remark;
 
 	/* =====退货总单实体属性====== */
 	private String returnedDate;
 	private String receivedDate;
-	private String returnedPrice;
+	private Double returnedPrice;
 
 	/* =====详单实体属性====== */
 	private Integer detailId;
@@ -43,6 +43,8 @@ public class SaleManagementDTO {
 	private Double vip3Price;
 
 	private Integer visibleStock = 0;
+	
+	private String stateStr;
 
 	// 存储详单字符串
 	private String detailOrder;
@@ -334,11 +336,11 @@ public class SaleManagementDTO {
 		this.visibleStock = visibleStock;
 	}
 
-	public String getReturnedPrice() {
+	public Double getReturnedPrice() {
 		return returnedPrice;
 	}
 
-	public void setReturnedPrice(String returnedPrice) {
+	public void setReturnedPrice(Double returnedPrice) {
 		this.returnedPrice = returnedPrice;
 	}
 
@@ -356,5 +358,13 @@ public class SaleManagementDTO {
 
 	public void setReceivedDate(String receivedDate) {
 		this.receivedDate = receivedDate;
+	}
+
+	public String getStateStr() {
+		return stateStr;
+	}
+
+	public void setStateStr(String stateStr) {
+		this.stateStr = stateStr;
 	}
 }

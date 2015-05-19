@@ -13,6 +13,8 @@ public class SaleReturnTotal {
 	private String createDate;
 	private String returnedDate;
 	private String receivedDate;
+	private Double returnedPrice;
+	private Integer stockState = 0;
 	private Integer userId;
 	private String remark;
 
@@ -71,6 +73,22 @@ public class SaleReturnTotal {
 
 	public void setReturnedDate(String returnedDate) {
 		this.returnedDate = returnedDate;
+	}
+
+	public Double getReturnedPrice() {
+		return returnedPrice;
+	}
+
+	public void setReturnedPrice(Double returnedPrice) {
+		this.returnedPrice = returnedPrice;
+	}
+
+	public Integer getStockState() {
+		return stockState;
+	}
+
+	public void setStockState(Integer stockState) {
+		this.stockState = stockState;
 	}
 
 }

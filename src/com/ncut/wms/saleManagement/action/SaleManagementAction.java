@@ -43,6 +43,18 @@ public class SaleManagementAction extends ActionSupport implements
 	public String saleReturnPage() {
 		return "saleReturnPage";
 	}
+	
+	public String saleQueryPage() {
+		return "saleQueryPage";
+	}
+	
+	public String saleReturnQueryPage() {
+		return "saleReturnQueryPage";
+	}
+	
+	public String saleStockOutQueryPage() {
+		return "saleStockOutQueryPage";
+	}
 
 	/**
 	 * 获得商品和对应的库存信息
@@ -169,6 +181,66 @@ public class SaleManagementAction extends ActionSupport implements
 	 */
 	public String getSaleDetailGrid() {
 		DataGrid<SaleManagementDTO> dg = smService.getSaleDetailGrid(smDTO);
+		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
+		try {
+			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(dg).toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return NONE;
+	}
+	
+	/**
+	 * 获得退货总单表格(easyui)
+	 * @return
+	 */
+	public String getSaleReturnTotalGrid() {
+		DataGrid<SaleManagementDTO> dg = smService.getSaleReturnTotalGrid(smDTO);
+		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
+		try {
+			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(dg).toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return NONE;
+	}
+	
+	/**
+	 * 获得退货详单表格(easyui)
+	 * @return
+	 */
+	public String getSaleReturnDetailGrid() {
+		DataGrid<SaleManagementDTO> dg = smService.getSaleReturnDetailGrid(smDTO);
+		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
+		try {
+			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(dg).toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return NONE;
+	}
+	
+	/**
+	 * 获得销售出库总单表格(easyui)
+	 * @return
+	 */
+	public String getSaleStockOutTotalGrid() {
+		DataGrid<SaleManagementDTO> dg = smService.getSaleStockOutTotalGrid(smDTO);
+		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
+		try {
+			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(dg).toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return NONE;
+	}
+	
+	/**
+	 * 获得销售出库详单表格(easyui)
+	 * @return
+	 */
+	public String getSaleStockOutDetailGrid() {
+		DataGrid<SaleManagementDTO> dg = smService.getSaleStockOutDetailGrid(smDTO);
 		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
 		try {
 			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(dg).toString());

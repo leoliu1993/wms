@@ -43,6 +43,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				idField:'orderId',
 				//ajax异步后台请求
 				url: 'saleManagement_getSaleTotalGrid',
+				queryParams: {stateStr:'!= 2'},
 				fit: true,
 				//自动列间距
 				fitColumns: false,
@@ -90,10 +91,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						field:'payState',
 						width:100,
 						formatter: function(value,row,index){
+							if (row.payState == 0) {
+								return '未付款';
+							}
 							if (row.payState == 1) {
 								return '已付款';
-							} else {
-								return '未付款';
 							}
 						}
 					},{
@@ -114,10 +116,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						field:'stockState',
 						width:100,
 						formatter: function(value,row,index){
+							if (row.stockState == 0) {
+								return '未出库';
+							}
 							if (row.stockState == 1) {
 								return '已出库';
-							} else {
-								return '未出库';
+							}
+							if (row.stockState == 2) {
+								return '交易取消';
 							}
 						}
 					}
@@ -162,8 +168,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 									var returnedPrice = 0;
 									var orderId = '';
 									for(var i=0; i<rows.length; i++) {
+										orderId = rows[i].orderId;
 										if(rows[i].returnedAmount != 0) {
-											orderId = rows[i].orderId;
 											returnedPrice += rows[i].price * rows[i].returnedAmount;
 										}
 									}
@@ -491,7 +497,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   
   <body>
   	<div id="lay" class="easyui-layout" fit=true >
-		<div region="north" title="入库单据查询" collapsed=false style="height:80px;padding:10px">
+		<div region="north" title="销售单据查询" collapsed=false style="height:80px;padding:10px">
 			<form id="commoditySearch">
 				开始时间：<input id="beginDate" name="beginDate" class="easyui-datebox" />&nbsp;
 				结束时间：<input id="endDate" name="endDate" class="easyui-datebox" />&nbsp;
@@ -499,10 +505,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<a id="clearButton" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">清空</a>
 			</form>
 		</div>
-		<div region="center" title="入库总单">
+		<div region="center" title="销售总单">
 			<table id="supplierTable"></table>
 		</div>
-		<div region="south" title="入库详单" collapsed=false style="height:40%">
+		<div region="south" title="销售详单" collapsed=false style="height:40%">
 			<table id="detailGrid"></table>
 		</div>
 	</div>

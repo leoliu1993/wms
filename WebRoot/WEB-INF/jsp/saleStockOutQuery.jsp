@@ -40,7 +40,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				
 				idField:'orderId',
 				//ajax异步后台请求
-				url: 'purchaseManagement_getReturnStockOutTotalGrid',
+				url: 'saleManagement_getSaleStockOutTotalGrid',
 				fit: true,
 				//自动列间距
 				fitColumns: false,
@@ -54,19 +54,20 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				//列内容
 				columns:[[
 				    {
-				    	title:'出库总单ID',
+				    	title:'销售出库总单ID',
 						field:'orderId',
 						width:150,
 						hidden: false
 				    },{
-						title:'申请单生成日期',
+						title:'出库单生成日期',
 						field:'createDate',
 						width:170,
 						sortable: false
 					},{
-						title:'退款金额',
-						field:'returnedPrice',
-						width:100
+						title:'发货日期',
+						field:'sendDate',
+						width:170,
+						sortable: false
 					},{
 						title:'操作员ID',
 						field:'userId',
@@ -86,7 +87,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				//添加点击事件
 				onClickRow:function(rowIndex,rowData){
 					var ids = rowData.orderId;
-			        $('#detailGrid').datagrid('options').url = 'purchaseManagement_getReturnStockOutDetailGrid';
+			        $('#detailGrid').datagrid('options').url = 'saleManagement_getSaleStockOutDetailGrid';
 			        $('#detailGrid').datagrid('load', {orderId:ids}); 
 				},
 				
@@ -133,15 +134,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						field:'commodityName',
 						width:100
 					},{
-						title:'退货单价',
-						field:'detailPrice',
+						title:'销售单价',
+						field:'price',
 						width:100
 					},{
-						title:'退货数量',
-						field:'returnedAmount',
+						title:'销售数量',
+						field:'amount',
 						width:100
 					},{
-						title:'退货总价',
+						title:'销售总价',
 						field:'totalPrice',
 						width:100,
 					}
