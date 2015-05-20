@@ -218,14 +218,17 @@ public class SaleManagementService {
 				//小于则减掉该货架的全部剩余量，并标识need量下次循环继续操作
 				if(visibleRemain >= needAmount) {
 					visibleRemain -= needAmount;
-					//修改中间表商品剩余量
-					sr.setVisibleRemain(visibleRemain);
 					
 					//添加来源表的商品来源
 					sds.setStId(st.getStId());
 					sds.setSdId(sd.getSdId());
 					sds.setSsrId(sr.getShelfRemainId());
 					sds.setAmount(needAmount);
+					
+					//减少需要商品的数量
+					needAmount -= sr.getVisibleRemain();
+					//修改中间表商品剩余量
+					sr.setVisibleRemain(visibleRemain);
 					
 					srDAO.update(sr);
 					sdsDAO.add(sds);
@@ -236,7 +239,8 @@ public class SaleManagementService {
 					stock.setVisibleStock(visibleStock);
 					stockDAO.update(stock);
 					break;
-				} else {
+				} 
+				if(visibleRemain < needAmount && visibleRemain > 0) {
 					needAmount -= visibleRemain;
 					
 					//修改中间表商品剩余量
@@ -260,10 +264,66 @@ public class SaleManagementService {
 				
 			}
 			
-			//在退货入库表中查找可销售的商品
-			List<ReturnStockInDetail> ridList = ridDAO.findByCommodityId(sd.getCommodityId());
-			for(ReturnStockInDetail rid : ridList) {
-				
+			if(needAmount != 0) {
+				//在退货入库表中查找可销售的商品
+				List<ReturnStockInDetail> ridList = ridDAO.findByCommodityId(sd.getCommodityId());
+				for(ReturnStockInDetail rid : ridList) {
+					ShelfRemain sr = srDAO.findByOrderIdAndDetailId(rid.getRitId(), rid.getRidId());
+					if(sr == null) {
+						continue;
+					}
+					Integer visibleRemain = sr.getVisibleRemain();
+					SaleDetailSource sds = new SaleDetailSource();
+
+					//该货架的商品量大于等于需求量则直接减少剩余量跳出
+					//小于则减掉该货架的全部剩余量，并标识need量下次循环继续操作
+					if(visibleRemain >= needAmount) {
+						visibleRemain -= needAmount;
+						
+						//添加来源表的商品来源
+						sds.setStId(st.getStId());
+						sds.setSdId(sd.getSdId());
+						sds.setSsrId(sr.getShelfRemainId());
+						sds.setAmount(needAmount);
+						
+						//修改中间表商品剩余量
+						sr.setVisibleRemain(visibleRemain);
+						
+						srDAO.update(sr);
+						sdsDAO.add(sds);
+						
+						//库存详单进行修改
+						Stock stock = stockDAO.findByCommodityAndStorage(rid.getCommodityId(), rid.getStorageId());
+						Integer visibleStock = stock.getVisibleStock() - needAmount;
+						stock.setVisibleStock(visibleStock);
+						stockDAO.update(stock);
+						
+						//减少需要商品的数量
+						needAmount -= sr.getVisibleRemain();
+						
+						break;
+					} else {
+						needAmount -= visibleRemain;
+						
+						//修改中间表商品剩余量
+						sr.setVisibleRemain(0);
+						
+						//添加来源表的商品来源
+						sds.setStId(st.getStId());
+						sds.setSdId(sd.getSdId());
+						sds.setSsrId(sr.getShelfRemainId());
+						sds.setAmount(visibleRemain);
+						
+						srDAO.update(sr);
+						sdsDAO.add(sds);
+						
+						//库存详单进行修改
+						Stock stock = stockDAO.findByCommodityAndStorage(rid.getCommodityId(), rid.getStorageId());
+						Integer visibleStock = stock.getVisibleStock() - visibleRemain;
+						stock.setVisibleStock(visibleStock);
+						stockDAO.update(stock);
+					}
+				}
 			}
 			
 			//库存总单进行修改
@@ -273,7 +333,6 @@ public class SaleManagementService {
 			tsDAO.update(ts);
 			
 		}
-		
 		
 	}
 	
@@ -321,8 +380,22 @@ public class SaleManagementService {
 				}
 				
 				//库存详单修改
-				InStockgoods ig = igDAO.load(sr.getDetailId());
-				Stock stock = stockDAO.findByCommodityAndStorage(ig.getCommodityId(), ig.getStorageId());
+				String orderId = sr.getOrderId();
+				Integer commodityId = 0;
+				Integer storageId = 0;
+				if(orderId.substring(0, 4).equals("RKJH")) {
+					InStockgoods ig = new InStockgoods();
+					ig = igDAO.load(sr.getDetailId());
+					commodityId = ig.getCommodityId();
+					storageId = ig.getStorageId();
+				}
+				if(orderId.substring(0, 4).equals("RKTH")) {
+					ReturnStockInDetail rid = new ReturnStockInDetail();
+					rid = ridDAO.load(sr.getDetailId());
+					commodityId = rid.getCommodityId();
+					storageId = rid.getStorageId();
+				}
+				Stock stock = stockDAO.findByCommodityAndStorage(commodityId, storageId);
 				realRemain = stock.getStockAmount() - sds.getAmount();
 				Integer outAmount = stock.getOutStock() + sds.getAmount();
 				stock.setStockAmount(realRemain);
