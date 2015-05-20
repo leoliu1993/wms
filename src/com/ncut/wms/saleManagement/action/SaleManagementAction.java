@@ -44,6 +44,10 @@ public class SaleManagementAction extends ActionSupport implements
 		return "saleReturnPage";
 	}
 	
+	public String returnStockInPage() {
+		return "returnStockInPage";
+	}
+	
 	public String saleQueryPage() {
 		return "saleQueryPage";
 	}
@@ -56,6 +60,10 @@ public class SaleManagementAction extends ActionSupport implements
 		return "saleStockOutQueryPage";
 	}
 
+	public String returnStockInQueryPage() {
+		return "returnStockInQueryPage";
+	}
+	
 	/**
 	 * 获得商品和对应的库存信息
 	 * @return
@@ -159,6 +167,30 @@ public class SaleManagementAction extends ActionSupport implements
 		}
 		return NONE;
 	}
+
+	/**
+	 * 保存销售退货单据
+	 * @return
+	 */
+	public String saveReturnStockIn() {
+		Json json = new Json();
+		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
+		try {
+			smService.saveReturnStockIn(smDTO);
+			json.setSuccess(true);
+			json.setMessage("添加退货入库单据成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.setSuccess(false);
+			json.setMessage("添加退货入库单据失败");
+		}
+		try {
+			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(json).toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return NONE;
+	}
 	
 	/**
 	 * 获得销售总单表格(easyui)
@@ -250,6 +282,35 @@ public class SaleManagementAction extends ActionSupport implements
 		return NONE;
 	}
 
+	/**
+	 * 获得退货入库总单表格(easyui)
+	 * @return
+	 */
+	public String getReturnStockInTotalGrid() {
+		DataGrid<SaleManagementDTO> dg = smService.getReturnStockInTotalGrid(smDTO);
+		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
+		try {
+			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(dg).toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return NONE;
+	}
+	
+	/**
+	 * 获得退货入库详单表格(easyui)
+	 * @return
+	 */
+	public String getReturnStockInDetailGrid() {
+		DataGrid<SaleManagementDTO> dg = smService.getReturnStockInDetailGrid(smDTO);
+		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
+		try {
+			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(dg).toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return NONE;
+	}
 	/* ======以下声明======== */
 	private SaleManagementDTO smDTO;
 	private SaleManagementService smService;

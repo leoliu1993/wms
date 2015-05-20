@@ -98,7 +98,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				onClickRow:function(rowIndex,rowData){
 					var ids = rowData.purchaseId;
 			        $('#detailGrid').datagrid('options').url = 'purchaseAction_getDetailGrid';
-			        $('#detailGrid').datagrid('load', {purchaseId:ids}); 
+			        $('#detailGrid').datagrid('load', {purchaseId:ids});
+			        editIndex = undefined;
 				},
 				
 				//增加工具栏，添加增删改查按钮
@@ -403,12 +404,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		//详单取消按钮
 		function cancelType(target) {
 			var index = getRowIndex(target);
-			if ($('#detailGrid').datagrid('validateRow', editIndex) && editIndex == index){
-				$('#detailGrid').datagrid('cancelEdit', editIndex);
-				editIndex = undefined;
-			} else {
-				return;
-			}
+			$('#detailGrid').datagrid('cancelEdit', editIndex);
+			editIndex = undefined;
 		}
 		//获取当前行
 		function getRowIndex(target){

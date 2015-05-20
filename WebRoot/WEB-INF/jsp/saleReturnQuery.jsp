@@ -147,7 +147,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						width:100
 					},{
 						title:'退货单价',
-						field:'detailPrice',
+						field:'price',
 						width:100
 					},{
 						title:'退货数量',

@@ -358,7 +358,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   
   <body>
   	<div id="lay" class="easyui-layout" fit=true >
-		<div region="north" title="退货出库单据查询" collapsed=false style="height:80px;padding:10px">
+		<div region="north" title="销售出库单据查询" collapsed=false style="height:80px;padding:10px">
 			<form id="commoditySearch">
 				开始时间：<input id="beginDate" name="beginDate" class="easyui-datebox" />&nbsp;
 				结束时间：<input id="endDate" name="endDate" class="easyui-datebox" />&nbsp;
@@ -366,10 +366,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<a id="clearButton" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">清空</a>
 			</form>
 		</div>
-		<div region="center" title="退货出库总单">
+		<div region="center" title="销售出库总单">
 			<table id="supplierTable"></table>
 		</div>
-		<div region="south" title="退货出库详单" collapsed=false style="height:40%">
+		<div region="south" title="销售出库详单" collapsed=false style="height:40%">
 			<table id="detailGrid"></table>
 		</div>
 	</div>

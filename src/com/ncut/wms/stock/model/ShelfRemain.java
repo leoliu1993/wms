@@ -10,6 +10,7 @@ public class ShelfRemain {
 	private Integer shelfRemainId;
 	private String orderId;
 	private Integer detailId;
+	private Integer commodityId;
 	private Integer visibleRemain = 0;
 	private Integer realRemain = 0;
 
@@ -53,6 +54,14 @@ public class ShelfRemain {
 
 	public void setRealRemain(Integer realRemain) {
 		this.realRemain = realRemain;
+	}
+
+	public Integer getCommodityId() {
+		return commodityId;
+	}
+
+	public void setCommodityId(Integer commodityId) {
+		this.commodityId = commodityId;
 	}
 
 }

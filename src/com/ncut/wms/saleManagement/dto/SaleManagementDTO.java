@@ -26,6 +26,8 @@ public class SaleManagementDTO {
 	private Integer amount;
 	private Double totalPrice;
 	private Integer returnedAmount;
+	private Integer storageId;
+	private Integer shelfId;
 
 	/* =====页面展示属性====== */
 	private String beginDate;
@@ -41,8 +43,12 @@ public class SaleManagementDTO {
 	private Double vip1Price;
 	private Double vip2Price;
 	private Double vip3Price;
+	//仓库货架信息
+	private String storageName;
+	private String shelfName;
 
 	private Integer visibleStock = 0;
+	private Integer visibleRemain = 0;
 	
 	private String stateStr;
 
@@ -366,5 +372,45 @@ public class SaleManagementDTO {
 
 	public void setStateStr(String stateStr) {
 		this.stateStr = stateStr;
+	}
+
+	public Integer getVisibleRemain() {
+		return visibleRemain;
+	}
+
+	public void setVisibleRemain(Integer visibleRemain) {
+		this.visibleRemain = visibleRemain;
+	}
+
+	public Integer getStorageId() {
+		return storageId;
+	}
+
+	public void setStorageId(Integer storageId) {
+		this.storageId = storageId;
+	}
+
+	public Integer getShelfId() {
+		return shelfId;
+	}
+
+	public void setShelfId(Integer shelfId) {
+		this.shelfId = shelfId;
+	}
+
+	public String getStorageName() {
+		return storageName;
+	}
+
+	public void setStorageName(String storageName) {
+		this.storageName = storageName;
+	}
+
+	public String getShelfName() {
+		return shelfName;
+	}
+
+	public void setShelfName(String shelfName) {
+		this.shelfName = shelfName;
 	}
 }

@@ -10,6 +10,7 @@ public interface BaseDAO<T> {
 	public void update(T t);
 	public void merge(T t);
 	public T load(int id);
+	public T load(String id);
 	
 	public int count(String hql);
 	public int count(String hql,Map<String,Object> args);

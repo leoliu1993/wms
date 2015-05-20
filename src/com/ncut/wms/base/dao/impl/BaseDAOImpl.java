@@ -51,6 +51,11 @@ public class BaseDAOImpl<T> implements BaseDAO<T> {
 	public T load(int id) {
 		return (T)this.getSession().get(this.getCls(), id);
 	}
+	
+	@Override
+	public T load(String id) {
+		return (T) this.getSession().get(this.getCls(), id);
+	}
 
 	@Override
 	public int count(String hql) {

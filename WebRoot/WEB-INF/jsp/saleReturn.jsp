@@ -254,6 +254,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						field:'totalPrice',
 						width:100,
 					},{
+						title:'可退货数量',
+						field:'visibleRemain',
+						width:100
+					},{
 						title:'请选择退货数量',
 						field:'returnedAmount',
 						width:100,
@@ -415,7 +419,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				var ed = $(this).datagrid('getEditor', {index:index,field:field});
 				var opts = $(ed.target).numberbox('options');
 				opts.min = 0;
-				opts.max = $(this).datagrid('getSelected').amount;
+				opts.max = $(this).datagrid('getSelected').visibleRemain;
 				$(ed.target).focus();
 				flag = 'edited';
 			} else {

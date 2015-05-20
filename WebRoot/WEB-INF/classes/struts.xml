@@ -110,9 +110,11 @@
 			<result name="saleAddPage">/WEB-INF/jsp/saleAdd.jsp</result>
 			<result name="saleStockOutPage">/WEB-INF/jsp/saleStockOut.jsp</result>
 			<result name="saleReturnPage">/WEB-INF/jsp/saleReturn.jsp</result>
+			<result name="returnStockInPage">/WEB-INF/jsp/returnStockIn.jsp</result>
 			<result name="saleQueryPage">/WEB-INF/jsp/saleQuery.jsp</result>
 			<result name="saleReturnQueryPage">/WEB-INF/jsp/saleReturnQuery.jsp</result>
 			<result name="saleStockOutQueryPage">/WEB-INF/jsp/saleStockOutQuery.jsp</result>
+			<result name="returnStockInQueryPage">/WEB-INF/jsp/returnStockInQuery.jsp</result>
 		</action>
 		
     </package>

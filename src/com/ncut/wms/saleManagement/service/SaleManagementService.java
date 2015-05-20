@@ -19,6 +19,8 @@ import com.ncut.wms.commodity.dao.CommodityCategoryDAO;
 import com.ncut.wms.commodity.dao.CommodityDAO;
 import com.ncut.wms.commodity.model.Commodity;
 import com.ncut.wms.commodity.model.CommodityCategory;
+import com.ncut.wms.saleManagement.dao.ReturnStockInDetailDAO;
+import com.ncut.wms.saleManagement.dao.ReturnStockInTotalDAO;
 import com.ncut.wms.saleManagement.dao.SaleDetailDAO;
 import com.ncut.wms.saleManagement.dao.SaleDetailSourceDAO;
 import com.ncut.wms.saleManagement.dao.SaleReturnDetailDAO;
@@ -27,6 +29,8 @@ import com.ncut.wms.saleManagement.dao.SaleStockOutDetailDAO;
 import com.ncut.wms.saleManagement.dao.SaleStockOutTotalDAO;
 import com.ncut.wms.saleManagement.dao.SaleTotalDAO;
 import com.ncut.wms.saleManagement.dto.SaleManagementDTO;
+import com.ncut.wms.saleManagement.model.ReturnStockInDetail;
+import com.ncut.wms.saleManagement.model.ReturnStockInTotal;
 import com.ncut.wms.saleManagement.model.SaleDetail;
 import com.ncut.wms.saleManagement.model.SaleDetailSource;
 import com.ncut.wms.saleManagement.model.SaleReturnDetail;
@@ -34,6 +38,7 @@ import com.ncut.wms.saleManagement.model.SaleReturnTotal;
 import com.ncut.wms.saleManagement.model.SaleStockOutDetail;
 import com.ncut.wms.saleManagement.model.SaleStockOutTotal;
 import com.ncut.wms.saleManagement.model.SaleTotal;
+import com.ncut.wms.shelf.dao.ShelfDAO;
 import com.ncut.wms.stock.dao.InStockgoodsDAO;
 import com.ncut.wms.stock.dao.ShelfRemainDAO;
 import com.ncut.wms.stock.dao.StockDAO;
@@ -42,6 +47,7 @@ import com.ncut.wms.stock.model.InStockgoods;
 import com.ncut.wms.stock.model.ShelfRemain;
 import com.ncut.wms.stock.model.Stock;
 import com.ncut.wms.stock.model.TotalStock;
+import com.ncut.wms.storage.dao.StorageDAO;
 import com.ncut.wms.unit.dao.UnitDAO;
 import com.ncut.wms.unit.model.Unit;
 import com.ncut.wms.user.dao.UserDAO;
@@ -134,6 +140,17 @@ public class SaleManagementService {
 		String code = date.replaceAll("-", "");
 		String hql = "select max(srt.srtId) from SaleReturnTotal as srt where srt.createDate between '"+date+" 00:00:00' and '"+date+" 23:59:59'";
 		List<SaleReturnTotal> list = srtDAO.list(hql);
+		Object obj = list.get(0);
+		if(obj!=null)
+			return head+code+Tools.formatCode(obj.toString());
+		return head+code+"0001";
+	}
+	
+	public String getReturnStockInCode(String date) {
+		String head = "RKTH";
+		String code = date.replaceAll("-", "");
+		String hql = "select max(rit.ritId) from ReturnStockInTotal as rit where rit.createDate between '"+date+" 00:00:00' and '"+date+" 23:59:59'";
+		List<ReturnStockInTotal> list = ritDAO.list(hql);
 		Object obj = list.get(0);
 		if(obj!=null)
 			return head+code+Tools.formatCode(obj.toString());
@@ -240,6 +257,12 @@ public class SaleManagementService {
 					stock.setVisibleStock(visibleStock);
 					stockDAO.update(stock);
 				}
+				
+			}
+			
+			//在退货入库表中查找可销售的商品
+			List<ReturnStockInDetail> ridList = ridDAO.findByCommodityId(sd.getCommodityId());
+			for(ReturnStockInDetail rid : ridList) {
 				
 			}
 			
@@ -353,7 +376,8 @@ public class SaleManagementService {
 				srd.setSdId(jObj.getInt("detailId"));
 				srd.setPrice(jObj.getDouble("price"));
 				srd.setReturnedAmount(jObj.getInt("returnedAmount"));
-				srd.setTotalPrice(jObj.getDouble("totalPrice"));
+				Double totalPrice = jObj.getDouble("price") * jObj.getInt("returnedAmount");
+				srd.setTotalPrice(totalPrice);
 				srdList.add(srd);
 			}
 		}
@@ -412,6 +436,123 @@ public class SaleManagementService {
 			
 		}
 		
+	}
+	
+	/**
+	 * 保存销售退货入库单据
+	 * @param smDTO
+	 */
+	public void saveReturnStockIn(SaleManagementDTO smDTO) {
+		
+		//对总单进行赋值
+		ReturnStockInTotal rit = new ReturnStockInTotal();
+		BeanUtils.copyProperties(smDTO, rit);
+		//获得订单号并赋值
+		String date = smDTO.getCreateDate().substring(0, 10);
+		String ritId = this.getReturnStockInCode(date);
+		rit.setRitId(ritId);
+		rit.setSrtId(smDTO.getOrderId());
+		
+		//对详单进行赋值
+		JSONArray jArr = JSONArray.fromObject(smDTO.getDetailOrder());
+		List<ReturnStockInDetail> ridList = new ArrayList<ReturnStockInDetail>();
+		//格式化前台数据
+		for(int i=0; i<jArr.size(); i++) {
+			
+			JSONObject jObj = JSONObject.fromObject(jArr.get(i));
+			
+			
+			ReturnStockInDetail rid = new ReturnStockInDetail();
+			//对商品详单赋值
+			rid.setRitId(ritId);
+			rid.setSrdId(jObj.getInt("detailId"));
+			rid.setCommodityId(jObj.getInt("commodityId"));
+			rid.setAmount(jObj.getInt("returnedAmount"));
+			rid.setStorageId(jObj.getInt("storageId"));
+			rid.setShelfId(jObj.getInt("shelfId"));
+			
+			ridList.add(rid);
+		}
+		
+		//对总单和详单进行存储
+		ritDAO.add(rit);
+		for(ReturnStockInDetail rid : ridList) {
+			//对入库表进行存储
+			ridDAO.add(rid);
+			//对中间表进行存储
+			ShelfRemain sr = new ShelfRemain();
+			sr.setOrderId(rid.getRitId());
+			sr.setDetailId(rid.getRidId());
+			sr.setCommodityId(rid.getCommodityId());
+			sr.setVisibleRemain(rid.getAmount());
+			sr.setRealRemain(rid.getAmount());
+			srDAO.add(sr);
+			
+			//对库存信息进行修改:首先搜索商品编号和仓库编号，如果有则修改该库存量，
+			//如果没有则添加该库存信息。同时注意实际库存量应该为入库数量减去退货数量
+			Stock stock = stockDAO.findByCommodityAndStorage(rid.getCommodityId(), rid.getStorageId());
+			if(stock != null) {
+				//有则修改原表
+				Integer inStockAmount = stock.getInStock() + rid.getAmount();
+				Integer visibleStockAmount = stock.getVisibleStock() + rid.getAmount();
+				Integer stockAmount = stock.getStockAmount() + rid.getAmount();
+				
+				stock.setInStock(inStockAmount);
+				stock.setVisibleStock(visibleStockAmount);
+				stock.setStockAmount(stockAmount);
+				stockDAO.update(stock);
+				
+				//对库存总表中的数据进行修改
+				TotalStock ts = tsDAO.findByCommodityId(rid.getCommodityId());
+				//增加入货、可销售、总量数据
+				inStockAmount = ts.getInStock() + rid.getAmount();
+				visibleStockAmount = ts.getVisibleStock() + rid.getAmount();
+				stockAmount = ts.getStockAmount() + rid.getAmount();
+				
+				ts.setInStock(inStockAmount);
+				ts.setVisibleStock(visibleStockAmount);
+				ts.setStockAmount(stockAmount);
+				tsDAO.update(ts);
+				
+			} else {
+				//没有则添加一张新表
+				Integer commodityId = rid.getCommodityId();
+				Integer inStockAmount = rid.getAmount();
+				Integer storageId = rid.getStorageId();
+				
+				stock = new Stock();
+				stock.setCommodityId(commodityId);
+				stock.setInStock(inStockAmount);
+				stock.setOutStock(0);
+				stock.setVisibleStock(inStockAmount);
+				stock.setStockAmount(inStockAmount);
+				stock.setStorageId(storageId);
+				stockDAO.add(stock);
+				
+				//对库存总表中的数据进行修改
+				TotalStock ts = tsDAO.findByCommodityId(commodityId);
+				//减少进货量
+				Integer purchaseAmount = ts.getPurchase() - rid.getAmount();
+				//增加入货、可销售、总量数据
+				inStockAmount = ts.getInStock() + rid.getAmount();
+				Integer visibleStockAmount = ts.getVisibleStock() + rid.getAmount();
+				Integer stockAmount = ts.getStockAmount() + rid.getAmount();
+				
+				ts.setPurchase(purchaseAmount);
+				ts.setInStock(inStockAmount);
+				ts.setVisibleStock(visibleStockAmount);
+				ts.setStockAmount(stockAmount);
+				tsDAO.update(ts);
+			}
+			
+			
+		}
+		
+		//退货总单的库存状态进行修改和存储
+		SaleReturnTotal srt = srtDAO.load(rit.getSrtId());
+		srt.setReceivedDate(rit.getReceivedDate());
+		srt.setStockState(1);
+		srtDAO.update(srt);
 	}
 	
 	/**
@@ -484,6 +625,13 @@ public class SaleManagementService {
 			BeanUtils.copyProperties(sd, sdDTO);
 			sdDTO.setOrderId(sd.getStId());
 			sdDTO.setDetailId(sd.getSdId());
+			//判断是否为查询展示，非查询情况计算可退货数量，退货数置为0
+			if(smDTO.getStateStr() == null || !smDTO.getStateStr().equals("query")) {
+				Integer visibleRemain = sd.getAmount() - sd.getReturnedAmount();
+				sdDTO.setVisibleRemain(visibleRemain);
+				sdDTO.setReturnedAmount(0);
+			}
+			
 			
 			//插入一些需要的数据
 			sdDTO.setCommodityName(commodityDAO.load(sd.getCommodityId()).getCommodityName());
@@ -510,6 +658,10 @@ public class SaleManagementService {
 			hql+=" and srt.createDate between :beginDate and :endDate";
 			map.put("beginDate", smDTO.getBeginDate().trim());
 			map.put("endDate", smDTO.getEndDate().trim());
+		}
+		
+		if(smDTO.getStateStr() != null && !"".equals(smDTO.getStateStr().trim())){
+			hql+=" and srt.stockState " + smDTO.getStateStr();
 		}
 		
 		String totalHql = "select count(*) "+hql;
@@ -564,6 +716,7 @@ public class SaleManagementService {
 			
 			//插入一些需要的数据
 			SaleDetail sd = sdDAO.load(srd.getSdId());
+			srdDTO.setCommodityId(sd.getCommodityId());
 			srdDTO.setCommodityName(commodityDAO.load(sd.getCommodityId()).getCommodityName());
 			
 			srdDTOList.add(srdDTO);
@@ -651,6 +804,85 @@ public class SaleManagementService {
 		dg.setRows(sodDTOList);
 		return dg;
 	}
+	
+	/**
+	 * 获得退货入库总单表格(easyui)
+	 * @param smDTO
+	 * @return
+	 */
+	public DataGrid<SaleManagementDTO> getReturnStockInTotalGrid(
+			SaleManagementDTO smDTO) {
+		DataGrid<SaleManagementDTO> dg = new DataGrid<SaleManagementDTO>();
+		Map<String,Object> map = new HashMap<String,Object>();
+		String hql = "from ReturnStockInTotal rit where 1=1";
+		
+		if(smDTO.getBeginDate()!=null && !"".equals(smDTO.getBeginDate().trim())){
+			hql+=" and rit.createDate between :beginDate and :endDate";
+			map.put("beginDate", smDTO.getBeginDate().trim());
+			map.put("endDate", smDTO.getEndDate().trim());
+		}
+		
+		String totalHql = "select count(*) "+hql;
+		//实现排序
+		if(smDTO.getSort()!=null){
+			hql+=" order by "+smDTO.getSort()+" "+smDTO.getOrder();
+		}
+		List<ReturnStockInTotal> ritList = ritDAO.list(hql, map, smDTO.getPage(), smDTO.getRows());
+		List<SaleManagementDTO> ritDTOList = new ArrayList<SaleManagementDTO>();
+		for(ReturnStockInTotal rit : ritList){
+			SaleManagementDTO ritDTO = new SaleManagementDTO();
+			BeanUtils.copyProperties(rit, ritDTO);
+			ritDTO.setOrderId(rit.getRitId());
+			
+			//插入一些需要的数据
+			ritDTO.setUserName(userDAO.load(rit.getUserId()).getUsername());
+			
+			ritDTOList.add(ritDTO);
+		}
+		dg.setTotal(ritDAO.count(totalHql, map));
+		dg.setRows(ritDTOList);
+		return dg;
+	}
+	
+	/**
+	 * 获得退货入库详单表格(easyui)
+	 * @param smDTO
+	 * @return
+	 */
+	public DataGrid<SaleManagementDTO> getReturnStockInDetailGrid(SaleManagementDTO smDTO) {
+		DataGrid<SaleManagementDTO> dg = new DataGrid<SaleManagementDTO>();
+		Map<String,Object> map = new HashMap<String,Object>();
+		String hql = "from ReturnStockInDetail rid where 1=1";
+		
+		if(smDTO.getOrderId()!=null && !"".equals(smDTO.getOrderId().trim())){
+			hql+=" and rid.ritId = :ritId";
+			map.put("ritId", smDTO.getOrderId().trim());
+		}
+		
+		String totalHql = "select count(*) "+hql;
+		//实现排序
+		if(smDTO.getSort()!=null){
+			hql+=" order by "+smDTO.getSort()+" "+smDTO.getOrder();
+		}
+		List<ReturnStockInDetail> ridList = ridDAO.list(hql, map, smDTO.getPage(), smDTO.getRows());
+		List<SaleManagementDTO> ridDTOList = new ArrayList<SaleManagementDTO>();
+		for(ReturnStockInDetail rid : ridList){
+			SaleManagementDTO sodDTO = new SaleManagementDTO();
+			BeanUtils.copyProperties(rid, sodDTO);
+			sodDTO.setOrderId(rid.getRitId());
+			sodDTO.setDetailId(rid.getRidId());
+			
+			//插入一些需要的数据
+			sodDTO.setCommodityName(commodityDAO.load(rid.getCommodityId()).getCommodityName());
+			sodDTO.setStorageName(storageDAO.load(rid.getShelfId()).getStorageName());
+			sodDTO.setShelfName(shelfDAO.load(rid.getShelfId()).getShelfName());
+			
+			ridDTOList.add(sodDTO);
+		}
+		dg.setTotal(sodDAO.count(totalHql, map));
+		dg.setRows(ridDTOList);
+		return dg;
+	}
 
 	/* ======以下声明======== */
 	private SaleTotalDAO stDAO;
@@ -663,11 +895,17 @@ public class SaleManagementService {
 	private SaleReturnTotalDAO srtDAO;
 	private SaleReturnDetailDAO srdDAO;
 	
+	private ReturnStockInTotalDAO ritDAO;
+	private ReturnStockInDetailDAO ridDAO;
+	
 	private CommodityDAO commodityDAO;
 	private CommodityCategoryDAO ccDAO;
 	private UnitDAO unitDAO;
 	private ClientDAO clientDAO;
 	private UserDAO userDAO;
+	
+	private StorageDAO storageDAO;
+	private ShelfDAO shelfDAO;
 	
 	private ShelfRemainDAO srDAO;
 	private TotalStockDAO tsDAO;
@@ -752,6 +990,26 @@ public class SaleManagementService {
 	@Resource
 	public void setSrdDAO(SaleReturnDetailDAO srdDAO) {
 		this.srdDAO = srdDAO;
+	}
+
+	@Resource
+	public void setRitDAO(ReturnStockInTotalDAO ritDAO) {
+		this.ritDAO = ritDAO;
+	}
+
+	@Resource
+	public void setRidDAO(ReturnStockInDetailDAO ridDAO) {
+		this.ridDAO = ridDAO;
+	}
+
+	@Resource
+	public void setStorageDAO(StorageDAO storageDAO) {
+		this.storageDAO = storageDAO;
+	}
+
+	@Resource
+	public void setShelfDAO(ShelfDAO shelfDAO) {
+		this.shelfDAO = shelfDAO;
 	}
 
 }
