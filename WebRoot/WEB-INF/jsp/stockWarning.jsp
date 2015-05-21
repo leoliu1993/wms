@@ -10,7 +10,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <head>
     <base href="<%=basePath%>">
     
-    <title>进货退货出库管理</title>
+    <title>库存查询</title>
 	<meta http-equiv="pragma" content="no-cache">
 	<meta http-equiv="cache-control" content="no-cache">
 	<meta http-equiv="expires" content="0">    
@@ -40,7 +40,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				
 				idField:'orderId',
 				//ajax异步后台请求
-				url: 'saleManagement_getReturnStockInTotalGrid',
+				url: 'stockManagement_getStockWarningTotalGrid',
 				fit: true,
 				//自动列间距
 				fitColumns: false,
@@ -54,42 +54,52 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				//列内容
 				columns:[[
 				    {
-				    	title:'退货入库总单ID',
+				    	title:'库存总单ID',
 						field:'orderId',
-						width:150,
-						hidden: false
+						width:100,
+						hidden: true
 				    },{
-						title:'单据生成日期',
-						field:'createDate',
-						width:170,
-						sortable: false
-					},{
-						title:'入库日期',
-						field:'receivedDate',
-						width:170,
-						sortable: false
-					},{
-						title:'操作员ID',
-						field:'userId',
+						title:'商品ID',
+						field:'commodityId',
 						width:100,
 						hidden: true
 					},{
-						title:'操作员姓名',
-						field:'userName',
+						title:'商品名称',
+						field:'commodityName',
+						width:100,
+						sortable: false
+					},{
+						title:'订购量',
+						field:'purchase',
+						width:100
+					},{
+						title:'入库量',
+						field:'inStock',
 						width:100,
 					},{
-						title:'备注',
-						field:'remark',
-						width:100
+						title:'出库量',
+						field:'outStock',
+						width:100,
+					},{
+						title:'可见销售量',
+						field:'visibleStock',
+						width:100,
+					},{
+						title:'库存量',
+						field:'stockAmount',
+						width:100,
 					}
 				]],
 				
 				//添加点击事件
 				onClickRow:function(rowIndex,rowData){
-					var ids = rowData.orderId;
-			        $('#detailGrid').datagrid('options').url = 'saleManagement_getReturnStockInDetailGrid';
-			        $('#detailGrid').datagrid('load', {orderId:ids, stateStr:'query'}); 
-				},
+					var ids = rowData.commodityId;
+			        $('#detailGrid').datagrid('options').url = 'commodityAction_getDatagrid';
+			        $('#detailGrid').datagrid('load', {commodityId:ids}); 
+				}
+				
+				
+				
 				
 			});
 			
@@ -98,7 +108,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			 */
 			$('#detailGrid').datagrid({
 				
-				idField:'detailId',
+				idField:'commodityId',
 				//ajax异步后台请求
 				url: '',
 				fit: true,
@@ -109,46 +119,53 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				pagination: false,
 				//加载等待提示
 				loadMsg:'数据正在加载中，请耐心等待…',
-				rownumbers:true,
-				singleSelect:true,
 				//列内容
 				columns:[[
 				    {
-				    	title:'出库详单ID',
-						field:'detailId',
-						width:100,
-						hidden: true
-				    },{
-				    	title:'出库总单ID',
-						field:'orderId',
-						width:150,
-						hidden: true
-				    },{
-						title:'商品ID',
+				    	title:'商品编号',
 						field:'commodityId',
-						width:50,
-						sortable: false,
+						width:100,
 						hidden: false
-					},{
+				    },{
 						title:'商品名称',
 						field:'commodityName',
+						width:100,
+						sortable: true
+					},{
+						title:'规格型号',
+						field:'commodityType',
 						width:100
 					},{
-						title:'入库数量',
-						field:'amount',
-						width:100
-					},{
-						title:'入库仓库',
-						field:'storageName',
+						title:'商品分类',
+						field:'categoryName',
 						width:100,
 					},{
-						title:'入库货架',
-						field:'shelfName',
+						title:'计量单位',
+						field:'unitName',
 						width:100,
+					},{
+						title:'普通售价',
+						field:'salePrice',
+						width:100,
+					},{
+						title:'初级会员售价',
+						field:'vip1Price',
+						width:100,
+					},{
+						title:'中级会员售价',
+						field:'vip2Price',
+						width:100,
+					},{
+						title:'高级会员售价',
+						field:'vip3Price',
+						width:100,
+					},{
+						title:'备注',
+						field:'remark',
+						width:300
 					}
 				]],
 				
-				onClickCell: onClickCell
 				
 			});
 			
@@ -159,40 +176,51 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			$('#saveButton').click(function(){
 				if($('#addForm').form('validate')){
 					
-					var arr = $('#supplierTable').datagrid('getSelections');
-					var ids = '';
-					ids += arr[0].orderId;
-					$.ajax({
-						type: 'post',
-						url: 'purchaseManagement_saveReturnStockOut',
-						cache: false,
-						data: $('#addForm').serialize() + '&orderId=' + ids,
-						dataType: 'json',
-						success: function(result) {
-							$('#addDialog').dialog('close');
-							if(result.success){
-								//1.刷新数据表格
-								$('#supplierTable').datagrid('reload');
-								//2.给出提示信息
-								$.messager.show ({
-									title: "ok!",
-									msg: result.message
-								});
-								//3.清楚数据表格勾选
-								$('#supplierTable').datagrid('clearSelections');
-								$('#addForm').form('reset');
-								$('#supplierTable').datagrid('reload');
-								$('#detailGrid').datagrid('loadData',{total:0,rows:[]});
-								
-							} else {
-								$.messager.show ({
-									title: "fail!",
-									msg: result.message
-								});
+					$.messager.confirm('提示信息' , '确认入库后订单将无法修改，是否确认入库？' , function(result){
+						if(result) {
+							var arr = $('#supplierTable').datagrid('getSelections');
+							var ids = '';
+							/* for(var i=0; i<arr.length; i++) {
+								ids += arr[i].purchaseId + ',';
 							}
-						},
-					});
-						
+							ids = ids.substring(0, ids.length-1); */
+							ids += arr[0].purchaseId;
+							$.ajax({
+								type: 'post',
+								url: 'inStockAction_purchase',
+								cache: false,
+								data: $('#addForm').serialize() + '&ids=' + ids + '&inStockgoods=' + JSON.stringify($('#detailGrid').datagrid('getRows')),
+								dataType: 'json',
+								success: function(result) {
+									$('#addDialog').dialog('close');
+									if(result.success){
+										//1.刷新数据表格
+										$('#supplierTable').datagrid('reload');
+										//2.给出提示信息
+										$.messager.show ({
+											title: "ok!",
+											msg: result.message
+										});
+										//3.清楚数据表格勾选
+										$('#supplierTable').datagrid('clearSelections');
+										$('#addForm').form('reset');
+										$('#supplierTable').datagrid('reload');
+										$('#detailGrid').datagrid('loadData',{total:0,rows:[]});
+										
+									} else {
+										$.messager.show ({
+											title: "fail!",
+											msg: result.message
+										});
+									}
+								},
+							});
+							
+						} else {
+							return;
+						}
+					}); 
+					
 				} else {
 					$.messager.show({
 						title: '提示信息' ,
@@ -269,7 +297,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		var editIndex = undefined;
 		//详单表格点击事件
 		function onClickCell(index,field,value){
-			if((field == 'storageId' | field == 'shelfId') & editIndex == undefined) {
+			if(field == 'storageId' & editIndex == undefined) {
 				editIndex = index;
 				$(this).datagrid('beginEdit', index);
 				var ed = $(this).datagrid('getEditor', {index:index,field:field});
@@ -283,12 +311,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		function saveType(target) {
 			var index = getRowIndex(target);
 			if ($('#detailGrid').datagrid('validateRow', editIndex) & editIndex == index){
-				var ed1 = $('#detailGrid').datagrid('getEditor', {index:editIndex,field:'storageId'});
-				var ed2 = $('#detailGrid').datagrid('getEditor', {index:editIndex,field:'shelfId'});
-			 	var storageName = $(ed1.target).combobox('getText');
-			 	var shelfName = $(ed2.target).combobox('getText');
+				var ed = $('#detailGrid').datagrid('getEditor', {index:editIndex,field:'storageId'});
+			 	var storageName = $(ed.target).combobox('getText');
                 $('#detailGrid').datagrid('getRows')[editIndex]['storageName'] = storageName;
-                $('#detailGrid').datagrid('getRows')[editIndex]['shelfName'] = shelfName;
 				$('#detailGrid').datagrid('endEdit', editIndex);
 				editIndex = undefined;
 				
@@ -358,39 +383,28 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   
   <body>
   	<div id="lay" class="easyui-layout" fit=true >
-		<div region="north" title="退货入库单据查询" collapsed=false style="height:80px;padding:10px">
+		<div region="north" title="库存查询" collapsed=false style="height:80px;padding:10px">
 			<form id="commoditySearch">
-				开始时间：<input id="beginDate" name="beginDate" class="easyui-datebox" />&nbsp;
-				结束时间：<input id="endDate" name="endDate" class="easyui-datebox" />&nbsp;
+				商品名称：<input name="commodityName" class="easyui-textbox"/>&nbsp;
 				<a id="searchButton" class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a>
 				<a id="clearButton" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">清空</a>
 			</form>
 		</div>
-		<div region="center" title="退货入库总单">
+		<div region="center" title="库存报警">
 			<table id="supplierTable"></table>
 		</div>
-		<div region="south" title="退货入库详单" collapsed=false style="height:40%">
+		<div region="south" title="商品详细信息" collapsed=false style="height:40%">
 			<table id="detailGrid"></table>
 		</div>
 	</div>
-	<div id="addDialog" title="确认出库时间" modal=true class="easyui-dialog"
+	<div id="addDialog" title="确认入库时间" modal=true class="easyui-dialog"
 		closed=true style="width:350px;padding:30px;">
 		<form id="addForm" method="post">
-			<input type="hidden" id="userId" name="userId" class="textbox" value=${sessionScope.user.userid } />
-			<div style="margin:10px;">
-				<table>
-					<tr height="30px">
-						<td>操作员：</td>
-						<td><input id="userName" name="loginName" class="easyui-textbox" value="${sessionScope.user.loginname }" data-options="editable:false" /></td>
-					</tr>
-					<tr height="30px">
-						<td>设置出库时间：</td>
-						<td><input id="createDate" name="createDate" /></td>
-					</tr>
-				</table>
+			<div style="margin:10px;text-align:center">
+				设置入库时间：<input id="createDate" name="createDate" />
 			</div>
 			<div style="margin:10px;text-align:center">
-				<a id="saveButton" class="easyui-linkbutton" iconCls="icon-save" style="margin-right:10px">出库</a>
+				<a id="saveButton" class="easyui-linkbutton" iconCls="icon-save" style="margin-right:10px">入库</a>
 				<a id="cancelButton" class="easyui-linkbutton" iconCls="icon-cancel" style="margin-left:10px">取消</a>
 			</div>
 			

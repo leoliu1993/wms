@@ -117,6 +117,15 @@
 			<result name="returnStockInQueryPage">/WEB-INF/jsp/returnStockInQuery.jsp</result>
 		</action>
 		
+		<!-- 库存管理模块 -->
+		<action name="stockManagement_*" class="stockManagementAction" method="{1}">
+			<result name="stockWarningPage">/WEB-INF/jsp/stockWarning.jsp</result>
+			<result name="reportBreakPage">/WEB-INF/jsp/reportBreak.jsp</result>
+			<result name="breakStockInPage">/WEB-INF/jsp/breakStockIn.jsp</result>
+			<result name="reportBreakQueryPage">/WEB-INF/jsp/reportBreakQuery.jsp</result>
+			<result name="breakStockInQueryPage">/WEB-INF/jsp/breakStockInQuery.jsp</result>
+		</action>
+		
     </package>
 
 

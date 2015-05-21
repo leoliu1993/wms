@@ -940,17 +940,25 @@ public class SaleManagementService {
 		List<ReturnStockInDetail> ridList = ridDAO.list(hql, map, smDTO.getPage(), smDTO.getRows());
 		List<SaleManagementDTO> ridDTOList = new ArrayList<SaleManagementDTO>();
 		for(ReturnStockInDetail rid : ridList){
-			SaleManagementDTO sodDTO = new SaleManagementDTO();
-			BeanUtils.copyProperties(rid, sodDTO);
-			sodDTO.setOrderId(rid.getRitId());
-			sodDTO.setDetailId(rid.getRidId());
+			SaleManagementDTO ridDTO = new SaleManagementDTO();
+			BeanUtils.copyProperties(rid, ridDTO);
+			ridDTO.setOrderId(rid.getRitId());
+			ridDTO.setDetailId(rid.getRidId());
+			
+			//判断是否为查询展示，非查询情况计算可退货数量，退货数置为0
+			if(smDTO.getStateStr() == null || !smDTO.getStateStr().equals("query")) {
+				ShelfRemain sr = srDAO.findByOrderIdAndDetailId(rid.getRitId(), rid.getRidId());
+				Integer visibleRemain = sr.getVisibleRemain();
+				ridDTO.setVisibleRemain(visibleRemain);
+				ridDTO.setReturnedAmount(0);
+			}
 			
 			//插入一些需要的数据
-			sodDTO.setCommodityName(commodityDAO.load(rid.getCommodityId()).getCommodityName());
-			sodDTO.setStorageName(storageDAO.load(rid.getShelfId()).getStorageName());
-			sodDTO.setShelfName(shelfDAO.load(rid.getShelfId()).getShelfName());
+			ridDTO.setCommodityName(commodityDAO.load(rid.getCommodityId()).getCommodityName());
+			ridDTO.setStorageName(storageDAO.load(rid.getShelfId()).getStorageName());
+			ridDTO.setShelfName(shelfDAO.load(rid.getShelfId()).getShelfName());
 			
-			ridDTOList.add(sodDTO);
+			ridDTOList.add(ridDTO);
 		}
 		dg.setTotal(sodDAO.count(totalHql, map));
 		dg.setRows(ridDTOList);

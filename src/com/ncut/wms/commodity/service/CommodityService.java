@@ -55,10 +55,14 @@ public class CommodityService {
 	public DataGrid<CommodityDTO> datagrid(CommodityDTO commodityDTO) {
 		DataGrid<CommodityDTO> dg = new DataGrid<CommodityDTO>();
 		Map<String, Object> map = new HashMap<String, Object>();
-		String hql = "from Commodity commodity";
+		String hql = "from Commodity commodity where 1=1";
+		if (commodityDTO.getCommodityId() != null) {
+			hql += " and commodity.commodityId = :commodityId";
+			map.put("commodityId", commodityDTO.getCommodityId());
+		}
 		if (commodityDTO.getCommodityName() != null
 				&& !"".equals(commodityDTO.getCommodityName().trim())) {
-			hql += " where commodity.commodityName like :commodityName";
+			hql += " and commodity.commodityName like :commodityName";
 			map.put("commodityName", "%"
 					+ commodityDTO.getCommodityName().trim() + "%");
 		}

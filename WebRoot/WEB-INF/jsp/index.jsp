@@ -192,20 +192,24 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							</span>查询当前库存</a>
 						</p>
 						<p>
-							<a title="purchaseAction_addPage"><span class="icon icon-warning">&nbsp;&nbsp;&nbsp;&nbsp;
+							<a title="stockManagement_stockWarningPage"><span class="icon icon-warning">&nbsp;&nbsp;&nbsp;&nbsp;
 							</span>库存报警</a>
 						</p>
 						<p>
-							<a title="purchaseAction_addPage"><span class="icon icon-break">&nbsp;&nbsp;&nbsp;&nbsp;
-							</span>商品破损</a>
+							<a title="stockManagement_reportBreakPage"><span class="icon icon-break">&nbsp;&nbsp;&nbsp;&nbsp;
+							</span>商品报损</a>
 						</p>
 						<p>
-							<a title="purchaseAction_addPage"><span class="icon icon-over">&nbsp;&nbsp;&nbsp;&nbsp;
-							</span>商品报溢</a>
+							<a title="stockManagement_breakStockInPage"><span class="icon icon-over">&nbsp;&nbsp;&nbsp;&nbsp;
+							</span>报损出库</a>
 						</p>
 						<p>
-							<a title="purchaseAction_addPage"><span class="icon icon-searchminus">&nbsp;&nbsp;&nbsp;&nbsp;
-							</span>查询损益单据</a>
+							<a title="stockManagement_reportBreakQueryPage"><span class="icon icon-searchminus">&nbsp;&nbsp;&nbsp;&nbsp;
+							</span>查询报损退货单据</a>
+						</p>
+						<p>
+							<a title="stockManagement_breakStockInQueryPage"><span class="icon icon-searchminus">&nbsp;&nbsp;&nbsp;&nbsp;
+							</span>查询报损出库单据</a>
 						</p>
 					</div>
 					<div title="销售管理" style="overflow:auto;padding:10px;">

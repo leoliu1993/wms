@@ -14,6 +14,7 @@ public class ReturnStockInDetail {
 	private Integer srdId;
 	private Integer commodityId;
 	private Integer amount = 0;
+	private Integer returnedAmount = 0;
 	private Integer storageId;
 	private Integer shelfId;
 
@@ -73,6 +74,14 @@ public class ReturnStockInDetail {
 
 	public void setAmount(Integer amount) {
 		this.amount = amount;
+	}
+
+	public Integer getReturnedAmount() {
+		return returnedAmount;
+	}
+
+	public void setReturnedAmount(Integer returnedAmount) {
+		this.returnedAmount = returnedAmount;
 	}
 
 }
