@@ -200,7 +200,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							</span>商品报损</a>
 						</p>
 						<p>
-							<a title="stockManagement_breakStockInPage"><span class="icon icon-over">&nbsp;&nbsp;&nbsp;&nbsp;
+							<a title="stockManagement_reportBreakStockOutPage"><span class="icon icon-over">&nbsp;&nbsp;&nbsp;&nbsp;
 							</span>报损出库</a>
 						</p>
 						<p>
@@ -208,7 +208,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							</span>查询报损退货单据</a>
 						</p>
 						<p>
-							<a title="stockManagement_breakStockInQueryPage"><span class="icon icon-searchminus">&nbsp;&nbsp;&nbsp;&nbsp;
+							<a title="stockManagement_reportBreakStockOutQueryPage"><span class="icon icon-searchminus">&nbsp;&nbsp;&nbsp;&nbsp;
 							</span>查询报损出库单据</a>
 						</p>
 					</div>

@@ -5,9 +5,17 @@ public class StockManagementDTO {
 	/* =====总单实体属性====== */
 	private String orderId;
 	private Integer userId;
+	private String userName;
 	private String remark;
 	private String createDate;
+	private String outDate;
 	private String returnedDate;
+	private Integer stockState;
+	
+	/* =====详单实体属性====== */
+	private Integer detailId;
+	private Integer amount;
+	private Integer returnedAmount;
 	
 	/* =====库存总单属性====== */
 	private Integer totalStockId;
@@ -19,7 +27,10 @@ public class StockManagementDTO {
 	private Integer visibleStock = 0;
 	private Integer stockAmount = 0;
 	
+	//页面属性
 	private String stateStr;
+	private String beginDate;
+	private String endDate;
 
 	// 存储详单字符串
 	private String detailOrder;
@@ -189,5 +200,69 @@ public class StockManagementDTO {
 
 	public void setTotalStockId(Integer totalStockId) {
 		this.totalStockId = totalStockId;
+	}
+
+	public String getBeginDate() {
+		return beginDate;
+	}
+
+	public void setBeginDate(String beginDate) {
+		this.beginDate = beginDate;
+	}
+
+	public String getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public Integer getStockState() {
+		return stockState;
+	}
+
+	public void setStockState(Integer stockState) {
+		this.stockState = stockState;
+	}
+
+	public Integer getDetailId() {
+		return detailId;
+	}
+
+	public void setDetailId(Integer detailId) {
+		this.detailId = detailId;
+	}
+
+	public Integer getAmount() {
+		return amount;
+	}
+
+	public void setAmount(Integer amount) {
+		this.amount = amount;
+	}
+
+	public Integer getReturnedAmount() {
+		return returnedAmount;
+	}
+
+	public void setReturnedAmount(Integer returnedAmount) {
+		this.returnedAmount = returnedAmount;
+	}
+
+	public String getOutDate() {
+		return outDate;
+	}
+
+	public void setOutDate(String outDate) {
+		this.outDate = outDate;
 	}
 }

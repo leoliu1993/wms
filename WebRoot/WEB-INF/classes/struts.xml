@@ -121,9 +121,9 @@
 		<action name="stockManagement_*" class="stockManagementAction" method="{1}">
 			<result name="stockWarningPage">/WEB-INF/jsp/stockWarning.jsp</result>
 			<result name="reportBreakPage">/WEB-INF/jsp/reportBreak.jsp</result>
-			<result name="breakStockInPage">/WEB-INF/jsp/breakStockIn.jsp</result>
+			<result name="reportBreakStockOutPage">/WEB-INF/jsp/reportBreakStockOut.jsp</result>
 			<result name="reportBreakQueryPage">/WEB-INF/jsp/reportBreakQuery.jsp</result>
-			<result name="breakStockInQueryPage">/WEB-INF/jsp/breakStockInQuery.jsp</result>
+			<result name="reportBreakStockOutQueryPage">/WEB-INF/jsp/reportBreakStockOutQuery.jsp</result>
 		</action>
 		
     </package>

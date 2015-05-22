@@ -32,16 +32,16 @@ public class StockManagementAction extends ActionSupport implements ModelDriven<
 		return "reportBreakPage";
 	}
 	
-	public String breakStockInPage() {
-		return "breakStockInPage";
+	public String reportBreakStockOutPage() {
+		return "reportBreakStockOutPage";
 	}
 	
 	public String reportBreakQueryPage() {
 		return "reportBreakQueryPage";
 	}
 	
-	public String breakStockInQueryPage() {
-		return "breakStockInQueryPage";
+	public String reportBreakStockOutQueryPage() {
+		return "reportBreakStockOutQueryPage";
 	}
 	
 	public String saveReportBreak() {
@@ -58,6 +58,70 @@ public class StockManagementAction extends ActionSupport implements ModelDriven<
 		}
 		try {
 			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(json).toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return NONE;
+	}
+	
+	public String saveReportBeakStockOut() {
+		Json json = new Json();
+		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
+		try {
+			smService.saveReportBeakStockOut(smDTO);
+			json.setSuccess(true);
+			json.setMessage("添加出库单据成功！");
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.setSuccess(false);
+			json.setMessage("添加出库单据失败！");
+		}
+		try {
+			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(json).toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return NONE;
+	}
+	
+	public String getBreakTotalGrid() {
+		DataGrid<StockManagementDTO> dg = smService.getBreakTotalGrid(smDTO);
+		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
+		try {
+			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(dg).toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return NONE;
+	}
+	
+	public String getBreakDetailGrid() {
+		DataGrid<StockManagementDTO> dg = smService.getBreakDetailGrid(smDTO);
+		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
+		try {
+			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(dg).toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return NONE;
+	}
+	
+	public String getBreakStockOutTotalGrid() {
+		DataGrid<StockManagementDTO> dg = smService.getBreakStockOutTotalGrid(smDTO);
+		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
+		try {
+			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(dg).toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return NONE;
+	}
+	
+	public String getBreakStockOutDetailGrid() {
+		DataGrid<StockManagementDTO> dg = smService.getBreakStockOutDetailGrid(smDTO);
+		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
+		try {
+			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(dg).toString());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
