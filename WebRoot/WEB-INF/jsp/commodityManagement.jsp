@@ -41,7 +41,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				url: 'commodityAction_getDatagrid',
 				fit: true,
 				//自动列间距
-				fitColumns: true,
+				fitColumns: false,
 				border: false,
 				//分页查询
 				pagination: true,
@@ -92,9 +92,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						field:'vip3Price',
 						width:100,
 					},{
+						title:'库存报警量',
+						field:'minimum',
+						width:100,
+					},{
 						title:'备注',
 						field:'remark',
-						width:100
+						width:270
 					}
 				]],
 				
@@ -193,7 +197,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 									salePrice:arr[0].salePrice,
 									vip1Price:arr[0].vip1Price,
 									vip2Price:arr[0].vip2Price,
-									Vip3Price:arr[0].vip3Price,
+									vip3Price:arr[0].vip3Price,
+									minimum:arr[0].minimum,
 									remark: arr[0].remark
 								});
 							}
@@ -339,34 +344,40 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</div>
 	</div>
 	<div id="addDialog" title="添加商品信息" modal=true class="easyui-dialog"
-		closed=true style="width:550px;padding:30px;">
+		closed=true style="width:600px;padding:30px;">
 		<form id="addForm" method="post">
 			<input type="hidden" name="commodityId" class="textbox" />
-			
-			<div class="fl" style="margin:10px">
-				商品名称：<input name="commodityName" class="easyui-textbox" required=true missingMessage="请填写商品名称" />
-			</div>
-			
-			<div class="fl" style="margin:10px">
-				规格型号：<input name="commodityType" class="easyui-textbox" />
-			</div>
-			<div class="fl" style="margin:10px">
-				商品类别：<input id="cotegoryCombobox" name="categoryId" />
-			</div>
-			<div class="fl" style="margin:10px">
-				计量单位：<input id="unitCombobox" name="unitId" />
-			</div>
-			<div class="fl" style="margin:10px">
-				普通售价：<input name="salePrice" class="easyui-textbox" />
-			</div>
-			<div class="fl" style="margin:10px">
-				初级会员售价：<input name="vip1Price" class="easyui-textbox" />
-			</div>
-			<div class="fl" style="margin:10px">
-				中级会员售价：<input name="vip2Price" class="easyui-textbox" />
-			</div>
-			<div class="fl" style="margin:10px">
-				高级会员售价：<input name="vip3Price" class="easyui-textbox" />
+			<div style="margin:10px;">
+				<table cellspacing="8px">
+					<tr height="30px">
+						<td>商品名称：</td>
+						<td><input name="commodityName" class="easyui-textbox" required=true missingMessage="请填写商品名称" /></td>
+						<td>规格型号：</td>
+						<td><input name="commodityType" class="easyui-textbox" /></td>
+					</tr>
+					<tr height="30px">
+						<td>商品类别：</td>
+						<td><input id="cotegoryCombobox" name="categoryId" /></td>
+						<td>计量单位：</td>
+						<td><input id="unitCombobox" name="unitId" /></td>
+					</tr>
+					<tr height="30px">
+						<td>普通售价：</td>
+						<td><input name="salePrice" class="easyui-numberbox" /></td>
+						<td>初级会员售价：</td>
+						<td><input name="vip1Price" class="easyui-numberbox" /></td>
+					</tr>
+					<tr height="30px">
+						<td>中级会员售价：</td>
+						<td><input name="vip2Price" class="easyui-numberbox" /></td>
+						<td>高级会员售价：</td>
+						<td><input name="vip3Price" class="easyui-numberbox" /></td>
+					</tr>
+					<tr height="30px">
+						<td>库存报警量：</td>
+						<td><input name="minimum" class="easyui-numberbox" /></td>
+					</tr>
+				</table>
 			</div>
 			<div class="clear"></div>
 			<div style="margin:10px;">

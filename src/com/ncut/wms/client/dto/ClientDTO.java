@@ -8,6 +8,7 @@ public class ClientDTO {
 	private String contactTel;
 	private String address;
 	private String remark;
+	private Integer level = 0;
 
 	/* =====datagrid属性====== */
 	private int page;
@@ -102,5 +103,13 @@ public class ClientDTO {
 
 	public void setIds(String ids) {
 		this.ids = ids;
+	}
+
+	public Integer getLevel() {
+		return level;
+	}
+
+	public void setLevel(Integer level) {
+		this.level = level;
 	}
 }

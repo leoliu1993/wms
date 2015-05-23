@@ -41,7 +41,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				url: 'supplierAction_getDatagrid',
 				fit: true,
 				//自动列间距
-				fitColumns: true,
+				fitColumns: false,
 				border: false,
 				//分页查询
 				pagination: true,
@@ -304,18 +304,20 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		closed=true style="width:550px;padding:30px;">
 		<form id="addForm" method="post">
 			<input type="hidden" name="supplierId" class="textbox" />
-			<div class="fl" style="margin:10px">
-				供应商名称：<input type="text" name="supplierName" class="textbox" required=true missingMessage="请填写供应商名称"  />
-			</div>
-			<div class="fl" style="margin:10px">
-				联系人：<input name="contactPeople" class="easyui-validatebox textbox" />
-			</div>
-			<div class="fl" style="margin:10px">
-				联系电话：&nbsp;&nbsp;&nbsp;<input name="contactTel" class="textbox" />
-			</div>
-			<div class="fl" style="margin:10px">
-				地址：&nbsp;&nbsp;&nbsp;<input name="address" class="textbox" />
-			</div>
+			<table cellspacing="8px">
+				<tr height="30px">
+					<td>供应商名称：</td>
+					<td><input name="supplierName" class="easyui-textbox" required=true missingMessage="请填写供应商名称"  /></td>
+					<td>联系人：</td>
+					<td><input name="contactPeople" class="easyui-textbox" /></td>
+				</tr>
+				<tr height="30px">
+					<td>联系电话：</td>
+					<td><input name="contactTel" class="easyui-numberbox" /></td>
+					<td>地址：</td>
+					<td><input name="address" class="easyui-textbox" /></td>
+				</tr>
+			</table>
 			<div class="clear"></div>
 			<div style="margin:10px;">
 				<p style="margin:5px">备注：</p>

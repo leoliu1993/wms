@@ -75,11 +75,11 @@ public class CommodityCategoryAction extends ActionSupport implements
 			BeanUtils.copyProperties(cmdtCtgrDTO, cmdCtgrt);
 			cmdtCtgrService.add(cmdCtgrt);
 			json.setSuccess(true);
-			json.setMessage("添加供应商成功");
+			json.setMessage("添加商品分类成功");
 		} catch (Exception e) {
 			e.printStackTrace();
 			json.setSuccess(false);
-			json.setMessage("添加供应商失败");
+			json.setMessage("添加商品分类失败");
 		}
 		try {
 			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(json).toString());
@@ -96,11 +96,32 @@ public class CommodityCategoryAction extends ActionSupport implements
 			BeanUtils.copyProperties(cmdtCtgrDTO, cmdCtgrt);
 			cmdtCtgrService.update(cmdCtgrt);
 			json.setSuccess(true);
-			json.setMessage("修改供应商成功");
+			json.setMessage("修改商品分类成功");
 		} catch (Exception e) {
 			e.printStackTrace();
 			json.setSuccess(false);
-			json.setMessage("修改供应商失败");
+			json.setMessage("修改商品分类失败");
+		}
+		try {
+			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(json).toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return NONE;
+	}
+	
+	public String delete(){
+		Json json = new Json();
+		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
+		try {
+			BeanUtils.copyProperties(cmdtCtgrDTO, cmdCtgrt);
+			cmdtCtgrService.delete(cmdCtgrt);
+			json.setSuccess(true);
+			json.setMessage("删除商品分类成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.setSuccess(false);
+			json.setMessage("删除商品分类失败");
 		}
 		try {
 			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(json).toString());

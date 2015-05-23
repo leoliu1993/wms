@@ -8,6 +8,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.json.JSONObject;
+
 import org.apache.struts2.ServletActionContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -16,6 +18,7 @@ import com.ncut.wms.commodity.model.Commodity;
 import com.ncut.wms.commodity.service.CommodityService;
 import com.ncut.wms.unit.model.Unit;
 import com.ncut.wms.unit.service.UnitService;
+import com.ncut.wms.util.json.Json;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.ModelDriven;
 
@@ -24,10 +27,77 @@ import com.opensymphony.xwork2.ModelDriven;
 public class UnitAction extends ActionSupport implements
 ModelDriven<Unit> {
 
-	private UnitService unitService;
-	private Unit unit = new Unit();
-	
 	/*======以下业务逻辑========*/
+	/**
+	 * 跳转计量单位管理页面
+	 * 
+	 * @return
+	 */
+	public String managementPage() {
+
+		return "managementPage";
+	}
+	
+	public String addUnit() {
+		Json json = new Json();
+		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
+		try {
+			unitService.addUnit(unit);
+			json.setSuccess(true);
+			json.setMessage("添加计量单位成功！");
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.setSuccess(false);
+			json.setMessage("添加计量单位失败！");
+		}
+		try {
+			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(json).toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return NONE;
+	}
+	
+	public String deleteUnit() {
+		Json json = new Json();
+		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
+		try {
+			unitService.deleteUnit(unit);
+			json.setSuccess(true);
+			json.setMessage("删除计量单位成功！");
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.setSuccess(false);
+			json.setMessage("删除计量单位失败！");
+		}
+		try {
+			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(json).toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return NONE;
+	}
+	
+	public String editUnit() {
+		Json json = new Json();
+		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
+		try {
+			unitService.editUnit(unit);
+			json.setSuccess(true);
+			json.setMessage("修改计量单位成功！");
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.setSuccess(false);
+			json.setMessage("修改计量单位失败！");
+		}
+		try {
+			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(json).toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return NONE;
+	}
+	
 	public String getUnitList() throws IOException {
 
 		// 获得request对象，获取页面数据
@@ -58,16 +128,10 @@ ModelDriven<Unit> {
 		response.getWriter().write(unitList);
 		return NONE;
 	}
-	
-	/**
-	 * 跳转计量单位管理页面
-	 * 
-	 * @return
-	 */
-	public String managementPage() {
 
-		return "managementPage";
-	}
+	/* ======以下声明======== */
+	private UnitService unitService;
+	private Unit unit = new Unit();
 	
 	@Override
 	public Unit getModel() {

@@ -26,22 +26,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<script type="text/javascript" src="js/commons.js"></script>
 	<script type="text/javascript">
 	var grid;
-	var datas;
 	var flag;
-	function getDatas(){
-		//同步获取后台数据
-		$.ajax({
-			url:'cmdtCtgrAction_dgList',
-			async:false,
-			dataType:'json',
-			success:function(data){
-				datas = data.rows;
-			}
-		})
-	}
-	
 	$(function(){
-		getDatas();
 		grid = $("#dgtype").datagrid({
 			url:'cmdtCtgrAction_dgList',
 			border:false,
@@ -71,7 +57,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					}
 				}
 			},{
-				field:'pname',
+				field:'pid',
 				title:'所属分类',
 				width:150,
 				resizable:false,
@@ -80,9 +66,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					options:{
 						valueField:'cid',
 						textField:'cname',
-						data:datas
+                        url:'cmdtCtgrAction_getCategoryList',
+                        required:true
 					}
-				}
+				},
+				formatter:function(value,row){
+                    return row.pname;
+                },
 			},{
 				field:'action',
 				title:'操作',
@@ -136,16 +126,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	//新增分类
 	function addType(){
 		var index=0;
-		var row = $("#dgtype").datagrid('getSelected');
-		if(row){
-			index=$("#dgtype").datagrid("getRowIndex",row);
-		}
 		$("#dgtype").datagrid('insertRow',{
 			index:index,
 			row:{
 				
 			}
-		})
+		});
 		flag = "add";
 		$("#dgtype").datagrid('selectRow',index);
 		$("#dgtype").datagrid('beginEdit',index);
@@ -153,8 +139,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	
 	//保存分类 cname,pname,
 	function saveType(target){
-		$("#dgtype").datagrid("endEdit",getRowIndex(target));
+		var rowIndex =  getRowIndex(target);
+		$("#dgtype").datagrid('selectRow',rowIndex);
 		var row = $("#dgtype").datagrid('getSelected');
+		var ed = $('#dgtype').datagrid('getEditor', {index:rowIndex,field:'pid'});
+		var pname = $(ed.target).combobox('getText');
+		$('#dgtype').datagrid('getRows')[rowIndex]['pname'] = pname;
+		$("#dgtype").datagrid("endEdit", rowIndex);
 		if(flag=='add') {
 			$.ajax({
 				url:'cmdtCtgrAction_add',
@@ -163,8 +154,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					pid:row.pid
 				},
 				dataType:'json'
-			})
-		} else {
+			});
+			$("#dgtype").datagrid("reload");
+		}
+		if(flag == 'edit') {
 			$("#dgtype").datagrid("endEdit",getRowIndex(target));
 			var row = $("#dgtype").datagrid('getSelected');
 			$.ajax({
@@ -175,15 +168,20 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					pid:row.pid
 				},
 				dataType:'json'
-			})
-		}
+			});
+		} 
+		flag = '';
 		
 	}
 	
 	//取消
 	function cancelType(target){
-		$("#dgtype").datagrid("cancelEdit",getRowIndex(target));
-		//$("#dgtype").datagrid("deleteRow",getRowIndex(target));
+		if(flag == 'edit') {
+			$("#dgtype").datagrid("cancelEdit",getRowIndex(target));
+		}
+		if(flag == 'add') {
+			$("#dgtype").datagrid("deleteRow",getRowIndex(target));
+		}
 	}
 	
 	//修改分类

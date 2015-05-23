@@ -16,6 +16,7 @@ import com.ncut.wms.util.easyui.DataGrid;
 @Service("commodityCategoryService")
 public class CommodityCategoryService {
 
+	/* ======以下声明======== */
 	private CommodityCategoryDAO cmdtCtgrDAO;
 
 	@Resource
@@ -23,6 +24,7 @@ public class CommodityCategoryService {
 		this.cmdtCtgrDAO = cmdtCtgrDAO;
 	}
 
+	/*======以下业务逻辑========*/
 	public DataGrid<CommodityCategoryDTO> datagrid(
 			CommodityCategoryDTO cmdtCtgrDTO) {
 		DataGrid<CommodityCategoryDTO> dg = new DataGrid<CommodityCategoryDTO>();
@@ -59,4 +61,9 @@ public class CommodityCategoryService {
 	public void add(CommodityCategory cmdCtgrt) {
 		cmdtCtgrDAO.add(cmdCtgrt);
 	}
+	
+	public void delete(CommodityCategory cmdCtgrt) {
+		cmdtCtgrDAO.delete(cmdCtgrt.getCid());
+	}
+
 }

@@ -19,8 +19,19 @@ import com.ncut.wms.unit.model.Unit;
 @Service("unitService")
 public class UnitService {
 	
-	private UnitDAO unitDAO;
+	/* ======以下业务逻辑======== */
+	public void addUnit(Unit unit) {
+		unitDAO.add(unit);
+	}
+	
+	public void deleteUnit(Unit unit) {
+		unitDAO.delete(unit.getUnitId());
+	}
 
+	public void editUnit(Unit unit) {
+		unitDAO.update(unit);
+	}
+	
 	public String getUnitList() {
 		return null;
 	}
@@ -39,19 +50,6 @@ public class UnitService {
 		return unitListStr;
 	}
 	
-	public int total() {
-		return unitDAO.count("select count(*) from Unit");
-	}
-
-	public UnitDAO getUnitDAO() {
-		return unitDAO;
-	}
-
-	@Resource
-	public void setUnitDAO(UnitDAO unitDAO) {
-		this.unitDAO = unitDAO;
-	}
-
 	public String getUnitListJsonByPage(int currentPage, int pageSize,
 			Map<String, Object> m) {
 		List<Unit> unitList = unitDAO.findByPagination(
@@ -62,4 +60,17 @@ public class UnitService {
 				+ JSONArray.fromObject(unitList).toString() + "}";
 		return unitListStr;
 	}
+	
+	public int total() {
+		return unitDAO.count("select count(*) from Unit");
+	}
+
+	/* ======以下声明======== */
+	private UnitDAO unitDAO;
+	
+	@Resource
+	public void setUnitDAO(UnitDAO unitDAO) {
+		this.unitDAO = unitDAO;
+	}
+
 }

@@ -41,7 +41,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				url: 'clientAction_getDatagrid',
 				fit: true,
 				//自动列间距
-				fitColumns: true,
+				fitColumns: false,
 				border: false,
 				//分页查询
 				pagination: true,
@@ -63,6 +63,25 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						field:'clientName',
 						width:100,
 						sortable: true
+					},{
+						title:'客户等级',
+						field:'level',
+						width:100,
+						sortable: true,
+						formatter:function(value,row,index){
+							if(value == 0) {
+								return '普通客户';
+							}
+							if(value == 1) {
+								return '青铜客户';
+							}
+							if(value == 2) {
+								return '白银客户';
+							}
+							if(value == 3) {
+								return '黄金客户';
+							}
+						}
 					},{
 						title:'联系人',
 						field:'contactPeople',
@@ -117,7 +136,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 										
 										var ids = '';
 										for(var i=0; i<arr.length; i++) {
-											ids += arr[i].supplierId + ',';
+											ids += arr[i].clientId + ',';
 										}
 										ids = ids.substring(0, ids.length-1);
 										$.post('clientAction_delete', {ids:ids}, function(result){
@@ -171,6 +190,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 								$('#addForm').form('load',{
 									clientId: arr[0].clientId,
 									clientName: arr[0].clientName,
+									level: arr[0].level,
 									contactPeople: arr[0].contactPeople,
 									contactTel: arr[0].contactTel,
 									address: arr[0].address,
@@ -296,17 +316,41 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		closed=true style="width:550px;padding:30px;">
 		<form id="addForm" method="post">
 			<input type="hidden" name="clientId" class="textbox" />
-			<div class="fl" style="margin:10px">
-				客户名称：<input name="clientName" class="easyui-textbox" required=true missingMessage="请填写客户名称"  />
-			</div>
-			<div class="fl" style="margin:10px">
-				联系人：<input name="contactPeople" class="easyui-textbox" />
-			</div>
-			<div class="fl" style="margin:10px">
-				联系电话：&nbsp;&nbsp;&nbsp;<input name="contactTel" class="easyui-textbox" />
-			</div>
-			<div class="fl" style="margin:10px">
-				地址：&nbsp;&nbsp;&nbsp;<input name="address" class="easyui-textbox" />
+			<div style="margin:10px">
+				<table cellspacing="8px">
+					<tr height="30px">
+						<td>客户名称：</td>
+						<td><input name="clientName" class="easyui-textbox" required=true missingMessage="请填写客户名称"  /></td>
+						<td>客户等级：</td>
+						<td><input name="level" class="easyui-combobox" data-options="
+						valueField:'value',
+						textField:'text',
+						value:0,
+						data:[{
+							text:'普通客户',
+							value:'0'
+						},{
+							text:'青铜客户',
+							value:'1'
+						},{
+							text:'白银客户',
+							value:'2'
+						},{
+							text:'黄金客户',
+							value:'3'
+						}]"/></td>
+					</tr>
+					<tr height="30px">
+						<td>联系人：</td>
+						<td><input name="contactPeople" class="easyui-textbox" /></td>
+						<td>联系电话：</td>
+						<td><input name="contactTel" class="easyui-numberbox" /></td>
+					</tr>
+					<tr height="30px">
+						<td>地址：</td>
+						<td><input name="address" class="easyui-textbox" /></td>
+					</tr>
+				</table>
 			</div>
 			<div class="clear"></div>
 			<div style="margin:10px;">
