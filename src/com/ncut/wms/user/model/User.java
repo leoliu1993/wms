@@ -17,11 +17,11 @@ public class User {
 	private String password;
 	private String username;
 	private Integer age;
-	private String sex;
+	private Integer sex;
 	private String createDate;
 	private String lastUpdateDate;
 	private String disableDate;
-	private String usertype;
+	private Integer usertype;
 
 	@Id
 	@GeneratedValue
@@ -65,11 +65,11 @@ public class User {
 		this.age = age;
 	}
 
-	public String getSex() {
+	public Integer getSex() {
 		return sex;
 	}
 
-	public void setSex(String sex) {
+	public void setSex(Integer sex) {
 		this.sex = sex;
 	}
 
@@ -97,11 +97,11 @@ public class User {
 		this.disableDate = disableDate;
 	}
 
-	public String getUsertype() {
+	public Integer getUsertype() {
 		return usertype;
 	}
 
-	public void setUsertype(String usertype) {
+	public void setUsertype(Integer usertype) {
 		this.usertype = usertype;
 	}
 

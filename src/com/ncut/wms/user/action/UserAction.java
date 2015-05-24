@@ -11,8 +11,10 @@ import org.apache.struts2.ServletActionContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
+import com.ncut.wms.user.dto.UserDTO;
 import com.ncut.wms.user.model.User;
 import com.ncut.wms.user.service.UserService;
+import com.ncut.wms.util.easyui.DataGrid;
 import com.ncut.wms.util.json.Json;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
@@ -20,34 +22,9 @@ import com.opensymphony.xwork2.ModelDriven;
 
 @Controller("userAction")
 @Scope("prototype")
-public class UserAction extends ActionSupport implements ModelDriven<User> {
+public class UserAction extends ActionSupport implements ModelDriven<UserDTO> {
 	
-	/*========以下为声明部分========*/
-	private UserService userService;
-	private User user;
-	
-	public UserService getUserService() {
-		return userService;
-	}
-
-	@Resource
-	public void setUserService(UserService userService) {
-		this.userService = userService;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-	@Override
-	public User getModel() {
-		if(user == null) {
-			user = new User();
-		}
-		return user;
-	}
-	
-	/*========以下为逻辑部分========*/
+/*========以下为逻辑部分========*/
 	
 	@Override
 	public String execute()  {
@@ -55,13 +32,24 @@ public class UserAction extends ActionSupport implements ModelDriven<User> {
 		return "index";
 	}
 	
+	public String getUserGrid() {
+		DataGrid<User> dg = userService.getUserGrid(userDTO);
+		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
+		try {
+			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(dg).toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return NONE;
+	}
+	
 	public String login(){
 		Json json = new Json();
 		HttpServletResponse response = ServletActionContext.getResponse();
 		
-		User u = userService.login(user.getLoginname());
+		User u = userService.login(userDTO.getLoginname());
 		if(u != null) {
-			if(user.getPassword().equals(u.getPassword())){
+			if(userDTO.getPassword().equals(u.getPassword())){
 				ServletActionContext.getRequest().getSession().setAttribute("user", u);
 				ActionContext.getContext().put("rurl", "home_showHome");
 				json.setSuccess(true);
@@ -83,6 +71,36 @@ public class UserAction extends ActionSupport implements ModelDriven<User> {
 		}
 		return NONE;
 		
+	}
+	
+	/*========以下为声明部分========*/
+	private UserService userService;
+	private UserDTO userDTO;
+	private User user;
+	
+	public UserService getUserService() {
+		return userService;
+	}
+
+	@Resource
+	public void setUserService(UserService userService) {
+		this.userService = userService;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	@Override
+	public UserDTO getModel() {
+		if(userDTO == null) {
+			userDTO = new UserDTO();
+		}
+		return userDTO;
+	}
+
+	public void setUserDTO(UserDTO userDTO) {
+		this.userDTO = userDTO;
 	}
 	
 }

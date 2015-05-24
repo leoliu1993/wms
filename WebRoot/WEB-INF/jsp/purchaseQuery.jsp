@@ -64,6 +64,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						width:100,
 						sortable: false
 					},{
+						title:'供应商',
+						field:'supplierName',
+						width:100
+					},{
 						title:'应付金额',
 						field:'payablePrice',
 						width:100
@@ -257,16 +261,27 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			 */
 			$('#clearButton').click(function() {
 				$('#commoditySearch').form('reset');
+				$('#stockState').combobox('select', null);
 			});
 			
 			/**
 			 * 计量单位下拉菜单
 			 */
-			$('#unitCombobox').combobox({
-				url:'commodityAction_getUnitList',
+			$('#stockState').combobox({
 				editable:false,
-			    valueField:'unitId',
-			    textField:'unitName',
+				value:null,
+			    valueField:'value',
+			    textField:'text',
+			    data:[{
+			    	text:'		&nbsp;',
+			    	value:null
+			    },{
+			    	text:'未入库',
+			    	value:0
+			    },{
+			    	text:'已入库',
+			    	value:1
+			    }]
 			});
 			
 			/**
@@ -394,6 +409,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<form id="commoditySearch">
 				开始时间：<input id="beginDate" name="beginDate" class="easyui-datebox" />&nbsp;
 				结束时间：<input id="endDate" name="endDate" class="easyui-datebox" />&nbsp;
+				供应商：<input id="supplierName" name="supplierName" class="easyui-textbox" />&nbsp;
+				入库状态：<input id="stockState" name="stockState" class="easyui-combobox" />&nbsp;
 				<a id="searchButton" class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a>
 				<a id="clearButton" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">清空</a>
 			</form>

@@ -314,7 +314,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					</div>
 					<div title="系统管理">
 						<p>
-							<a title="test.jsp"><span class="icon icon-user">&nbsp;&nbsp;&nbsp;&nbsp;
+							<a title="index_userManagementPage"><span class="icon icon-user">&nbsp;&nbsp;&nbsp;&nbsp;
 							</span>用户管理</a>
 						</p>
 						<p>

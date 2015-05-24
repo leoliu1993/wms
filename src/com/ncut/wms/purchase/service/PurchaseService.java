@@ -87,7 +87,9 @@ public class PurchaseService {
 	public DataGrid<PurchaseDTO> querygrid(PurchaseDTO pDTO) {
 		DataGrid<PurchaseDTO> dg = new DataGrid<PurchaseDTO>();
 		Map<String,Object> map = new HashMap<String,Object>();
-		String hql = "from Purchase p where 1=1";
+		
+		String head = "select p ";
+		String hql = "from Purchase p, Supplier s where 1=1 and p.supplierId = s.supplierId";
 		
 		if(pDTO.getBeginDate()!=null && !"".equals(pDTO.getBeginDate().trim())){
 			hql+=" and p.createDate between :beginDate and :endDate";
@@ -95,7 +97,18 @@ public class PurchaseService {
 			map.put("endDate", pDTO.getEndDate().trim());
 		}
 		
-		String totalHql = "select count(*) "+hql;
+		if(pDTO.getSupplierName()!=null && !"".equals(pDTO.getSupplierName().trim())){
+			hql+=" and s.supplierName like :supplierName";
+			map.put("supplierName", "%"+pDTO.getSupplierName().trim()+"%");
+		}
+		
+		if(pDTO.getStockState()!=null){
+			hql+=" and p.stockState = :stockState";
+			map.put("stockState", pDTO.getStockState());
+		}
+		
+		String totalHql = "select count(p) "+hql;
+		hql = head + hql;
 		//实现排序
 		if(pDTO.getSort()!=null){
 			hql+=" order by "+pDTO.getSort()+" "+pDTO.getOrder();

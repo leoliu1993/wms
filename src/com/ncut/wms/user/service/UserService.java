@@ -1,20 +1,45 @@
 package com.ncut.wms.user.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
 import net.sf.json.JSONArray;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
+import com.ncut.wms.stockManagement.dto.StockManagementDTO;
+import com.ncut.wms.stockManagement.model.BreakTotal;
 import com.ncut.wms.user.dao.UserDAO;
+import com.ncut.wms.user.dto.UserDTO;
 import com.ncut.wms.user.model.User;
+import com.ncut.wms.util.easyui.DataGrid;
 
 @Component("userService")
 public class UserService {
 
 	/* ======以下业务逻辑======== */
+	public DataGrid<User> getUserGrid(UserDTO userDTO) {
+		DataGrid<User> dg = new DataGrid<User>();
+		Map<String,Object> map = new HashMap<String,Object>();
+		String hql = "from User u where 1=1";
+		
+		String totalHql = "select count(*) "+hql;
+		//实现排序
+		if(userDTO.getSort()!=null){
+			hql+=" order by "+userDTO.getSort()+" "+userDTO.getOrder();
+		}
+		List<User> userList = userDAO.list(hql, map, userDTO.getPage(), userDTO.getRows());
+		
+		dg.setTotal(userDAO.count(totalHql, map));
+		dg.setRows(userList);
+		return dg;
+	}
+	
 	public void add(User user) {
 		userDAO.add(user);
 	}

@@ -29,6 +29,11 @@ public class IndexAction extends ActionSupport{
 		return "index";
 	}
 	
+	public String userManagementPage() {
+		
+		return "userManagementPage";
+	}
+	
 	public String isLogin() {
 		Json json = new Json();
 		User user = (User) ServletActionContext.getRequest().getSession().getAttribute("user");

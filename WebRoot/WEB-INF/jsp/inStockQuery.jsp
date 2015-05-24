@@ -64,6 +64,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						width:170,
 						sortable: false
 					},{
+						title:'供应商',
+						field:'supplierName',
+						width:100
+					},{
 						title:'应付金额',
 						field:'payablePrice',
 						width:100
