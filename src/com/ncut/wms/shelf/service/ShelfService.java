@@ -18,6 +18,10 @@ public class ShelfService {
 		return sDAO.list(hql);
 	}
 	
+	public void add(Shelf shelf) {
+		sDAO.add(shelf);
+	}
+	
 	/* ======以下声明======== */
 	private ShelfDAO sDAO;
 

@@ -14,6 +14,8 @@ public class InStockDTO {
 	private Integer userId;
 	private String userName;
 	private String remark;
+	
+	/* ======页面展示属性======== */
 	private String beginDate;
 	private String endDate;
 
@@ -178,4 +180,5 @@ public class InStockDTO {
 	public void setPurchaseId(String purchaseId) {
 		this.purchaseId = purchaseId;
 	}
+
 }

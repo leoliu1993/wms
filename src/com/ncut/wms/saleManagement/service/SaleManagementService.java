@@ -636,7 +636,8 @@ public class SaleManagementService {
 	public DataGrid<SaleManagementDTO> getSaleTotalGrid(SaleManagementDTO smDTO) {
 		DataGrid<SaleManagementDTO> dg = new DataGrid<SaleManagementDTO>();
 		Map<String,Object> map = new HashMap<String,Object>();
-		String hql = "from SaleTotal st where 1=1";
+		String head = "select st ";
+		String hql = "from SaleTotal st, Client c where 1=1 and st.clientId = c.clientId";
 		
 		if(smDTO.getStateStr() != null && !"".equals(smDTO.getStateStr().trim())){
 			hql+=" and st.stockState " + smDTO.getStateStr();
@@ -648,7 +649,30 @@ public class SaleManagementService {
 			map.put("endDate", smDTO.getEndDate().trim());
 		}
 		
-		String totalHql = "select count(*) "+hql;
+		if(smDTO.getClientName()!=null && !"".equals(smDTO.getClientName().trim())){
+			hql+=" and c.clientName like :clientName";
+			map.put("clientName", "%" + smDTO.getClientName().trim() + "%");
+		}
+		
+		if(smDTO.getStockState()!=null) {
+			hql += " and st.stockState = :stockState";
+			map.put("stockState", smDTO.getStockState());
+		}
+		
+		if(smDTO.getPayablePrice1()!=null) {
+			hql += " and st.payablePrice between :payablePrice1 and :payablePrice2";
+			map.put("payablePrice1", smDTO.getPayablePrice1());
+			map.put("payablePrice2", smDTO.getPayablePrice2());
+		}
+		
+		if(smDTO.getRealPrice1()!=null) {
+			hql += " and st.realPrice between :realPrice1 and :realPrice2";
+			map.put("realPrice1", smDTO.getRealPrice1());
+			map.put("realPrice2", smDTO.getRealPrice2());
+		}
+		
+		String totalHql = "select count(st) "+hql;
+		hql = head + hql;
 		//实现排序
 		if(smDTO.getSort()!=null){
 			hql+=" order by "+smDTO.getSort()+" "+smDTO.getOrder();
@@ -948,7 +972,10 @@ public class SaleManagementService {
 			//判断是否为查询展示，非查询情况计算可退货数量，退货数置为0
 			if(smDTO.getStateStr() == null || !smDTO.getStateStr().equals("query")) {
 				ShelfRemain sr = srDAO.findByOrderIdAndDetailId(rid.getRitId(), rid.getRidId());
-				Integer visibleRemain = sr.getVisibleRemain();
+				Integer visibleRemain = 0;
+				if(sr != null) {
+					visibleRemain = sr.getVisibleRemain();
+				}
 				ridDTO.setVisibleRemain(visibleRemain);
 				ridDTO.setReturnedAmount(0);
 			}

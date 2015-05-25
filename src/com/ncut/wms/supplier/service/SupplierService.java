@@ -4,17 +4,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import javax.annotation.Resource;
+import javax.swing.filechooser.FileSystemView;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
-import com.ncut.wms.commodity.model.Commodity;
 import com.ncut.wms.supplier.dao.SupplierDAO;
 import com.ncut.wms.supplier.dto.SupplierDTO;
 import com.ncut.wms.supplier.model.Supplier;
 import com.ncut.wms.util.easyui.DataGrid;
+import com.ncut.wms.util.system.ToExcel;
 
 @Service("supplierService")
 public class SupplierService {
@@ -75,6 +77,23 @@ public class SupplierService {
 	public List<Supplier> getSupplierList() {
 		List<Supplier> supplierList = supplierDAO.list("from Supplier");
 		return supplierList;
+	}
+	
+	public void toExcel() {
+		ToExcel<Supplier> supplierToExcel = new ToExcel<Supplier>();
+		//添加表头信息
+		Vector<String> columnName = new Vector<String>();
+		columnName.add("供应商ID");
+		columnName.add("供应商名称");
+		columnName.add("联系人姓名");
+		columnName.add("联系人电话");
+		columnName.add("联系人地址");
+		columnName.add("备注");
+		//获取桌面路径
+		FileSystemView fsv = FileSystemView.getFileSystemView();
+		String path = fsv.getHomeDirectory().toString();
+		//excel导出
+		supplierToExcel.writeExcel(getSupplierList(), path + "\\supplier.xls", "供应商信息", columnName);
 	}
 	
 	public Supplier findById(Integer id) {

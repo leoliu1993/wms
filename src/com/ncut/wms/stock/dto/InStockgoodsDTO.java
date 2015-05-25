@@ -15,6 +15,7 @@ public class InStockgoodsDTO {
 	private String storageName;
 	private Integer shelfId;
 	private String shelfName;
+	private String coordinate;
 
 	/* =====datagrid属性====== */
 	private int page;
@@ -165,6 +166,14 @@ public class InStockgoodsDTO {
 
 	public void setPurchasegoodsId(Integer purchasegoodsId) {
 		this.purchasegoodsId = purchasegoodsId;
+	}
+
+	public String getCoordinate() {
+		return coordinate;
+	}
+
+	public void setCoordinate(String coordinate) {
+		this.coordinate = coordinate;
 	}
 
 	

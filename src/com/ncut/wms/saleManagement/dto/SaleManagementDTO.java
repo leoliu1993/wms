@@ -32,6 +32,10 @@ public class SaleManagementDTO {
 	/* =====页面展示属性====== */
 	private String beginDate;
 	private String endDate;
+	private Double payablePrice1;
+	private Double payablePrice2;
+	private Double realPrice1;
+	private Double realPrice2;
 	private String userName;
 	private String clientName;
 	// 以下商品信息
@@ -412,5 +416,37 @@ public class SaleManagementDTO {
 
 	public void setShelfName(String shelfName) {
 		this.shelfName = shelfName;
+	}
+
+	public Double getPayablePrice1() {
+		return payablePrice1;
+	}
+
+	public void setPayablePrice1(Double payablePrice1) {
+		this.payablePrice1 = payablePrice1;
+	}
+
+	public Double getPayablePrice2() {
+		return payablePrice2;
+	}
+
+	public void setPayablePrice2(Double payablePrice2) {
+		this.payablePrice2 = payablePrice2;
+	}
+
+	public Double getRealPrice1() {
+		return realPrice1;
+	}
+
+	public void setRealPrice1(Double realPrice1) {
+		this.realPrice1 = realPrice1;
+	}
+
+	public Double getRealPrice2() {
+		return realPrice2;
+	}
+
+	public void setRealPrice2(Double realPrice2) {
+		this.realPrice2 = realPrice2;
 	}
 }

@@ -12,6 +12,5 @@ import com.ncut.wms.supplier.model.Supplier;
 @Repository("supplierDAO")
 public class SupplierDAOImpl extends BaseDAOImpl<Supplier> implements SupplierDAO {
 
-	
 
 }

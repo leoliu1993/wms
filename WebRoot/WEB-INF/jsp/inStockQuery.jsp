@@ -28,8 +28,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<script type="text/javascript">
 		$(function(){
 			
-			//添加修改标志
-			var flag = '';
 			//搜索框展开标志
 			var searchStatus = 0;
 			
@@ -164,6 +162,24 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						title:'总价',
 						field:'totalPrice',
 						width:100,
+					},{
+						title:'所在仓库',
+						field:'storageName',
+						width:100,
+					},{
+						title:'所在架位',
+						field:'shelfName',
+						width:100,
+					},{
+						field:'action',
+						title:'操作',
+						resizable:false,
+						formatter:function(value,row,index){
+							
+								var s = "<a href='javascript:void(0)' onclick='searchShelf(this)'>查询</a>";
+								return s;
+							
+						}
 					}
 				]],
 				
@@ -181,10 +197,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						if(result) {
 							var arr = $('#supplierTable').datagrid('getSelections');
 							var ids = '';
-							/* for(var i=0; i<arr.length; i++) {
-								ids += arr[i].purchaseId + ',';
-							}
-							ids = ids.substring(0, ids.length-1); */
 							ids += arr[0].purchaseId;
 							$.ajax({
 								type: 'post',
@@ -296,44 +308,146 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		});
 		//编辑仓库状态
 		var editIndex = undefined;
-		//详单表格点击事件
-		function onClickCell(index,field,value){
-			if(field == 'storageId' & editIndex == undefined) {
-				editIndex = index;
-				$(this).datagrid('beginEdit', index);
-				var ed = $(this).datagrid('getEditor', {index:index,field:field});
-				$(ed.target).focus();
-			} else {
-				return;
-			}
-			
+		var mydata = [{1:str+'01'}];
+		for(var i =0; i<10; i++) {
+			var str = String.fromCharCode(65+i);
+			mydata[i] = {1:str+'01',2:str+'02',3:str+'03',
+						 4:str+'04',5:str+'05',6:str+'06',
+						 7:str+'07',8:str+'08',9:str+'09',10:str+'10'};
 		}
-		//详单保存按钮
-		function saveType(target) {
+		
+		//架位查询按钮
+		//添加修改标志
+		var flag = 0;
+		function searchShelf(target) {
 			var index = getRowIndex(target);
-			if ($('#detailGrid').datagrid('validateRow', editIndex) & editIndex == index){
-				var ed = $('#detailGrid').datagrid('getEditor', {index:editIndex,field:'storageId'});
-			 	var storageName = $(ed.target).combobox('getText');
-                $('#detailGrid').datagrid('getRows')[editIndex]['storageName'] = storageName;
-				$('#detailGrid').datagrid('endEdit', editIndex);
-				editIndex = undefined;
-				
-				
-			} else {
-				return;
-			}
+			var shelfName = $('#detailGrid').datagrid('getRows')[index]['shelfName'];
+			$('#mapGrid').datagrid({
+				fit: true,
+				//自动列间距
+				fitColumns: true,
+				border: false,
+				//分页查询
+				pagination: false,
+				//加载等待提示
+				rownumbers:true,
+				singleSelect:true,
+				//列内容
+				columns:[[
+					{
+						title:'1',
+						field:'1',
+						width:100,
+						resizable:false,
+						styler:function(value,row,index){
+							if (value == shelfName){
+								return 'background-color:#ffee00;color:red;';
+							}
+						}
+					},{
+						title:'2',
+						field:'2',
+						width:100,
+						resizable:false,
+						styler:function(value,row,index){
+							if (value == shelfName){
+								return 'background-color:#ffee00;color:red;';
+							}
+						}
+					},{
+						title:'3',
+						field:'3',
+						width:100,
+						resizable:false,
+						styler:function(value,row,index){
+							if (value == shelfName){
+								return 'background-color:#ffee00;color:red;';
+							}
+						}
+					},{
+						title:'4',
+						field:'4',
+						width:100,
+						resizable:false,
+						styler:function(value,row,index){
+							if (value == shelfName){
+								return 'background-color:#ffee00;color:red;';
+							}
+						}
+					},{
+						title:'5',
+						field:'5',
+						width:100,
+						resizable:false,
+						styler:function(value,row,index){
+							if (value == shelfName){
+								return 'background-color:#ffee00;color:red;';
+							}
+						}
+					},{
+						title:'6',
+						field:'6',
+						width:100,
+						resizable:false,
+						styler:function(value,row,index){
+							if (value == shelfName){
+								return 'background-color:#ffee00;color:red;';
+							}
+						}
+					},{
+						title:'7',
+						field:'7',
+						width:100,
+						resizable:false,
+						styler:function(value,row,index){
+							if (value == shelfName){
+								return 'background-color:#ffee00;color:red;';
+							}
+						}
+					},{
+						title:'8',
+						field:'8',
+						width:100,
+						resizable:false,
+						styler:function(value,row,index){
+							if (value == shelfName){
+								return 'background-color:#ffee00;color:red;';
+							}
+						}
+					},{
+						title:'9',
+						field:'9',
+						width:100,
+						resizable:false,
+						styler:function(value,row,index){
+							if (value == shelfName){
+								return 'background-color:#ffee00;color:red;';
+							}
+						}
+					},{
+						title:'10',
+						field:'10',
+						width:100,
+						resizable:false,
+						styler:function(value,row,index){
+							if (value == shelfName){
+								return 'background-color:#ffee00;color:red;';
+							}
+						}
+					}
+				]],
+			});
 			
-			
-		}
-		//详单取消按钮
-		function cancelType(target) {
-			var index = getRowIndex(target);
-			if ($('#detailGrid').datagrid('validateRow', editIndex) && editIndex == index){
-				$('#detailGrid').datagrid('cancelEdit', editIndex);
-				editIndex = undefined;
-			} else {
-				return;
+			if(flag>0) {
+				for(var i=0; i<10; i++) {
+					$('#mapGrid').datagrid('deleteRow',0);
+				}
 			}
+			for(var i=0; i<10; i++) {
+				$('#mapGrid').datagrid('appendRow',mydata[i]);
+			}
+			$('#addDialog').dialog('open');
+			flag++;
 		}
 		//获取当前行
 		function getRowIndex(target){
@@ -399,18 +513,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<table id="detailGrid"></table>
 		</div>
 	</div>
-	<div id="addDialog" title="确认入库时间" modal=true class="easyui-dialog"
-		closed=true style="width:350px;padding:30px;">
-		<form id="addForm" method="post">
-			<div style="margin:10px;text-align:center">
-				设置入库时间：<input id="createDate" name="createDate" />
-			</div>
-			<div style="margin:10px;text-align:center">
-				<a id="saveButton" class="easyui-linkbutton" iconCls="icon-save" style="margin-right:10px">入库</a>
-				<a id="cancelButton" class="easyui-linkbutton" iconCls="icon-cancel" style="margin-left:10px">取消</a>
-			</div>
-			
-		</form>
+	<div id="addDialog" title="查询货架位置" modal=true class="easyui-dialog"
+		closed=true style="width:450px;height:330px;">
+		<table id="mapGrid"></table>
 	</div>
 </body>
 </html>

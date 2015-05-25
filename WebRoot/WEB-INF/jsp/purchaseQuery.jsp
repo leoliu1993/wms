@@ -265,7 +265,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			});
 			
 			/**
-			 * 计量单位下拉菜单
+			 * 库存状态下拉菜单
 			 */
 			$('#stockState').combobox({
 				editable:false,

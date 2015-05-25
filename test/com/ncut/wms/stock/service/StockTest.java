@@ -14,7 +14,7 @@ public class StockTest {
 	@Test
 	public void test() {
 		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
-		StockService sService = (StockService) ctx.getBean("stockService");
+		StockService service = (StockService) ctx.getBean("stockService");
 	}
 	
 

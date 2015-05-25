@@ -11,13 +11,14 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import com.ncut.wms.commodity.dao.CommodityDAO;
-import com.ncut.wms.purchase.dto.PurchasegoodsDTO;
-import com.ncut.wms.purchase.model.Purchasegoods;
+import com.ncut.wms.shelf.dao.ShelfDAO;
+import com.ncut.wms.shelf.model.Shelf;
 import com.ncut.wms.stock.dao.InStockDAO;
 import com.ncut.wms.stock.dao.InStockgoodsDAO;
 import com.ncut.wms.stock.dto.InStockDTO;
 import com.ncut.wms.stock.dto.InStockgoodsDTO;
 import com.ncut.wms.stock.model.InStockgoods;
+import com.ncut.wms.storage.dao.StorageDAO;
 import com.ncut.wms.util.easyui.DataGrid;
 
 @Service("inStockgoodsService")
@@ -45,6 +46,10 @@ public class InStockgoodsService {
 			
 			//插入一些需要的数据
 			igoodsDTO.setCommodityName(cDAO.load(igoodsDTO.getCommodityId()).getCommodityName());
+			igoodsDTO.setStorageName(storageDAO.load(ig.getStorageId()).getStorageName());
+			Shelf shelf = shelfDAO.load(ig.getShelfId());
+			igoodsDTO.setShelfName(shelf.getShelfName());
+			igoodsDTO.setCoordinate(shelf.getCoordinate());
 			
 			igDTOList.add(igoodsDTO);
 		}
@@ -57,6 +62,8 @@ public class InStockgoodsService {
 	private InStockDAO iDAO;
 	private InStockgoodsDAO igDAO;
 	private CommodityDAO cDAO;
+	private StorageDAO storageDAO;
+	private ShelfDAO shelfDAO;
 	
 	@Resource
 	public void setiDAO(InStockDAO iDAO) {
@@ -71,6 +78,16 @@ public class InStockgoodsService {
 	@Resource
 	public void setcDAO(CommodityDAO cDAO) {
 		this.cDAO = cDAO;
+	}
+
+	@Resource
+	public void setStorageDAO(StorageDAO storageDAO) {
+		this.storageDAO = storageDAO;
+	}
+
+	@Resource
+	public void setShelfDAO(ShelfDAO shelfDAO) {
+		this.shelfDAO = shelfDAO;
 	}
 	
 	
