@@ -192,6 +192,38 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							}
 							
 						}
+					},'-',{
+						text:'导出供应商信息',
+						iconCls:'icon-save',
+						handler:function(){
+								
+							$.messager.confirm('提示信息' , '信息导出后将以excel文件保存到桌面，是否确认导出？' , function(result){
+								if(result) {
+									
+									$.post('supplierAction_toExcel', function(result){
+										if(result){
+											
+											$.messager.show ({
+												title: 'ok!',
+												msg: result.message
+											});
+											
+										} else {
+											$.messager.show ({
+												title: 'fail!',
+												msg: result.message
+											});
+										}
+									}, 'json');
+									
+								} else {
+									return;
+								}
+							});
+								
+							
+							
+						}						
 					}
 				]
 				

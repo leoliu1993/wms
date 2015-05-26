@@ -14,7 +14,15 @@ $.extend($.fn.validatebox.defaults.rules, {
 			return value.length == param[0];
 		},
 		message : '密码必须为4个字符!'
-	}
+	},
+	
+	username: {// 验证用户名
+        validator: function (value) {
+        	var str = /^[a-zA-Z][a-zA-Z0-9_]{5,15}$/;
+            return str.test(value);
+        },
+        message: '用户名不合法（字母开头，允许6-16字节，允许字母数字下划线）'
+    },
 });
 
 /**

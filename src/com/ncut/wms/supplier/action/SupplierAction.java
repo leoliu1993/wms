@@ -122,6 +122,26 @@ public class SupplierAction extends ActionSupport implements
 		}
 		return NONE;
 	}
+	
+	public String toExcel(){
+		Json json = new Json();
+		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
+		try {
+			supplierService.toExcel();
+			json.setSuccess(true);
+			json.setMessage("导出excel成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.setSuccess(false);
+			json.setMessage("导出excel失败");
+		}
+		try {
+			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(json).toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return NONE;
+	}
 
 	/* ======以下声明======== */
 	private Supplier supplier = new Supplier();

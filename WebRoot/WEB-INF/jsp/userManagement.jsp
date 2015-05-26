@@ -321,15 +321,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<div style="margin:10px;">
 				<table cellspacing="8px">
 					<tr height="30px">
-						<td>商品名称：</td>
-						<td><input name="commodityName" class="easyui-textbox" required=true missingMessage="请填写商品名称" /></td>
+						<td>用户名：</td>
+						<td><input name="loginname" class="easyui-textbox" required=true missingMessage="请填写用户名" validType="username" /></td>
 						<td>规格型号：</td>
 						<td><input name="commodityType" class="easyui-textbox" /></td>
 					</tr>
 					<tr height="30px">
-						<td>商品类别：</td>
+						<td>输入密码：</td>
 						<td><input id="cotegoryCombobox" name="categoryId" /></td>
-						<td>计量单位：</td>
+						<td>确认密码：</td>
 						<td><input id="unitCombobox" name="unitId" /></td>
 					</tr>
 					<tr height="30px">
