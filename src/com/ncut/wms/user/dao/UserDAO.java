@@ -16,4 +16,6 @@ public interface UserDAO extends BaseDAO<User>{
 
 	public User getUser(String username);
 
+	public User findByLoginname(String loginname);
+
 }

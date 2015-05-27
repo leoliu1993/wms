@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.sf.json.JSONObject;
 
 import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.BeanUtils;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
@@ -30,6 +31,90 @@ public class UserAction extends ActionSupport implements ModelDriven<UserDTO> {
 	public String execute()  {
 		
 		return "index";
+	}
+	
+	public String add() {
+		Json json = new Json();
+		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
+		try {
+			user = new User();
+			userDTO.setPassword(userDTO.getPassword1());
+			BeanUtils.copyProperties(userDTO, user);
+			userService.add(user);
+			json.setSuccess(true);
+			json.setMessage("添加用户成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.setSuccess(false);
+			json.setMessage("添加用户失败");
+		}
+		try {
+			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(json).toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return NONE;
+	}
+	
+	public String delete() {
+		Json json = new Json();
+		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
+		try {
+			user = new User();
+			userService.delete(userDTO.getIds());
+			json.setSuccess(true);
+			json.setMessage("删除用户成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.setSuccess(false);
+			json.setMessage("删除用户失败");
+		}
+		try {
+			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(json).toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return NONE;
+	}
+	
+	public String update() {
+		Json json = new Json();
+		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
+		try {
+			user = new User();
+			userDTO.setPassword(userDTO.getPassword1());
+			BeanUtils.copyProperties(userDTO, user);
+			userService.update(user);
+			json.setSuccess(true);
+			json.setMessage("修改用户成功");
+		} catch (Exception e) {
+			e.printStackTrace();
+			json.setSuccess(false);
+			json.setMessage("修改用户失败");
+		}
+		try {
+			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(json).toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return NONE;
+	}
+	
+	public String loginnameIsEqual() {
+		Json json = new Json();
+		ServletActionContext.getResponse().setContentType("text/html;charset=utf-8");
+		boolean isSuccess = userService.loginnameIsEqual(userDTO.getLoginname());
+		if(isSuccess) {
+			json.setSuccess(true);
+		} else {
+			json.setSuccess(false);
+		}
+		try {
+			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(json).toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return NONE;
 	}
 	
 	public String getUserGrid() {

@@ -27,13 +27,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<script type="text/javascript">
 	var grid;
 	var flag;
-	
 	$(function(){
 		grid = $("#dgtype").datagrid({
-			url:'unitAction_getUnitList',
+			url:'storageAction_getTotalGrid',
 			border:false,
 			fit:true,
-			idField:'unitId',
+			idField:'storageId',
 			pagination:true,
 			pageSize:5,
 			pageList:[5,15,25],
@@ -42,21 +41,35 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			selectOnCheck:false,
 			singleSelect:true,
 			columns:[[{
-				field:'unitId',
-				title:'单位ID',
-				width:50,
+				field:'storageId',
+				title:'仓库编号',
+				width:100,
 				resizable:false
 			},{
-				field:'unitName',
-				title:'单位名称',
-				width:100,
+				field:'storageName',
+				title:'仓库名称',
+				width:150,
 				resizable:false,
 				editor:{
-					type:'textbox',
+					type:'validatebox',
 					options:{
 						required:true
 					}
 				}
+			},{
+				field:'address',
+				title:'仓库地址',
+				width:150,
+				resizable:false,
+				editor:{
+					type:'textbox',
+					options:{
+						valueField:'cid',
+						textField:'cname',
+                        url:'cmdtCtgrAction_getCategoryList',
+                        required:true
+					}
+				},
 			},{
 				field:'action',
 				title:'操作',
@@ -64,11 +77,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				formatter:function(value,row,index){
 					if(row.editing){
 						var s = "<a href='javascript:void(0)' onclick='saveType(this)'>保存</a>";
-						var c = "<a href='javascript:void(0)' onclick='cancelType(this)'>取消</a>";
+						var c = "<a href='javascript:void(0)' onclick='cancelType(this)'>取消</a>"
 						return s+" | "+c;
 					}else{
 						var e = "<a href='javascript:void(0)' onclick='editType(this)'>修改</a>";
-						var d = "<a href='javascript:void(0)' onclick='delType(this)'>删除</a>";
+						var d = "<a href='javascript:void(0)' onclick='delType(this)'>删除</a>"
 						return e+" | "+d;
 					}
 				}
@@ -86,18 +99,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				updateAction(index);
 			},
 			toolbar:[{
-				text:'新增单位',
+				text:'新增分类',
 				iconCls:'icon-add',
 				handler:addType
 			}]
-		});
-	});
+		})
+	})
 	
 	function updateAction(index){
 		$("#dgtype").datagrid('updateRow',{
 			index:index,
 			row:{}
-		});
+		})
 	}
 	
 	//获取当前行
@@ -123,33 +136,38 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	
 	//保存分类 cname,pname,
 	function saveType(target){
-		var rowIndex = getRowIndex(target);
-		$("#dgtype").datagrid("endEdit",rowIndex);
+		var rowIndex =  getRowIndex(target);
 		$("#dgtype").datagrid('selectRow',rowIndex);
 		var row = $("#dgtype").datagrid('getSelected');
+		$("#dgtype").datagrid("endEdit", rowIndex);
 		if(flag=='add') {
 			$.ajax({
 				async:false,
-				url:'unitAction_addUnit',
+				url:'storageAction_add',
 				data:{
-					unitName:row.unitName
+					storageName:row.storageName,
+					address:row.address
 				},
 				dataType:'json'
 			});
+			$("#dgtype").datagrid("reload");
 		}
-		if(flag=='edit'){
+		if(flag == 'edit') {
+			$("#dgtype").datagrid("endEdit",getRowIndex(target));
+			var row = $("#dgtype").datagrid('getSelected');
 			$.ajax({
 				async:false,
-				url:'unitAction_editUnit',
+				url:'storageAction_update',
 				data:{
-					unitId:row.unitId,
-					unitName:row.unitName
+					storageId:row.storageId,
+					storageName:row.storageName,
+					address:row.address
 				},
 				dataType:'json'
 			});
-		}
+		} 
 		flag = '';
-		$("#dgtype").datagrid("reload");
+		
 	}
 	
 	//取消
@@ -176,10 +194,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				var row = $("#dgtype").datagrid('getSelected');
 				$.ajax({
 					async:false,
-					url:'unitAction_deleteUnit',
+					url:'storageAction_delete',
 					data:{
-						unitId:row.unitId,
-						unitName:row.unitName
+						storageId:row.storageId,
 					},
 					dataType:'json'
 				});

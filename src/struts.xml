@@ -15,6 +15,7 @@
 		<action name="index_*" class="index"  method="{1}">
 			<result name="index">/WEB-INF/jsp/index.jsp</result>
 			<result name="userManagementPage">/WEB-INF/jsp/userManagement.jsp</result>
+			<result name="storageManagementPage">/WEB-INF/jsp/storageManagement.jsp</result>
 		</action>
 		
 		<!-- 配置用户模块 -->

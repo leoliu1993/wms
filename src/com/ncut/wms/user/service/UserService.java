@@ -44,6 +44,18 @@ public class UserService {
 		userDAO.add(user);
 	}
 	
+	public void update(User user) {
+		userDAO.update(user);
+	}
+	
+	public void delete(String ids) {
+		String []idArr = ids.split(",");
+		for(String id : idArr ) {
+			userDAO.delete(Integer.parseInt(id));
+		}
+		
+	}
+	
 	public User login(String username) {
 		return userDAO.getUser(username);
 	}
@@ -69,6 +81,15 @@ public class UserService {
 	@Resource
 	public void setUserDAO(UserDAO userDAO) {
 		this.userDAO = userDAO;
+	}
+
+	public boolean loginnameIsEqual(String loginname) {
+		if(userDAO.findByLoginname(loginname)!=null) {
+			return false;
+		} else {
+			return true;
+		}
+		
 	}
 
 }

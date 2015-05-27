@@ -7,11 +7,15 @@ public class UserDTO {
 	private String password;
 	private String username;
 	private Integer age;
-	private String sex;
+	private Integer sex;
 	private String createDate;
 	private String lastUpdateDate;
 	private String disableDate;
-	private String usertype;
+	private Integer usertype;
+	
+	/* =====页面展示属性====== */
+	private String password1;
+	private String password2;
 	
 	/* =====datagrid属性====== */
 	private int page;
@@ -60,11 +64,11 @@ public class UserDTO {
 		this.age = age;
 	}
 
-	public String getSex() {
+	public Integer getSex() {
 		return sex;
 	}
 
-	public void setSex(String sex) {
+	public void setSex(Integer sex) {
 		this.sex = sex;
 	}
 
@@ -92,11 +96,11 @@ public class UserDTO {
 		this.disableDate = disableDate;
 	}
 
-	public String getUsertype() {
+	public Integer getUsertype() {
 		return usertype;
 	}
 
-	public void setUsertype(String usertype) {
+	public void setUsertype(Integer usertype) {
 		this.usertype = usertype;
 	}
 
@@ -138,5 +142,21 @@ public class UserDTO {
 
 	public void setIds(String ids) {
 		this.ids = ids;
+	}
+
+	public String getPassword1() {
+		return password1;
+	}
+
+	public void setPassword1(String password1) {
+		this.password1 = password1;
+	}
+
+	public String getPassword2() {
+		return password2;
+	}
+
+	public void setPassword2(String password2) {
+		this.password2 = password2;
 	}
 }

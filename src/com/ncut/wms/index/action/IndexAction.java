@@ -34,6 +34,11 @@ public class IndexAction extends ActionSupport{
 		return "userManagementPage";
 	}
 	
+	public String storageManagementPage() {
+		
+		return "storageManagementPage";
+	}
+	
 	public String isLogin() {
 		Json json = new Json();
 		User user = (User) ServletActionContext.getRequest().getSession().getAttribute("user");

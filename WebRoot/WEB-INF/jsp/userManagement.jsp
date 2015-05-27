@@ -36,7 +36,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			 */
 			$('#totalGrid').datagrid({
 				
-				idField:'userId',
+				idField:'userid',
 				//ajax异步后台请求
 				url: 'userAction_getUserGrid',
 				fit: true,
@@ -104,8 +104,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							//标志为添加
 							flag = 'add';
 							//动态设定对话框标题
-							$('#addDialog').dialog({
-								title: '添加商品信息'
+							$('#addDialog').panel({
+								title: '添加用户信息'
 							});
 							$('#addDialog').dialog('open');
 							
@@ -123,22 +123,22 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 								});
 							} else {
 								
-								$.messager.confirm('提示信息' , '删除后商品信息无法回复，是否确认删除？' , function(result){
+								$.messager.confirm('提示信息' , '删除后商品信息无法恢复，是否确认删除？' , function(result){
 									if(result) {
 										
 										var ids = '';
 										for(var i=0; i<arr.length; i++) {
-											ids += arr[i].commodityId + ',';
+											ids += arr[i].userid + ',';
 										}
 										ids = ids.substring(0, ids.length-1);
 										$.post('user_delete', {ids:ids}, function(result){
-											if(result){
+											if(result.success){
 												//1.刷新数据表格
 												$('#totalGrid').datagrid('reload');
 												//2.给出提示信息
 												$.messager.show ({
 													title: 'ok!',
-													msg: '商品信息删除成功！'
+													msg: result.message
 												});
 												//3.清楚数据表格勾选
 												$('#totalGrid').datagrid('clearSelections');
@@ -146,10 +146,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 											} else {
 												$.messager.show ({
 													title: 'fail!',
-													msg: '商品信息删除失败！'
+													msg: result.message
 												});
 											}
-										});
+										},'json');
 										
 									} else {
 										return;
@@ -167,8 +167,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							//标志位修改
 							flag = 'edit';
 							//动态设定对话框标题
-							$('#addDialog').dialog({
-								title: '修改商品信息'
+							$('#addDialog').panel({
+								title: '修改用户信息'
 							});
 							var arr = $('#totalGrid').datagrid('getSelections');
 							if(arr.length != 1) {
@@ -180,17 +180,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 								$('#addDialog').dialog('open');
 								$('#addForm').form('reset');
 								$('#addForm').form('load',{
-									commodityId: arr[0].commodityId,
-									commodityName: arr[0].commodityName,
-									commodityType: arr[0].commodityType,
-									categoryId: arr[0].categoryId,
-									unitId: arr[0].unitId,
-									salePrice:arr[0].salePrice,
-									vip1Price:arr[0].vip1Price,
-									vip2Price:arr[0].vip2Price,
-									vip3Price:arr[0].vip3Price,
-									minimum:arr[0].minimum,
-									remark: arr[0].remark
+									userid: arr[0].userid,
+									loginname: arr[0].loginname,
+									password1: arr[0].password1,
+									password2: arr[0].password2,
+									username: arr[0].username,
+									age:arr[0].age,
+									sex:arr[0].sex,
 								});
 							}
 							
@@ -201,23 +197,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			});
 			
 			/**
-			 * 商品编号输入框初始化
-			 */
-			$('#commodityNum').validatebox({
-				required : true ,
-				validType : 'midLength[2,5]' , 
-				invalidMessage : '商品编号必须在2到5个长度之间' ,
-				missingMessage : '请填写商品编号'
-			});
-			
-			/**
 			 * 表单提交按钮
 			 */
 			$('#saveButton').click(function(){
 				if($('#addForm').form('validate')){
 					$.ajax({
 						type: 'post',
-						url: flag=='add'? 'commodityAction_add' : 'commodityAction_update',
+						url: flag=='add'? 'user_add' : 'user_update',
 						cache: false,
 						data: $('#addForm').serialize(),
 						dataType: 'json',
@@ -268,23 +254,21 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			});
 			
 			/**
-			 * 计量单位下拉菜单
+			 * 性别下拉菜单
 			 */
-			$('#unitCombobox').combobox({
-				url:'commodityAction_getUnitList',
+			$('#sex').combobox({
 				editable:false,
-			    valueField:'unitId',
-			    textField:'unitName',
-			});
-			
-			/**
-			 * 商品类别下拉菜单
-			 */
-			$('#cotegoryCombobox').combobox({
-				url:'cmdtCtgrAction_getCategoryList',
-				editable:false,
-			    valueField:'cid',
-			    textField:'cname',
+			    valueField:'value',
+			    textField:'text',
+			    width:100,
+			    panelHeight:60,
+			    data:[{
+			    	text:'男',
+			    	value:1
+			    },{
+			    	text:'女',
+			    	value:'0'
+			    }]
 			});
 			
 		});
@@ -314,48 +298,33 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<table id="totalGrid"></table>
 		</div>
 	</div>
-	<div id="addDialog" title="添加商品信息" modal=true class="easyui-dialog"
-		closed=true style="width:600px;padding:30px;">
+	<div id="addDialog" title="添加用户信息" modal=true class="easyui-dialog"
+		closed=true style="width:530px;padding:30px;">
 		<form id="addForm" method="post">
-			<input type="hidden" name="commodityId" class="textbox" />
+		<input type="hidden" id="userid" name="userid" class="textbox" />
 			<div style="margin:10px;">
 				<table cellspacing="8px">
 					<tr height="30px">
 						<td>用户名：</td>
-						<td><input name="loginname" class="easyui-textbox" required=true missingMessage="请填写用户名" validType="username" /></td>
-						<td>规格型号：</td>
-						<td><input name="commodityType" class="easyui-textbox" /></td>
+						<td><input name="loginname" class="easyui-textbox" required=true missingMessage="请填写用户名" validType="loginname" delay=2 /></td>
+						<td>性别：</td>
+						<td><input id="sex" name="sex" /></td>
 					</tr>
 					<tr height="30px">
 						<td>输入密码：</td>
-						<td><input id="cotegoryCombobox" name="categoryId" /></td>
+						<td><input id="password1" name="password1" class="easyui-textbox" type="password" required=true missingMessage="请填写密码" /></td>
 						<td>确认密码：</td>
-						<td><input id="unitCombobox" name="unitId" /></td>
+						<td><input id="password2" name="password2" class="easyui-textbox" type="password" validType="same['password1']" required=true missingMessage="请确认密码" /></td>
 					</tr>
 					<tr height="30px">
-						<td>普通售价：</td>
-						<td><input name="salePrice" class="easyui-numberbox" /></td>
-						<td>初级会员售价：</td>
-						<td><input name="vip1Price" class="easyui-numberbox" /></td>
-					</tr>
-					<tr height="30px">
-						<td>中级会员售价：</td>
-						<td><input name="vip2Price" class="easyui-numberbox" /></td>
-						<td>高级会员售价：</td>
-						<td><input name="vip3Price" class="easyui-numberbox" /></td>
-					</tr>
-					<tr height="30px">
-						<td>库存报警量：</td>
-						<td><input name="minimum" class="easyui-numberbox" /></td>
+						<td>用户姓名：</td>
+						<td><input name="username" class="easyui-textbox" /></td>
+						<td>年龄：</td>
+						<td><input name="age" class="easyui-numberbox" min=0 max=150 /></td>
 					</tr>
 				</table>
 			</div>
 			<div class="clear"></div>
-			<div style="margin:10px;">
-				<p style="margin:5px">备注：</p>
-				<p><input name="remark" class="easyui-textbox" multiline="true"
-					style="width:100%;height:100px;" /></p>
-			</div>
 			<div style="margin:10px;text-align:center">
 				<a id="saveButton" class="easyui-linkbutton" iconCls="icon-save" style="margin-right:10px">保存</a>
 				<a id="cancelButton" class="easyui-linkbutton" iconCls="icon-cancel" style="margin-left:10px">取消</a>

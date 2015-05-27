@@ -148,6 +148,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		$("#dgtype").datagrid("endEdit", rowIndex);
 		if(flag=='add') {
 			$.ajax({
+				async:false,
 				url:'cmdtCtgrAction_add',
 				data:{
 					cname:row.cname,
@@ -161,6 +162,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			$("#dgtype").datagrid("endEdit",getRowIndex(target));
 			var row = $("#dgtype").datagrid('getSelected');
 			$.ajax({
+				async:false,
 				url:'cmdtCtgrAction_update',
 				data:{
 					cid:row.cid,
@@ -193,18 +195,22 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	
 	//删除分类
 	function delType(target){
-		$.messager.confirm("confirm","是否删除该分类?",function(r){
-			if(r){
-				/*$.ajax({
-					url:'${pageContext.request.contextPath}/category_del?id',
+		$.messager.confirm("confirm","是否删除该单位?",function(result){
+			if(result){
+				var row = $("#dgtype").datagrid('getSelected');
+				$.ajax({
+					async:false,
+					url:'cmdtCtgrAction_delete',
 					data:{
-						
+						cid:row.cid,
 					},
 					dataType:'json'
-				})*/
+				});
 				$("#dgtype").datagrid("deleteRow",getRowIndex(target));
+				flag='';
+				$("#dgtype").datagrid("reload");
 			}
-		})
+		});
 	}
 </script>
 </head>

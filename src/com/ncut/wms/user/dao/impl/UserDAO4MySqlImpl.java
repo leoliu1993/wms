@@ -3,14 +3,9 @@ package com.ncut.wms.user.dao.impl;
 
 
 import java.util.List;
-import java.util.Map;
 
-import javax.annotation.Resource;
-
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import org.hibernate.Query;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.ncut.wms.base.dao.impl.BaseDAOImpl;
 import com.ncut.wms.user.dao.UserDAO;
@@ -38,6 +33,15 @@ public class UserDAO4MySqlImpl extends BaseDAOImpl<User> implements UserDAO {
 			.setString("name", username)
 			.uniqueResult();
 		return user;
+	}
+
+
+
+	@Override
+	public User findByLoginname(String loginname) {
+		String hql = "from User u where u.loginname = :loginname";
+		Query q =this.getSession().createQuery(hql).setParameter("loginname", loginname);
+		return (User) q.uniqueResult();
 	}
 	
 	

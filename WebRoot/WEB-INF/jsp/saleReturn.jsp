@@ -43,7 +43,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				idField:'orderId',
 				//ajax异步后台请求
 				url: 'saleManagement_getSaleTotalGrid',
-				queryParams: {stateStr:'!= 2'},
+				queryParams: {stateStr:'!= 2',stockState:null},
 				fit: true,
 				//自动列间距
 				fitColumns: false,
