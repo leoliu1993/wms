@@ -117,11 +117,11 @@ public class CommodityAction extends ActionSupport implements
 			BeanUtils.copyProperties(commodityDTO, commodity);
 			commodityService.add(commodity);
 			json.setSuccess(true);
-			json.setMessage("添加供应商成功");
+			json.setMessage("添加商品信息成功");
 		} catch (Exception e) {
 			e.printStackTrace();
 			json.setSuccess(false);
-			json.setMessage("添加供应商失败");
+			json.setMessage("添加商品信息失败");
 		}
 		try {
 			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(json).toString());
@@ -138,11 +138,11 @@ public class CommodityAction extends ActionSupport implements
 			BeanUtils.copyProperties(commodityDTO, commodity);
 			commodityService.update(commodity);
 			json.setSuccess(true);
-			json.setMessage("修改供应商成功");
+			json.setMessage("修改商品信息成功");
 		} catch (Exception e) {
 			e.printStackTrace();
 			json.setSuccess(false);
-			json.setMessage("修改供应商失败");
+			json.setMessage("修改商品信息失败");
 		}
 		try {
 			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(json).toString());
@@ -158,11 +158,11 @@ public class CommodityAction extends ActionSupport implements
 		try {
 			commodityService.delete(commodityDTO);
 			json.setSuccess(true);
-			json.setMessage("删除供应商成功");
+			json.setMessage("删除商品信息成功");
 		} catch (Exception e) {
 			e.printStackTrace();
 			json.setSuccess(false);
-			json.setMessage("删除供应商失败");
+			json.setMessage("删除商品信息失败");
 		}
 		try {
 			ServletActionContext.getResponse().getWriter().write(JSONObject.fromObject(json).toString());

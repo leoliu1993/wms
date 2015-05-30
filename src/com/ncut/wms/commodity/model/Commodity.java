@@ -26,8 +26,8 @@ public class Commodity {
 	private Integer minimum;
 	private Integer state;
 	private String remark;
-	private String coordinate;
-
+	private Integer returnPermission;
+	
 	@Id
 	@GeneratedValue
 	public Integer getCommodityId() {
@@ -126,12 +126,12 @@ public class Commodity {
 		this.remark = remark;
 	}
 
-	public String getCoordinate() {
-		return coordinate;
+	public Integer getReturnPermission() {
+		return returnPermission;
 	}
 
-	public void setCoordinate(String coordinate) {
-		this.coordinate = coordinate;
+	public void setReturnPermission(Integer returnPermission) {
+		this.returnPermission = returnPermission;
 	}
 
 }

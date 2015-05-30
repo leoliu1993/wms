@@ -10,11 +10,13 @@ import javax.annotation.Resource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
-import com.ncut.wms.saleManagement.dto.SaleManagementDTO;
-import com.ncut.wms.saleManagement.model.SaleStockOutTotal;
+import com.ncut.wms.purchase.dao.PurchaseDAO;
+import com.ncut.wms.purchase.model.Purchase;
 import com.ncut.wms.storage.dao.StorageDAO;
 import com.ncut.wms.storage.dto.StorageDTO;
 import com.ncut.wms.storage.model.Storage;
+import com.ncut.wms.supplier.dao.SupplierDAO;
+import com.ncut.wms.supplier.model.Supplier;
 import com.ncut.wms.util.easyui.DataGrid;
 
 @Service("storageService")
@@ -33,8 +35,22 @@ public class StorageService {
 		sDAO.update(storage);
 	}
 	
-	public List<Storage> getStorageList() {
-		return sDAO.list("from Storage");
+	public List<Storage> getStorageList(StorageDTO storageDTO) {
+		List<Storage> storageList;
+		if(storageDTO.getOrderId() != null && !"".equals(storageDTO.getOrderId().trim())) {
+			Purchase purchase = purchaseDAO.load(storageDTO.getOrderId());
+			Supplier supplier = supplierDAO.load(purchase.getSupplierId());
+			String address = supplier.getAddress();
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("address", "%"+address+"%");
+			storageList = sDAO.list("from Storage storage where storage.address like ?", "%"+address+"%");
+			List<Storage> storageList2 = sDAO.list("from Storage storage where storage.address not like ?", "%"+address+"%");
+			storageList.addAll(storageList2);
+			
+		} else {
+			storageList = sDAO.list("from Storage");
+		}
+		return storageList;
 	}
 	
 	public DataGrid<StorageDTO> getTotalGrid(StorageDTO storageDTO) {
@@ -62,10 +78,22 @@ public class StorageService {
 	
 	/* ======以下声明======== */
 	private StorageDAO sDAO;
+	private PurchaseDAO purchaseDAO;
+	private SupplierDAO supplierDAO;
 
 	@Resource
 	public void setsDAO(StorageDAO sDAO) {
 		this.sDAO = sDAO;
+	}
+
+	@Resource
+	public void setPurchaseDAO(PurchaseDAO purchaseDAO) {
+		this.purchaseDAO = purchaseDAO;
+	}
+
+	@Resource
+	public void setSupplierDAO(SupplierDAO supplierDAO) {
+		this.supplierDAO = supplierDAO;
 	}
 
 }

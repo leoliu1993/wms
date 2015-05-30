@@ -5,6 +5,7 @@ public class StorageDTO {
 	private Integer storageId;
 	private String storageName;
 	private String address;
+	private String orderId;
 	
 	/* =====datagrid属性====== */
 	private int page;
@@ -75,5 +76,13 @@ public class StorageDTO {
 
 	public void setIds(String ids) {
 		this.ids = ids;
+	}
+
+	public String getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(String orderId) {
+		this.orderId = orderId;
 	}
 }

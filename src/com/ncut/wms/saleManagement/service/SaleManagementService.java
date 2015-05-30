@@ -723,17 +723,21 @@ public class SaleManagementService {
 			sdDTO.setOrderId(sd.getStId());
 			sdDTO.setDetailId(sd.getSdId());
 			//判断是否为查询展示，非查询情况计算可退货数量，退货数置为0
+			boolean flag = true;
 			if(smDTO.getStateStr() == null || !smDTO.getStateStr().equals("query")) {
+				flag = false;
 				Integer visibleRemain = sd.getAmount() - sd.getReturnedAmount();
 				sdDTO.setVisibleRemain(visibleRemain);
 				sdDTO.setReturnedAmount(0);
 			}
 			
-			
 			//插入一些需要的数据
-			sdDTO.setCommodityName(commodityDAO.load(sd.getCommodityId()).getCommodityName());
+			Commodity commodity = commodityDAO.load(sd.getCommodityId());
+			sdDTO.setCommodityName(commodity.getCommodityName());
 			
-			sdDTOList.add(sdDTO);
+			if(flag || commodity.getReturnPermission() != 0) {
+				sdDTOList.add(sdDTO);
+			}
 		}
 		dg.setTotal(stDAO.count(totalHql, map));
 		dg.setRows(sdDTOList);

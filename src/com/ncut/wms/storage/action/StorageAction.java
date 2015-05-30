@@ -28,7 +28,7 @@ public class StorageAction extends ActionSupport implements ModelDriven<StorageD
 
 	/* ======以下业务逻辑======== */
 	public String getStorageList() {
-		List<Storage> storageList = storageService.getStorageList();
+		List<Storage> storageList = storageService.getStorageList(storageDTO);
 		String storageJson = JSONArray.fromObject(storageList).toString();
 		HttpServletResponse response = ServletActionContext.getResponse();
 		try {

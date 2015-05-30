@@ -96,6 +96,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						field:'minimum',
 						width:100,
 					},{
+						title:'是否允许退货',
+						field:'returnPermission',
+						width:100,
+						formatter:function(value) {
+							if (value == 1) {
+								return '是';
+							}
+							if (value == 0) {
+								return '否';
+							}
+						}
+					},{
 						title:'备注',
 						field:'remark',
 						width:270
@@ -199,7 +211,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 									vip2Price:arr[0].vip2Price,
 									vip3Price:arr[0].vip3Price,
 									minimum:arr[0].minimum,
-									remark: arr[0].remark
+									remark: arr[0].remark,
+									returnPermission: arr[0].returnPermission
 								});
 							}
 							
@@ -309,6 +322,22 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			    textField:'cname',
 			});
 			
+			/**
+			 * 商品类别下拉菜单
+			 */
+			$('#returnPermission').combobox({
+				editable:false,
+			    valueField:'value',
+			    textField:'text',
+			    data: [{
+			    	text:'是',
+			    	value:'1'
+			    },{
+			    	text:'否',
+			    	value:'0'
+			    }]
+			});
+			
 		});
 		
 		//js方法：序列化表单 			
@@ -376,6 +405,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<tr height="30px">
 						<td>库存报警量：</td>
 						<td><input name="minimum" class="easyui-numberbox" /></td>
+						<td>是否允许退货：</td>
+						<td><input id="returnPermission" name="returnPermission" /></td>
 					</tr>
 				</table>
 			</div>

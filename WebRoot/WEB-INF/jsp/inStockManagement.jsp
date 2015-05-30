@@ -64,6 +64,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						width:100,
 						sortable: false
 					},{
+				    	title:'供应商名称',
+				    	field:'supplierId',
+				    	width:100,
+				    	formatter:function(value,row,index) {
+				    		return row.supplierName;
+				    	}
+				    },{
 						title:'应付金额',
 						field:'payablePrice',
 						width:100
@@ -204,7 +211,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							 	valueField:'storageId',
                                 textField:'storageName',
                                 method:'post',
-                                url:'storageAction_getStorageList',
                                 required:true
 							}
 						}
@@ -374,7 +380,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			if((field == 'storageId' | field == 'shelfId') & editIndex == undefined) {
 				editIndex = index;
 				$(this).datagrid('beginEdit', index);
-				var ed = $(this).datagrid('getEditor', {index:index,field:field});
+				var ed = $(this).datagrid('getEditor', {index:index,field:'storageId'});
+				var orderId = $('#supplierTable').datagrid('getSelected').purchaseId;
+				$(ed.target).combobox('reload','storageAction_getStorageList?orderId='+orderId);
 				$(ed.target).focus();
 			} else {
 				return;

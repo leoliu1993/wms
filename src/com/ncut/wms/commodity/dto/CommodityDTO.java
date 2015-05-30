@@ -19,8 +19,8 @@ public class CommodityDTO {
 	private Integer minimum;
 	private Integer state;
 	private String remark;
-	private String coordinate;
-
+	private Integer returnPermission;
+	
 	/* =====datagrid属性====== */
 	private int page;
 	private int rows;
@@ -124,14 +124,6 @@ public class CommodityDTO {
 		this.remark = remark;
 	}
 
-	public String getCoordinate() {
-		return coordinate;
-	}
-
-	public void setCoordinate(String coordinate) {
-		this.coordinate = coordinate;
-	}
-
 	public int getPage() {
 		return page;
 	}
@@ -186,6 +178,14 @@ public class CommodityDTO {
 
 	public void setUnitName(String unitName) {
 		this.unitName = unitName;
+	}
+
+	public Integer getReturnPermission() {
+		return returnPermission;
+	}
+
+	public void setReturnPermission(Integer returnPermission) {
+		this.returnPermission = returnPermission;
 	}
 
 }
