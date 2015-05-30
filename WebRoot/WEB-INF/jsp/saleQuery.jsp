@@ -451,10 +451,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				</div>
 			</form>
 		</div>
-		<div region="center" title="销售总单">
+		<div region="center" title="销售总单" style="height:50%">
 			<table id="supplierTable"></table>
 		</div>
-		<div region="south" title="销售详单" collapsed=false style="height:40%">
+		<div region="south" title="销售详单" collapsed=false style="height:30%">
 			<table id="detailGrid"></table>
 		</div>
 	</div>

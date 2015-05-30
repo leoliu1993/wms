@@ -225,8 +225,6 @@ public class SaleManagementService {
 					sds.setSsrId(sr.getShelfRemainId());
 					sds.setAmount(needAmount);
 					
-					//减少需要商品的数量
-					needAmount -= sr.getVisibleRemain();
 					//修改中间表商品剩余量
 					sr.setVisibleRemain(visibleRemain);
 					
@@ -236,6 +234,8 @@ public class SaleManagementService {
 					//库存详单进行修改
 					Stock stock = stockDAO.findByCommodityAndStorage(ig.getCommodityId(), ig.getStorageId());
 					Integer visibleStock = stock.getVisibleStock() - needAmount;
+					//减少需要商品的数量
+					needAmount = 0;
 					stock.setVisibleStock(visibleStock);
 					stockDAO.update(stock);
 					break;
