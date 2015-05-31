@@ -38,6 +38,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			var searchStatus = 0;
 			//订单号
 			var orderCode = '';
+			var currentDate = dateFormatter(new Date());
+			var currentTime = dateTimeFormatter(new Date());
 			
 			/**
 			 * 表格初始化
@@ -320,7 +322,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			 * 商品列表下拉菜单
 			 */
 			$('#commodityCombobox').combobox({
-				url:'commodityAction_getCommodityList',
+				url:'commodityAction_getCommodityList?parameter='+currentDate,
 				editable:false,
 			    valueField:'commodityId',
 			    textField:'commodityName',
@@ -381,8 +383,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			    required:true,
 			    missingMessage:'必须填写日期！'
 			});
-			var currentDate = dateFormatter(new Date());
-			var currentTime = dateTimeFormatter(new Date());
 			$('#createDate').datetimebox('setValue', currentTime);
 			
 			/**

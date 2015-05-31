@@ -96,6 +96,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						field:'minimum',
 						width:100,
 					},{
+						title:'保质期',
+						field:'endDate',
+						width:100
+					},{
 						title:'是否允许退货',
 						field:'returnPermission',
 						width:100,
@@ -212,7 +216,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 									vip3Price:arr[0].vip3Price,
 									minimum:arr[0].minimum,
 									remark: arr[0].remark,
-									returnPermission: arr[0].returnPermission
+									returnPermission: arr[0].returnPermission,
+									endDate: arr[0].endDate,
 								});
 							}
 							
@@ -407,6 +412,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<td><input name="minimum" class="easyui-numberbox" /></td>
 						<td>是否允许退货：</td>
 						<td><input id="returnPermission" name="returnPermission" /></td>
+					</tr>
+					<tr>
+						<td>保质期：</td>
+						<td><input name="endDate" class="easyui-datebox" /></td>
 					</tr>
 				</table>
 			</div>
