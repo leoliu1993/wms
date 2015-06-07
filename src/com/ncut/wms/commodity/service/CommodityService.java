@@ -7,8 +7,6 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import net.sf.json.JSONArray;
-
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +15,6 @@ import com.ncut.wms.commodity.dao.CommodityDAO;
 import com.ncut.wms.commodity.dto.CommodityDTO;
 import com.ncut.wms.commodity.model.Commodity;
 import com.ncut.wms.commodity.model.CommodityCategory;
-import com.ncut.wms.supplier.dto.SupplierDTO;
 import com.ncut.wms.unit.dao.UnitDAO;
 import com.ncut.wms.unit.model.Unit;
 import com.ncut.wms.util.easyui.DataGrid;
@@ -133,8 +130,15 @@ public class CommodityService {
 		commodityDAO.delete(id);
 	}
 
-	public List<Commodity> getCommodityList() {
-		List<Commodity> commodityList = commodityDAO.list("from Commodity");
+	public List<Commodity> getCommodityList(CommodityDTO commodityDTO) {
+		List<Commodity> commodityList;
+		if(commodityDTO.getParameter() != null || !"".equals(commodityDTO.getParameter().trim())) {
+			String currentDate = commodityDTO.getParameter();
+			String hql = "from Commodity c where c.endDate > ?";
+			commodityList = commodityDAO.list(hql, currentDate);
+		} else {
+			commodityList = commodityDAO.list("from Commodity");
+		}
 		return commodityList;
 	}
 

@@ -1,7 +1,9 @@
 package com.ncut.wms.stock.service;
 
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import static org.junit.Assert.*;
+
 import org.junit.Test;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class InStockServiceTest {
 
@@ -13,7 +15,7 @@ public class InStockServiceTest {
 		InStockService service = (InStockService)ctx.getBean("inStockService");
 		String date = "2015-01-29 00:00:00";
 		String code = service.getOrderCode(date.substring(0, 10).replace("-", ""));
-		System.out.println(code);
+		assertEquals("RKJH201501290001",code);
 		ctx.destroy();
 		
 	}

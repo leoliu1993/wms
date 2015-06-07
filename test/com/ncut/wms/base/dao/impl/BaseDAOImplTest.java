@@ -1,4 +1,6 @@
-package com.ncut.wms.user.service;
+package com.ncut.wms.base.dao.impl;
+
+import static org.junit.Assert.fail;
 
 import javax.annotation.Resource;
 
@@ -16,46 +18,51 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ncut.wms.user.model.User;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"classpath:applicationContext.xml"})
-@TestExecutionListeners(listeners={
+@ContextConfiguration(locations = { "classpath:applicationContext.xml" })
+@TestExecutionListeners(listeners = {
 		DependencyInjectionTestExecutionListener.class,
-		TransactionalTestExecutionListener.class
-})
-@TransactionConfiguration(transactionManager="transactionManager",defaultRollback=true)
-public class UserServiceTest extends
+		TransactionalTestExecutionListener.class })
+@TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
+public class BaseDAOImplTest extends
 		AbstractTransactionalJUnit4SpringContextTests {
-	
-	private UserService service;
+
+	BaseDAOImpl<User> baseDAO;
 	
 	@Resource
-	public void setService(UserService service) {
-		this.service = service;
+	public void setBaseDAO(BaseDAOImpl<User> baseDAO) {
+		this.baseDAO = baseDAO;
 	}
 
 	@Test
 	@Transactional
 	public void testAdd() {
-		service.add(new User());
-	}
-	
-	@Test
-	@Transactional
-	public void testUpdate() {
-		User user = service.findById(2);
-		user.setUsername("test");
-		service.update(user);
+		baseDAO.add(new User());
 	}
 
 	@Test
 	@Transactional
 	public void testDelete() {
-		service.delete("3");
 	}
 
 	@Test
 	@Transactional
-	public void testLogin() {
-		service.login("admin");
+	public void testUpdate() {
+	}
+	
+	@Test
+	@Transactional
+	public void testLoadInt() {
+	}
+
+	@Test
+	@Transactional
+	public void testCountString() {
+	}
+
+	@Test
+	@Transactional
+	public void testListString() {
+		baseDAO.list("from User");
 	}
 
 }

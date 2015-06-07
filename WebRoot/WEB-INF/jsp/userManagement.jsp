@@ -294,7 +294,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   
   <body>
   	<div id="lay" class="easyui-layout" fit=true >
-		<div region="center" title="商品信息管理">
+		<div region="center" title="用户信息管理">
 			<table id="totalGrid"></table>
 		</div>
 	</div>

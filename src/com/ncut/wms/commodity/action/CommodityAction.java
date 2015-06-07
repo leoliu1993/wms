@@ -65,7 +65,7 @@ public class CommodityAction extends ActionSupport implements
 	
 	public String getCommodityList() {
 		
-		List<Commodity> commodityList = commodityService.getCommodityList();
+		List<Commodity> commodityList = commodityService.getCommodityList(commodityDTO);
 		String csJson = JSONArray.fromObject(commodityList).toString();
 		HttpServletResponse response = ServletActionContext.getResponse();
 		try {

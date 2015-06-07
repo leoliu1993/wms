@@ -27,6 +27,7 @@ public class Commodity {
 	private Integer state;
 	private String remark;
 	private Integer returnPermission;
+	private String endDate;
 	
 	@Id
 	@GeneratedValue
@@ -132,6 +133,14 @@ public class Commodity {
 
 	public void setReturnPermission(Integer returnPermission) {
 		this.returnPermission = returnPermission;
+	}
+
+	public String getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
 	}
 
 }

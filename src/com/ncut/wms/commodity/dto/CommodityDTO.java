@@ -20,6 +20,8 @@ public class CommodityDTO {
 	private Integer state;
 	private String remark;
 	private Integer returnPermission;
+	private String endDate;
+	private String parameter;
 	
 	/* =====datagrid属性====== */
 	private int page;
@@ -186,6 +188,22 @@ public class CommodityDTO {
 
 	public void setReturnPermission(Integer returnPermission) {
 		this.returnPermission = returnPermission;
+	}
+
+	public String getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
+	}
+
+	public String getParameter() {
+		return parameter;
+	}
+
+	public void setParameter(String parameter) {
+		this.parameter = parameter;
 	}
 
 }
