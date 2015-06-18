@@ -323,7 +323,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   	<div id="lay" class="easyui-layout" fit=true >
 		<div region="north" title="供应商信息查询" collapsed=true style="height:100px;padding:10px">
 			<form id="commoditySearch">
-				根据商品名（可支持模糊查询）：<input name="supplierName" class="textbox"/>&nbsp;
+				根据供应商名（可支持模糊查询）：<input name="supplierName" class="textbox"/>&nbsp;
 				<a id="searchButton" class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a>
 				<a id="clearButton" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'">清空</a>
 			</form>
